@@ -1,8 +1,8 @@
 {
-  "name": "restfulhelper",
-  "displayName": "RestfulHelper",
-  "description": "A Restful helper.",
-  "version": "0.0.1",
+  "name": "integration-workbench",
+  "displayName": "Integration Workbench",
+  "description": "A workbench tool to work with API integrations.",
+  "version": "0.9.0",
   "engines": {
     "vscode": "^1.82.0"
   },
@@ -10,35 +10,119 @@
     "Other"
   ],
   "activationEvents": [],
-  "main": "./out/extension.js",
+  "main": "./build/extension.js",
   "contributes": {
+    "configuration": {
+      "title": "Workbenches",
+      "properties": {
+        "integrationWorkbench.allowRequestsInWorkbench": {
+          "type": "boolean",
+          "default": false,
+          "description": "Allow requests to be created in the root level of a workbench, outside of any collections."
+        }
+      }
+    },
     "commands": [
       {
-        "command": "restfulhelper.helloWorld",
-        "title": "Hello World"
+        "command": "integrationWorkbench.createWorkbench",
+        "title": "Create a Workbench",
+        "icon": "$(plus)"
+      },
+      {
+        "command": "integrationWorkbench.createCollection",
+        "title": "Create a Collection",
+        "icon": "$(new-folder)"
+      },
+      {
+        "command": "integrationWorkbench.createRequest",
+        "title": "Create a Request",
+        "icon": "$(new-file)"
+      },
+      {
+        "command": "integrationWorkbench.refresh",
+        "title": "Refresh the integration workbench"
+      },
+      {
+        "command": "integrationWorkbench.dev.createWorkbenches",
+        "title": "(Dev) Create workbenches"
+      },
+      {
+        "command": "integrationWorkbench.dev.removeWorkbenches",
+        "title": "(Dev) Remove workbenches"
       }
     ],
     "viewsContainers": {
       "activitybar": [
         {
-          "id": "restfulhelper",
-          "title": "Restful Helper",
-          "icon": "media/logo.svg"
+          "id": "workbench",
+          "title": "Integration Workbench",
+          "icon": "media/workbench.svg"
         }
       ]
     },
     "views": {
-      "restfulhelper": [
+      "workbench": [
         {
-          "id": "exampleView",
-          "name": "Example View"
+          "id": "workbenches",
+          "name": "Workbenches"
         }
       ]
     },
     "viewsWelcome": [
       {
-        "view": "exampleView",
-        "contents": "No node dependencies found [learn more](https://www.npmjs.com/).\n[Add Dependency](command:nodeDependencies.addEntry)"
+        "view": "workbenches",
+        "contents": "No workbenches yet! Create your first one to get started.\n[Create a Workbench](command:integrationWorkbench.createWorkbench)\n[Read the docs](https://integrationworkbench.io/docs/#get-started) to learn how IntegrationWorkbench works."
+      }
+    ],
+    "menus": {
+      "view/title": [
+        {
+          "command": "integrationWorkbench.createWorkbench",
+          "when": "view == workbenches",
+          "group": "navigation"
+        }
+      ],
+      "view/item/context": [
+        {
+          "command": "integrationWorkbench.createCollection",
+          "when": "view == workbenches && viewItem == workbench",
+          "group": "inline"
+        },
+        {
+          "command": "integrationWorkbench.createRequest",
+          "when": "view == workbenches && ((config.integrationWorkbench.allowRequestsInWorkbench && viewItem == workbench) || viewItem == collection)",
+          "group": "inline"
+        }
+      ]
+    },
+    "walkthroughs": [
+      {
+        "id": "workbenches",
+        "title": "Get started with workbenches",
+        "description": "Discover how to work with workbenches.",
+        "steps": [
+          {
+            "id": "openWorkbenches",
+            "title": "Open your workbenches",
+            "description": "A workbench is where you construct your collections of requests and configure shared configurations such as authentications.\n[Focus on Workbenches](command:workbenches.focus)",
+            "media": { "image": "resources/walkthrough/test.svg", "altText": "Empty image" },
+            "completionEvents": ["onView:workbenches"]
+          },
+          {
+            "id": "createWorkbench",
+            "title": "Create a workbench",
+            "description": "Create your first workbench for your repository or project.\n[Create a Workbench](command:integrationWorkbench.createWorkbench)",
+            "media": { "image": "resources/walkthrough/test.svg", "altText": "Empty image" },
+            "completionEvents": ["onCommand:integrationWorkbench.createWorkbench"]
+          },
+          {
+            "id": "createCollection",
+            "title": "Create a collection",
+            "description": "Create your first collection of requests to divide your workbench into several parts.\n[Create a Collection](command:integrationWorkbench.createCollection)",
+            "media": { "image": "resources/walkthrough/test.svg", "altText": "Empty image" },
+            "completionEvents": ["onCommand:integrationWorkbench.createCollection"]
+          }
+        ]
       }
     ]
   },
@@ -48,7 +132,7 @@
     "watch": "tsc -watch -p ./",
     "pretest": "yarn run compile && yarn run lint",
     "lint": "eslint src --ext ts",
-    "test": "node ./out/test/runTest.js"
+    "test": "node ./build/test/runTest.js"
   },
   "devDependencies": {
     "@types/vscode": "^1.84.0",
