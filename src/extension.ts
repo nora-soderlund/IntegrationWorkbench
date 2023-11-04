@@ -2,43 +2,82 @@
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode';
 import WorkbenchTreeDataProvider from './trees/WorkbenchTreeDataProvider';
-import { workbenches } from './mock/workbenches';
 import WorkbenchCollectionTreeItem from './trees/items/WorkbenchCollectionTreeItem';
 import WorkbenchTreeItem from './trees/items/WorkbenchTreeItem';
+import getWorkbenchStorageOption from './utils/GetWorkbenchStorageOption';
+import getUniqueFolderPath from './utils/GetUniqueFolderPath';
+import getCamelizedString from './utils/GetCamelizedString';
+import { Workbench } from './interfaces/workbenches/Workbench';
+import { scanForWorkbenches, workbenches } from './Workbenches';
+import { randomUUID } from 'crypto';
+import getRootPath from './utils/GetRootPath';
+import path from 'path';
+import { WorkbenchRequest } from './interfaces/workbenches/requests/WorkbenchRequest';
+import { WorkbenchCollection } from './interfaces/workbenches/collections/WorkbenchCollection';
+import { readFileSync } from 'fs';
 
 // This method is called when your extension is activated
 // Your extension is activated the very first time the command is executed
 export function activate(context: vscode.ExtensionContext) {
-
 	// Use the console to output diagnostic information (console.log) and errors (console.error)
 	// This line of code will only be executed once when your extension is activated
 	console.log('Congratulations, your extension "integrationworkbench" is now active!');
 
-	const rootPath =
-	vscode.workspace.workspaceFolders && vscode.workspace.workspaceFolders.length > 0
-		? vscode.workspace.workspaceFolders[0].uri.fsPath
-		: undefined;
-
-	const workbenchesTreeDataProvider = new WorkbenchTreeDataProvider(context, rootPath);
+	const workbenchesTreeDataProvider = new WorkbenchTreeDataProvider(context);
 	
 	const workbenchTreeView = vscode.window.createTreeView('workbenches', {
 		treeDataProvider: workbenchesTreeDataProvider
 	});
 
-	context.subscriptions.push(vscode.commands.registerCommand('integrationWorkbench.dev.createWorkbenches', () => {
-		context.workspaceState.update("workbenches", workbenches);
-
-		workbenchesTreeDataProvider.refresh();
-	}));
-
-	context.subscriptions.push(vscode.commands.registerCommand('integrationWorkbench.dev.removeWorkbenches', () => {
-		context.workspaceState.update("workbenches", []);
-
-		workbenchesTreeDataProvider.refresh();
-	}));
-
-	context.subscriptions.push(vscode.commands.registerCommand('integrationWorkbench.createWorkbench', () => {
+	context.subscriptions.push(vscode.commands.registerCommand('integrationWorkbench.createWorkbench', async () => {
 		vscode.window.showInformationMessage('Create workbench');
+
+		const name = await vscode.window.showInputBox({
+			placeHolder: "Enter the name of this workbench:",
+
+			validateInput(value) {
+				if(!value.length) {
+					return "You must enter a name for this workbench!";
+				}
+
+				return null;
+			},
+		});
+
+		if(!name) {
+			return;
+		}
+
+		const storageOption = await getWorkbenchStorageOption(context, name);
+
+		if(!storageOption) {
+			return;
+		}
+
+		const uniqueWorkbenchPath = getUniqueFolderPath(storageOption.path, getCamelizedString(name));
+
+		if(!uniqueWorkbenchPath) {
+			vscode.window.showErrorMessage("There is too many workbenches with the same name in this storage option, please choose a different name.");
+	
+			return null;
+		}
+
+		const rootPath = getRootPath();
+
+		const workbench = new Workbench({
+			name,
+			storage: {
+				location: storageOption.location,
+				base: (rootPath)?(path.basename(rootPath)):(undefined)
+			},
+			collections: []
+		}, uniqueWorkbenchPath);
+
+		workbench.save();
+
+		workbenches.push(workbench);
+
+		workbenchesTreeDataProvider.refresh();
 	}));
 
 	context.subscriptions.push(vscode.commands.registerCommand('integrationWorkbench.createCollection', (reference) => {
@@ -64,16 +103,82 @@ export function activate(context: vscode.ExtensionContext) {
 					requests: []
 				});
 
-				context.workspaceState.update("workbenches", [reference.workbench]);
+				reference.workbench.save();
 
 				workbenchesTreeDataProvider.refresh();
 			}
 		});
 	}));
 
+	context.subscriptions.push(vscode.commands.registerCommand('integrationWorkbench.createRequest', (reference) => {
+		vscode.window.showInformationMessage('Create request');
+
+		vscode.window.showInputBox({
+			prompt: "Enter the request name",
+			validateInput(value) {
+				if(!value.length) {
+					return "You must enter a name or cancel.";
+				}
+
+				return null;
+			},
+		}).then((value) => {
+			if(!value) {
+				return;
+			}
+
+			if(reference instanceof WorkbenchCollectionTreeItem) {
+				reference.collection.requests.push({
+					id: randomUUID(),
+					name: value,
+					type: null
+				});
+
+				reference.workbench.save();
+
+				workbenchesTreeDataProvider.refresh();
+			}
+		});
+	}));
+
+	context.subscriptions.push(vscode.commands.registerCommand('integrationWorkbench.openRequest', (
+		workbench: Workbench,
+		request: WorkbenchRequest,
+		collection?: WorkbenchCollection
+		) => {
+		if(!request.webviewPanel) {
+			request.webviewPanel = vscode.window.createWebviewPanel(
+				`request-${request.id}`,
+				request.name,
+				vscode.ViewColumn.One,
+				{}
+			);
+
+			request.webviewPanel.webview.html = readFileSync(
+				path.join(__filename, "..", "..", "resources", "request", "index.html"),
+				{
+					encoding: "utf-8"
+				}
+			);
+		}
+		else {
+			const columnToShowIn = vscode.window.activeTextEditor
+			? vscode.window.activeTextEditor.viewColumn
+			: undefined;
+
+			request.webviewPanel.reveal(columnToShowIn);
+		}
+	}));
+
 	context.subscriptions.push(vscode.commands.registerCommand('integrationWorkbench.refresh', () => {
 		workbenchesTreeDataProvider.refresh();
 	}));
+
+	context.subscriptions.push(vscode.commands.registerCommand('integrationWorkbench.openWalkthrough', () => {
+		vscode.commands.executeCommand(`workbench.action.openWalkthrough`, `nora-soderlund.integrationWorkbench#workbenches.openWorkbenches`, false);
+	}));
+
+	scanForWorkbenches(context);
 
 	//vscode.window.registerTreeDataProvider('workbenches', new WorkbenchTreeDataProvider(rootPath));
 }

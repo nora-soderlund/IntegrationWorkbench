@@ -3,11 +3,11 @@ import WorkbenchTreeItem from './items/WorkbenchTreeItem';
 import WorkbenchRequestTreeItem from './items/WorkbenchRequestTreeItem';
 import WorkbenchCollectionTreeItem from './items/WorkbenchCollectionTreeItem';
 import { Workbench } from '../interfaces/workbenches/Workbench';
+import { scanForWorkbenches, workbenches } from '../Workbenches';
 
 export default class WorkbenchTreeDataProvider implements TreeDataProvider<WorkbenchTreeItem> {
   constructor(
-    private readonly context: ExtensionContext,
-    private readonly workspaceRoot?: string
+    private readonly context: ExtensionContext
   ) {
 
   }
@@ -17,19 +17,9 @@ export default class WorkbenchTreeDataProvider implements TreeDataProvider<Workb
   }
 
   getChildren(element?: WorkbenchTreeItem): Thenable<WorkbenchTreeItem[]> {
-    if (!this.workspaceRoot) {
-      window.showInformationMessage('Empty workspace');
-    }
-
     if (!element) {
-      const workbenches = this.context.workspaceState.get<Workbench[]>("workbenches");
-
-      if(!workbenches) {
-        return Promise.resolve([]);
-      }
-
       return Promise.resolve(
-        workbenches.map((workbench) =>
+        scanForWorkbenches(this.context, false).map((workbench) =>
           new WorkbenchTreeItem(workbench)
         )
       );

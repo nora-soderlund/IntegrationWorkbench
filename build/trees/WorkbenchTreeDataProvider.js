@@ -7,26 +7,18 @@ const vscode_1 = require("vscode");
 const WorkbenchTreeItem_1 = __importDefault(require("./items/WorkbenchTreeItem"));
 const WorkbenchRequestTreeItem_1 = __importDefault(require("./items/WorkbenchRequestTreeItem"));
 const WorkbenchCollectionTreeItem_1 = __importDefault(require("./items/WorkbenchCollectionTreeItem"));
+const Workbenches_1 = require("../Workbenches");
 class WorkbenchTreeDataProvider {
     context;
-    workspaceRoot;
-    constructor(context, workspaceRoot) {
+    constructor(context) {
         this.context = context;
-        this.workspaceRoot = workspaceRoot;
     }
     getTreeItem(element) {
         return element;
     }
     getChildren(element) {
-        if (!this.workspaceRoot) {
-            vscode_1.window.showInformationMessage('Empty workspace');
-        }
         if (!element) {
-            const workbenches = this.context.workspaceState.get("workbenches");
-            if (!workbenches) {
-                return Promise.resolve([]);
-            }
-            return Promise.resolve(workbenches.map((workbench) => new WorkbenchTreeItem_1.default(workbench)));
+            return Promise.resolve((0, Workbenches_1.scanForWorkbenches)(this.context, false).map((workbench) => new WorkbenchTreeItem_1.default(workbench)));
         }
         else {
             if (element instanceof WorkbenchCollectionTreeItem_1.default) {

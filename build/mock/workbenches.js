@@ -4,35 +4,53 @@ exports.workbenches = void 0;
 exports.workbenches = [
     {
         name: "Deliveries",
-        repository: "commerce-delivery-service",
+        storage: {
+            location: "user",
+            base: "commerce-delivery-service"
+        },
         collections: [
             {
                 name: "Statuses",
                 requests: [
                     {
+                        id: "abcd-efgh",
                         name: "GetOrderDeliveryStatus",
                         type: "HTTP",
-                        method: "GET"
+                        details: {
+                            method: "GET"
+                        }
                     },
                     {
+                        id: "abcd-efgh-2",
                         name: "CreateOrderDeliveryStatus",
                         type: "HTTP",
-                        method: "POST"
+                        details: {
+                            method: "POST"
+                        }
                     },
                     {
+                        id: "abcd-efgh-3",
                         name: "ReplaceOrderDeliveryStatus",
                         type: "HTTP",
-                        method: "PUT"
+                        details: {
+                            method: "PUT"
+                        }
                     },
                     {
+                        id: "abcd-efgh-4",
                         name: "UpdateOrderDeliveryStatus",
                         type: "HTTP",
-                        method: "PATCH"
+                        details: {
+                            method: "PATCH"
+                        }
                     },
                     {
+                        id: "abcd-efgh-5",
                         name: "DeleteOrderDeliveryStatus",
                         type: "HTTP",
-                        method: "DELETE"
+                        details: {
+                            method: "DELETE"
+                        }
                     }
                 ]
             }

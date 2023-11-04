@@ -7,7 +7,7 @@ class WorkbenchTreeItem extends vscode_1.TreeItem {
         super(workbench.name, vscode_1.TreeItemCollapsibleState.Expanded);
         this.workbench = workbench;
         this.tooltip = `${workbench.name} workbench`;
-        this.description = workbench.repository;
+        this.description = workbench.storage.base;
         this.contextValue = "workbench";
     }
 }

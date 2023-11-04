@@ -5,6 +5,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const vscode_1 = require("vscode");
 const path_1 = __importDefault(require("path"));
+const fs_1 = require("fs");
 class WorkbenchRequestTreeItem extends vscode_1.TreeItem {
     workbench;
     request;
@@ -15,10 +16,24 @@ class WorkbenchRequestTreeItem extends vscode_1.TreeItem {
         this.request = request;
         this.collection = collection;
         this.tooltip = `${request.name} request`;
-        this.iconPath = {
-            light: path_1.default.join(__filename, '..', '..', '..', '..', 'resources', 'icons', 'methods', `${request.method}.png`),
-            dark: path_1.default.join(__filename, '..', '..', '..', '..', 'resources', 'icons', 'methods', `${request.method}.png`)
+        this.iconPath = this.getIconPath();
+        this.command = {
+            title: "Open request",
+            command: "integrationWorkbench.openRequest",
+            arguments: [workbench, request, collection]
         };
+    }
+    getIconPath() {
+        if (this.request.type === "HTTP") {
+            const iconPath = path_1.default.join(__filename, '..', '..', '..', '..', 'resources', 'icons', 'methods', `${this.request.details.method}.png`);
+            if ((0, fs_1.existsSync)(iconPath)) {
+                return {
+                    light: iconPath,
+                    dark: iconPath
+                };
+            }
+        }
+        return new vscode_1.ThemeIcon("search-show-context");
     }
 }
 exports.default = WorkbenchRequestTreeItem;

@@ -1,5 +1,19 @@
-export type WorkbenchRequest = {
-    name: string;
+import { WebviewPanel } from "vscode";
+
+export type WorkbenchHttpRequest = {
     type: "HTTP";
-    method: string;
+    details: {
+        method: string;
+    };
 };
+
+export type WorkbenchRequest = {
+    id: string;
+    name: string;
+    webviewPanel?: WebviewPanel;
+} & (
+    | WorkbenchHttpRequest
+    | {
+        type: null;
+    }
+);

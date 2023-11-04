@@ -13,16 +13,36 @@
   "main": "./build/extension.js",
   "contributes": {
     "configuration": {
-      "title": "Workbenches",
+      "title": "Integration Workbenches",
       "properties": {
         "integrationWorkbench.allowRequestsInWorkbench": {
           "type": "boolean",
           "default": false,
           "description": "Allow requests to be created in the root level of a workbench, outside of any collections."
+        },
+        "integrationWorkbench.defaultWorkbenchStorage": {
+          "type": "string",
+          "enum": ["prompt", "repository", "user"],
+          "enumItemLabels": [
+            "Prompt every time",
+            "Repository",
+            "User storage"
+          ],
+          "enumDescriptions": [
+            "Prompts a selection each time a new workbench is created.",
+            "Defaults to workbench files being stored in the repository, useful for sharing workbenches across a team.",
+            "Defaults to workbench files being stored in the VS Code user storage, useful for syncing workbenches across several devices."
+          ],
+          "default": "prompt",
+          "description": "Where new workbenches should be saved to."
         }
       }
     },
     "commands": [
+      {
+        "command": "integrationWorkbench.openWalkthrough",
+        "title": "Open Walkthrough"
+      },
       {
         "command": "integrationWorkbench.createWorkbench",
         "title": "Create a Workbench",
@@ -71,7 +91,7 @@
     "viewsWelcome": [
       {
         "view": "workbenches",
-        "contents": "No workbenches yet! Create your first one to get started.\n[Create a Workbench](command:integrationWorkbench.createWorkbench)\n[Read the docs](https://integrationworkbench.io/docs/#get-started) to learn how IntegrationWorkbench works."
+        "contents": "No workbenches yet! Create your first one to get started.\n[Create a Workbench](command:integrationWorkbench.createWorkbench)\n[Open the walkthrough](command:integrationWorkbench.openWalkthrough) to learn how Integration Workbench works."
       }
     ],
     "menus": {
