@@ -15,6 +15,9 @@ import path from 'path';
 import { WorkbenchRequest } from './interfaces/workbenches/requests/WorkbenchRequest';
 import { WorkbenchCollection } from './interfaces/workbenches/collections/WorkbenchCollection';
 import { readFileSync } from 'fs';
+import { getWebviewUri } from './utils/GetWebviewUri';
+import getWebviewNonce from './utils/GetWebviewNonce';
+import { RequestWebviewPanel } from './panels/RequestWebviewPanel';
 
 // This method is called when your extension is activated
 // Your extension is activated the very first time the command is executed
@@ -147,26 +150,10 @@ export function activate(context: vscode.ExtensionContext) {
 		collection?: WorkbenchCollection
 		) => {
 		if(!request.webviewPanel) {
-			request.webviewPanel = vscode.window.createWebviewPanel(
-				`request-${request.id}`,
-				request.name,
-				vscode.ViewColumn.One,
-				{}
-			);
-
-			request.webviewPanel.webview.html = readFileSync(
-				path.join(__filename, "..", "..", "resources", "request", "index.html"),
-				{
-					encoding: "utf-8"
-				}
-			);
+			request.webviewPanel = new RequestWebviewPanel(context, workbench, request, collection);
 		}
 		else {
-			const columnToShowIn = vscode.window.activeTextEditor
-			? vscode.window.activeTextEditor.viewColumn
-			: undefined;
-
-			request.webviewPanel.reveal(columnToShowIn);
+			request.webviewPanel.reveal();
 		}
 	}));
 

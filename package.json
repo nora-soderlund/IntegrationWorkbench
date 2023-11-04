@@ -22,7 +22,11 @@
         },
         "integrationWorkbench.defaultWorkbenchStorage": {
           "type": "string",
-          "enum": ["prompt", "repository", "user"],
+          "enum": [
+            "prompt",
+            "repository",
+            "user"
+          ],
           "enumItemLabels": [
             "Prompt every time",
             "Repository",
@@ -125,45 +129,64 @@
             "id": "openWorkbenches",
             "title": "Open your workbenches",
             "description": "A workbench is where you construct your collections of requests and configure shared configurations such as authentications.\n[Focus on Workbenches](command:workbenches.focus)",
-            "media": { "image": "resources/walkthrough/test.svg", "altText": "Empty image" },
-            "completionEvents": ["onView:workbenches"]
+            "media": {
+              "image": "resources/walkthrough/test.svg",
+              "altText": "Empty image"
+            },
+            "completionEvents": [
+              "onView:workbenches"
+            ]
           },
           {
             "id": "createWorkbench",
             "title": "Create a workbench",
             "description": "Create your first workbench for your repository or project.\n[Create a Workbench](command:integrationWorkbench.createWorkbench)",
-            "media": { "image": "resources/walkthrough/test.svg", "altText": "Empty image" },
-            "completionEvents": ["onCommand:integrationWorkbench.createWorkbench"]
+            "media": {
+              "image": "resources/walkthrough/test.svg",
+              "altText": "Empty image"
+            },
+            "completionEvents": [
+              "onCommand:integrationWorkbench.createWorkbench"
+            ]
           },
           {
             "id": "createCollection",
             "title": "Create a collection",
             "description": "Create your first collection of requests to divide your workbench into several parts.\n[Create a Collection](command:integrationWorkbench.createCollection)",
-            "media": { "image": "resources/walkthrough/test.svg", "altText": "Empty image" },
-            "completionEvents": ["onCommand:integrationWorkbench.createCollection"]
+            "media": {
+              "image": "resources/walkthrough/test.svg",
+              "altText": "Empty image"
+            },
+            "completionEvents": [
+              "onCommand:integrationWorkbench.createCollection"
+            ]
           }
         ]
       }
     ]
   },
   "scripts": {
-    "vscode:prepublish": "yarn run compile",
-    "compile": "tsc -p ./",
-    "watch": "tsc -watch -p ./",
+    "vscode:prepublish": "yarn run package",
+    "compile": "node ./esbuild.js",
+    "watch": "node ./esbuild.js --watch",
     "pretest": "yarn run compile && yarn run lint",
     "lint": "eslint src --ext ts",
-    "test": "node ./build/test/runTest.js"
+    "test": "node ./build/test/runTest.js",
+    "package": "NODE_ENV=production node ./esbuild.js"
   },
   "devDependencies": {
-    "@types/vscode": "^1.84.0",
     "@types/mocha": "^10.0.3",
     "@types/node": "18.x",
+    "@types/vscode": "^1.84.0",
+    "@types/vscode-webview": "^1.57.3",
     "@typescript-eslint/eslint-plugin": "^6.9.0",
     "@typescript-eslint/parser": "^6.9.0",
+    "@vscode/test-electron": "^2.3.6",
+    "@vscode/webview-ui-toolkit": "^1.2.2",
+    "esbuild": "0.16.17",
     "eslint": "^8.52.0",
     "glob": "^10.3.10",
     "mocha": "^10.2.0",
-    "typescript": "^5.2.2",
-    "@vscode/test-electron": "^2.3.6"
+    "typescript": "^5.2.2"
   }
 }
