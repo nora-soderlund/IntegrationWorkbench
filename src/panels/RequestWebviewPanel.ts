@@ -1,4 +1,4 @@
-import { Disposable, ExtensionContext, Uri, ViewColumn, WebviewPanel, window } from "vscode";
+import { Disposable, ExtensionContext, Uri, ViewColumn, WebviewPanel, TextDocument, window, workspace } from "vscode";
 import { Workbench } from "../interfaces/workbenches/Workbench";
 import { WorkbenchRequest } from "../interfaces/workbenches/requests/WorkbenchRequest";
 import { WorkbenchCollection } from "../interfaces/workbenches/collections/WorkbenchCollection";
@@ -18,41 +18,64 @@ export class RequestWebviewPanel {
 		private readonly collection?: WorkbenchCollection
   ) {
     this.webviewPanel = window.createWebviewPanel(
-      `request-${request.id}`,
+      "integrationWorkbench.request",
       request.name,
       ViewColumn.One,
       {
         enableScripts: true,
 
-        localResourceRoots: [Uri.joinPath(context.extensionUri, 'build')]
+        localResourceRoots: [
+          Uri.joinPath(context.extensionUri, 'build'),
+          Uri.joinPath(context.extensionUri, 'resources')
+        ]
       }
     );
 
+    const outputChannel = window.createOutputChannel(`${request.name}`, "json");
+
+    outputChannel.replace(
+      JSON.stringify(
+        {
+          message: "Hello world"
+        },
+        undefined,
+        2
+      )
+    );
+
+    outputChannel.show();
+
     this.webviewPanel.onDidDispose(() => this.dispose(), null, this.disposables);
 
-    const webviewUri = getWebviewUri(this.webviewPanel.webview, context.extensionUri, ["build", "webview.js"]);
-    const nonce = getWebviewNonce();
+    const webviewUri = getWebviewUri(this.webviewPanel.webview, context.extensionUri, ["build", "webviews", "request.js"]);
+    const styleUri = getWebviewUri(this.webviewPanel.webview, context.extensionUri, ["resources", "request", "styles", "request.css"]);
+    const shikiUri = getWebviewUri(this.webviewPanel.webview, context.extensionUri, ["resources", "shiki"]);
 
     this.webviewPanel.webview.html = `
       <!DOCTYPE html>
       <html lang="en">
         <head>
-          <meta charset="UTF-8">
+          <meta charset="UTF-8"/>
 
-          <meta name="viewport" content="width=device-width,initial-scale=1.0">
-          <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'nonce-${nonce}';">
-
+          <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+          
           <title>Hello World!</title>
+
+          <link rel="stylesheet" href="${styleUri}"/>
         </head>
         <body>
           ${readFileSync(
-            path.join(__filename, "..", "..", "resources", "request", "index.html"),
+            path.join(__filename, "..", "..", "resources", "request", "request.html"),
             {
               encoding: "utf-8"
             }
           )}
 
-          <script type="module" nonce="${nonce}" src="${webviewUri}"></script>
+          <script type="text/javascript">
+            window.shikiUri = "${shikiUri}";
+          </script>
+
+          <script type="module" src="${webviewUri}"></script>
         </body>
       </html>
     `;
@@ -64,9 +87,10 @@ export class RequestWebviewPanel {
         const text = message.text;
 
         switch (command) {
-          case "hello":
-            window.showInformationMessage(text);
+          case "sendRequest": {
+
             return;
+          }
         }
       },
       undefined,

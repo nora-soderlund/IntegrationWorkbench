@@ -63,7 +63,12 @@
         "icon": "$(new-file)"
       },
       {
-        "command": "integrationWorkbench.refresh",
+        "command": "integrationWorkbench.editRequest",
+        "title": "Edit Request",
+        "icon": "$(gear)"
+      },
+      {
+        "command": "integrationWorkbench.refreshWorkbenches",
         "title": "Refresh the integration workbench"
       },
       {
@@ -82,6 +87,13 @@
           "title": "Integration Workbench",
           "icon": "media/workbench.svg"
         }
+      ],
+      "panel": [
+        {
+          "id": "results",
+          "title": "Responses",
+          "icon": "media/workbench.svg"
+        }
       ]
     },
     "views": {
@@ -89,6 +101,21 @@
         {
           "id": "workbenches",
           "name": "Workbenches"
+        }
+      ],
+      "results": [
+        {
+          "id": "requests",
+          "name": "Requests",
+          "icon": "media/workbench.svg",
+          "contextualTitle": "Requests"
+        },
+        {
+          "id": "response",
+          "name": "Response",
+          "icon": "media/workbench.svg",
+          "contextualTitle": "Response",
+          "type": "webview"
         }
       ]
     },
@@ -116,6 +143,13 @@
           "command": "integrationWorkbench.createRequest",
           "when": "view == workbenches && ((config.integrationWorkbench.allowRequestsInWorkbench && viewItem == workbench) || viewItem == collection)",
           "group": "inline"
+        }
+      ],
+      "editor/title": [
+        {
+          "command": "integrationWorkbench.editRequest",
+          "when": "activeWebviewPanelId == integrationWorkbench.request",
+          "group": "navigation"
         }
       ]
     },
@@ -187,6 +221,7 @@
     "eslint": "^8.52.0",
     "glob": "^10.3.10",
     "mocha": "^10.2.0",
+    "shiki": "^0.14.5",
     "typescript": "^5.2.2"
   }
 }

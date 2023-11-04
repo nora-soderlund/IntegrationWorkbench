@@ -1,0 +1,49 @@
+html, body {
+  height: 100%;
+}
+
+body {
+  display: flex;
+
+  padding: 0;
+  
+  height: 100%;
+}
+
+vscode-panels {
+  flex: 1;
+
+  padding-left: 20px;
+
+  height: 100%;
+}
+
+vscode-panel-tab {
+  font-size: .8em;
+}
+
+.response-panel {
+  padding: 0;
+
+  margin-left: -20px;
+
+  background: var(--vscode-editor-background);
+
+  height: 100%;
+}
+
+code {
+  counter-reset: step;
+  counter-increment: step 0;
+}
+
+code .line::before {
+  content: counter(step);
+  counter-increment: step;
+  width: 1rem;
+  margin-left: 1rem;
+  margin-right: 1rem;
+  display: inline-block;
+  text-align: right;
+  color: var(--vscode-editorLineNumber-foreground);
+}

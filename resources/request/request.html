@@ -1,0 +1,26 @@
+<header>
+  <div class="header-request header-http-request">
+    <vscode-dropdown>
+      <vscode-option>GET</vscode-option>
+      <vscode-option>DELETE</vscode-option>
+      <vscode-option>PATCH</vscode-option>
+      <vscode-option>PUT</vscode-option>
+      <vscode-option>POST</vscode-option>
+    </vscode-dropdown>
+
+    <vscode-text-field type="url" placeholder="Enter the URL of this request..." value="https://google.com"></vscode-text-field>
+  </div>
+
+  <vscode-button id="howdy" class="header-send">Send</vscode-button>
+</header>
+
+<vscode-panels>
+  <vscode-panel-tab id="tab-1">PARAMETERS</vscode-panel-tab>
+  <vscode-panel-tab id="tab-2">HEADERS</vscode-panel-tab>
+  <vscode-panel-tab id="tab-3">BODY</vscode-panel-tab>
+  <vscode-panel-tab id="tab-4">AUTHORIZATION</vscode-panel-tab>
+  <vscode-panel-view id="view-1">Parameters content.</vscode-panel-view>
+  <vscode-panel-view id="view-2">Headers content.</vscode-panel-view>
+  <vscode-panel-view id="view-3">Body content.</vscode-panel-view>
+  <vscode-panel-view id="view-4">Authorization content.</vscode-panel-view>
+</vscode-panels>

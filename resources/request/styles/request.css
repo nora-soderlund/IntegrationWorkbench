@@ -1,0 +1,22 @@
+header {
+  display: flex;
+  flex-direction: row;
+  gap: 1em;
+
+  margin-top: 1em;
+  margin-bottom: 1em;
+}
+
+header .header-request {
+  flex: 1;
+}
+
+header .header-http-request {
+  display: flex;
+  flex-direction: row;
+  gap: 1em;
+}
+
+header .header-http-request vscode-text-field {
+  flex: 1;
+}

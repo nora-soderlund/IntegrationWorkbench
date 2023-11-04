@@ -31,13 +31,22 @@ const watchConfig = {
   },
 };
 
-const webviewConfig = {
-  ...baseConfig,
-  target: "es2020",
-  format: "esm",
-  entryPoints: ["./src/webviews/RequestWebview.ts"],
-  outfile: "./build/webview.js",
-};
+const webviewConfigs = [
+  {
+    ...baseConfig,
+    target: "es2020",
+    format: "esm",
+    entryPoints: ["./src/webviews/request/index.ts"],
+    outfile: "./build/webviews/request.js",
+  },
+  {
+    ...baseConfig,
+    target: "es2020",
+    format: "esm",
+    entryPoints: ["./src/webviews/response/index.ts"],
+    outfile: "./build/webviews/response.js",
+  }
+];
 
 (async () => {
   const args = process.argv.slice(2);
@@ -49,10 +58,14 @@ const webviewConfig = {
         ...extensionConfig,
         ...watchConfig,
       });
-      await build({
-        ...webviewConfig,
-        ...watchConfig,
-      });
+
+      for(let webviewConfig of webviewConfigs) {
+        await build({
+          ...webviewConfig,
+          ...watchConfig,
+        });
+      }
+      
       console.log("[watch] build finished");
     } else {
       // Build extension and webview code

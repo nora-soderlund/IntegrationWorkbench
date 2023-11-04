@@ -2,22 +2,15 @@
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode';
 import WorkbenchTreeDataProvider from './trees/WorkbenchTreeDataProvider';
-import WorkbenchCollectionTreeItem from './trees/items/WorkbenchCollectionTreeItem';
-import WorkbenchTreeItem from './trees/items/WorkbenchTreeItem';
-import getWorkbenchStorageOption from './utils/GetWorkbenchStorageOption';
-import getUniqueFolderPath from './utils/GetUniqueFolderPath';
-import getCamelizedString from './utils/GetCamelizedString';
-import { Workbench } from './interfaces/workbenches/Workbench';
-import { scanForWorkbenches, workbenches } from './Workbenches';
-import { randomUUID } from 'crypto';
-import getRootPath from './utils/GetRootPath';
-import path from 'path';
-import { WorkbenchRequest } from './interfaces/workbenches/requests/WorkbenchRequest';
-import { WorkbenchCollection } from './interfaces/workbenches/collections/WorkbenchCollection';
-import { readFileSync } from 'fs';
+import { scanForWorkbenches } from './Workbenches';
+import CreateCollectionCommand from './commands/collections/CreateCollectionCommand';
+import CreateRequestCommand from './commands/requests/CreateRequestCommand';
+import OpenRequestCommand from './commands/requests/OpenRequestCommand';
+import CreateWorkbenchCommand from './commands/workbenches/CreateWorkbenchCommand';
+import OpenResponseCommand from './commands/responses/OpenResponseCommand';
 import { getWebviewUri } from './utils/GetWebviewUri';
-import getWebviewNonce from './utils/GetWebviewNonce';
-import { RequestWebviewPanel } from './panels/RequestWebviewPanel';
+import { readFileSync } from 'fs';
+import path from 'path';
 
 // This method is called when your extension is activated
 // Your extension is activated the very first time the command is executed
@@ -27,137 +20,68 @@ export function activate(context: vscode.ExtensionContext) {
 	console.log('Congratulations, your extension "integrationworkbench" is now active!');
 
 	const workbenchesTreeDataProvider = new WorkbenchTreeDataProvider(context);
+
+	vscode.window.registerWebviewViewProvider("response", {
+		resolveWebviewView: (webviewView, _context, _token) => {
+			webviewView.webview.options = {
+				enableScripts: true,
+				
+        localResourceRoots: [
+          vscode.Uri.joinPath(context.extensionUri, 'build'),
+          vscode.Uri.joinPath(context.extensionUri, 'resources')
+        ]
+			};
+
+			const webviewUri = getWebviewUri(webviewView.webview, context.extensionUri, ["build", "webviews", "response.js"]);
+			const styleUri = getWebviewUri(webviewView.webview, context.extensionUri, ["resources", "request", "styles", "response.css"]);
+			const shikiUri = getWebviewUri(webviewView.webview, context.extensionUri, ["resources", "shiki"]);
+
+			webviewView.webview.html = `
+				<!DOCTYPE html>
+				<html lang="en">
+					<head>
+						<meta charset="UTF-8"/>
+	
+						<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+						
+						<title>Hello World!</title>
+	
+						<link rel="stylesheet" href="${styleUri}"/>
+					</head>
+					<body>
+						${readFileSync(
+							path.join(__filename, "..", "..", "resources", "request", "response.html"),
+							{
+								encoding: "utf-8"
+							}
+						)}
+	
+						<script type="text/javascript">
+							window.shikiUri = "${shikiUri}";
+							window.activeColorThemeKind = "${vscode.window.activeColorTheme.kind}";
+						</script>
+	
+						<script type="module" src="${webviewUri}"></script>
+					</body>
+				</html>
+			`;
+		}
+	});
 	
 	const workbenchTreeView = vscode.window.createTreeView('workbenches', {
 		treeDataProvider: workbenchesTreeDataProvider
 	});
-
-	context.subscriptions.push(vscode.commands.registerCommand('integrationWorkbench.createWorkbench', async () => {
-		vscode.window.showInformationMessage('Create workbench');
-
-		const name = await vscode.window.showInputBox({
-			placeHolder: "Enter the name of this workbench:",
-
-			validateInput(value) {
-				if(!value.length) {
-					return "You must enter a name for this workbench!";
-				}
-
-				return null;
-			},
-		});
-
-		if(!name) {
-			return;
-		}
-
-		const storageOption = await getWorkbenchStorageOption(context, name);
-
-		if(!storageOption) {
-			return;
-		}
-
-		const uniqueWorkbenchPath = getUniqueFolderPath(storageOption.path, getCamelizedString(name));
-
-		if(!uniqueWorkbenchPath) {
-			vscode.window.showErrorMessage("There is too many workbenches with the same name in this storage option, please choose a different name.");
 	
-			return null;
-		}
+	new CreateCollectionCommand(context);
+	
+	new CreateRequestCommand(context);
+	new OpenRequestCommand(context);
 
-		const rootPath = getRootPath();
+	new OpenResponseCommand(context);
 
-		const workbench = new Workbench({
-			name,
-			storage: {
-				location: storageOption.location,
-				base: (rootPath)?(path.basename(rootPath)):(undefined)
-			},
-			collections: []
-		}, uniqueWorkbenchPath);
+	new CreateWorkbenchCommand(context);
 
-		workbench.save();
-
-		workbenches.push(workbench);
-
-		workbenchesTreeDataProvider.refresh();
-	}));
-
-	context.subscriptions.push(vscode.commands.registerCommand('integrationWorkbench.createCollection', (reference) => {
-		vscode.window.showInformationMessage('Create collection');
-
-		vscode.window.showInputBox({
-			prompt: "Enter a collection name",
-			validateInput(value) {
-				if(!value.length) {
-					return "You must enter a collection name or cancel.";
-				}
-
-				return null;
-			},
-		}).then((value) => {
-			if(!value) {
-				return;
-			}
-
-			if(reference instanceof WorkbenchTreeItem) {
-				reference.workbench.collections.push({
-					name: value,
-					requests: []
-				});
-
-				reference.workbench.save();
-
-				workbenchesTreeDataProvider.refresh();
-			}
-		});
-	}));
-
-	context.subscriptions.push(vscode.commands.registerCommand('integrationWorkbench.createRequest', (reference) => {
-		vscode.window.showInformationMessage('Create request');
-
-		vscode.window.showInputBox({
-			prompt: "Enter the request name",
-			validateInput(value) {
-				if(!value.length) {
-					return "You must enter a name or cancel.";
-				}
-
-				return null;
-			},
-		}).then((value) => {
-			if(!value) {
-				return;
-			}
-
-			if(reference instanceof WorkbenchCollectionTreeItem) {
-				reference.collection.requests.push({
-					id: randomUUID(),
-					name: value,
-					type: null
-				});
-
-				reference.workbench.save();
-
-				workbenchesTreeDataProvider.refresh();
-			}
-		});
-	}));
-
-	context.subscriptions.push(vscode.commands.registerCommand('integrationWorkbench.openRequest', (
-		workbench: Workbench,
-		request: WorkbenchRequest,
-		collection?: WorkbenchCollection
-		) => {
-		if(!request.webviewPanel) {
-			request.webviewPanel = new RequestWebviewPanel(context, workbench, request, collection);
-		}
-		else {
-			request.webviewPanel.reveal();
-		}
-	}));
-
-	context.subscriptions.push(vscode.commands.registerCommand('integrationWorkbench.refresh', () => {
+	context.subscriptions.push(vscode.commands.registerCommand('integrationWorkbench.refreshWorkbenches', () => {
 		workbenchesTreeDataProvider.refresh();
 	}));
 
