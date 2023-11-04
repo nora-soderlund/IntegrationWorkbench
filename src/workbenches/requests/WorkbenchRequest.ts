@@ -3,14 +3,18 @@ import { WorkbenchRequestData } from "../../interfaces/workbenches/requests/Work
 import { isHttpRequestData } from "../../interfaces/workbenches/requests/utils/WorkbenchRequestDataTypeValidations";
 import { RequestWebviewPanel } from "../../panels/RequestWebviewPanel";
 import HttpRequest from "./WorkbenchHttpRequest";
+import { Workbench } from "../Workbench";
+import { WorkbenchCollection } from "../collections/WorkbenchCollection";
+import WorkbenchRequestTreeItem from "../../trees/items/WorkbenchRequestTreeItem";
 
 export default class WorkbenchRequest {
   id: string;
   name: string;
 
   private requestWebviewPanel?: RequestWebviewPanel;
+  public readonly treeDataViewItems: WorkbenchRequestTreeItem[] = [];
 
-  constructor(id: string, name: string) {
+  constructor(public readonly parent: Workbench | WorkbenchCollection, id: string, name: string) {
     this.id = id;
     this.name = name;
   }
@@ -20,13 +24,15 @@ export default class WorkbenchRequest {
       id: this.id,
       name: this.name,
       type: "HTTP",
-      data: {}
+      data: {
+        method: ""
+      }
     };
   }
 
-  static fromData(data: WorkbenchRequestData) {
+  static fromData(parent: Workbench | WorkbenchCollection, data: WorkbenchRequestData) {
     if(isHttpRequestData(data)) {
-      return HttpRequest.fromData(data);
+      return HttpRequest.fromData(parent, data);
     }
 
     throw new Error("Tried to parse invalid request type.");
@@ -45,5 +51,9 @@ export default class WorkbenchRequest {
     }
 		
     commands.executeCommand("integrationWorkbench.openResponse", this);
+  }
+
+  disposeWebviewPanel() {
+    delete this.requestWebviewPanel;
   }
 };

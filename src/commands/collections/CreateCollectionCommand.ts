@@ -1,6 +1,7 @@
 import { ExtensionContext, commands, window } from "vscode";
 import WorkbenchTreeItem from "../../trees/items/WorkbenchTreeItem";
 import { WorkbenchCollection } from "../../workbenches/collections/WorkbenchCollection";
+import { randomUUID } from "crypto";
 
 export default class CreateCollectionCommand {
   constructor(private readonly context: ExtensionContext) {
@@ -28,7 +29,7 @@ export default class CreateCollectionCommand {
 
       if(reference instanceof WorkbenchTreeItem) {
         reference.workbench.collections.push(
-          new WorkbenchCollection(value, [])
+          new WorkbenchCollection(reference.workbench, randomUUID(), value, [])
         );
 
         reference.workbench.save();

@@ -1,6 +1,6 @@
 <header>
   <div class="header-request header-http-request">
-    <vscode-dropdown>
+    <vscode-dropdown id="http-request-method-dropdown">
       <vscode-option>GET</vscode-option>
       <vscode-option>DELETE</vscode-option>
       <vscode-option>PATCH</vscode-option>
@@ -8,7 +8,7 @@
       <vscode-option>POST</vscode-option>
     </vscode-dropdown>
 
-    <vscode-text-field type="url" placeholder="Enter the URL of this request..." value="https://google.com"></vscode-text-field>
+    <vscode-text-field id="http-request-url-input" type="url" placeholder="Enter the URL of this request..."></vscode-text-field>
   </div>
 
   <vscode-button id="howdy" class="header-send">Send</vscode-button>

@@ -6,15 +6,17 @@ import { WorkbenchData } from "../interfaces/workbenches/WorkbenchData";
 import { WorkbenchCollection } from "./collections/WorkbenchCollection";
 
 export class Workbench {
+    id: string;
     name: string;
     storage: WorkbenchStorage;
     collections: WorkbenchCollection[];
 
     constructor(data: WorkbenchData, private readonly path: string) {
+        this.id = data.id;
         this.name = data.name;
         this.storage = data.storage;
 
-        this.collections = data.collections.map((collection) => new WorkbenchCollection(collection.name, collection.requests));
+        this.collections = data.collections.map((collection) => new WorkbenchCollection(this, collection.id, collection.name, collection.requests));
     };
 
     getMetadataPath() {
@@ -23,6 +25,7 @@ export class Workbench {
 
     getData(): WorkbenchData {
         return {
+            id: this.id,
             name: this.name,
             storage: this.storage,
             collections: this.collections.map((collection) => collection.getData())

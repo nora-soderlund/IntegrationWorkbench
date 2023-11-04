@@ -5,6 +5,7 @@ import getWebviewNonce from "../utils/GetWebviewNonce";
 import { readFileSync } from "fs";
 import path from "path";
 import WorkbenchRequest from "../workbenches/requests/WorkbenchRequest";
+import WorkbenchHttpRequest from "../workbenches/requests/WorkbenchHttpRequest";
 
 export class RequestWebviewPanel {
   private readonly webviewPanel: WebviewPanel;
@@ -27,20 +28,6 @@ export class RequestWebviewPanel {
         ]
       }
     );
-
-    const outputChannel = window.createOutputChannel(`${request.name}`, "json");
-
-    outputChannel.replace(
-      JSON.stringify(
-        {
-          message: "Hello world"
-        },
-        undefined,
-        2
-      )
-    );
-
-    outputChannel.show();
 
     this.webviewPanel.onDidDispose(() => this.dispose(), null, this.disposables);
 
@@ -70,6 +57,7 @@ export class RequestWebviewPanel {
 
           <script type="text/javascript">
             window.shikiUri = "${shikiUri}";
+            window.workbenchRequest = JSON.parse(\`${JSON.stringify(request.getData())}\`);
           </script>
 
           <script type="module" src="${webviewUri}"></script>
@@ -81,10 +69,16 @@ export class RequestWebviewPanel {
     this.webviewPanel.webview.onDidReceiveMessage(
       (message: any) => {
         const command = message.command;
-        const text = message.text;
+
+        console.debug("Received event from request webview:", command);
 
         switch (command) {
-          case "sendRequest": {
+          case "integrationEvent.changeHttpRequestMethod": {
+            const [ method ] = message.arguments;
+
+            if(this.request instanceof WorkbenchHttpRequest) {
+              this.request.setMethod(method);
+            }
 
             return;
           }
@@ -110,5 +104,7 @@ export class RequestWebviewPanel {
         disposable.dispose();
       }
     }
+
+    this.request.disposeWebviewPanel();
   }
 }

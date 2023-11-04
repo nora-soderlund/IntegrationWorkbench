@@ -17,13 +17,13 @@ export default class WorkbenchRequestTreeItem extends TreeItem implements Workbe
 
     this.tooltip = `${request.name} request`;
 
-    this.iconPath = this.getIconPath();
-
     this.command = {
       title: "Open request",
       command: "integrationWorkbench.openRequest",
       arguments: [workbench, request, collection]
     };
+
+    this.setIconPath();
   }
 
   getIconPath() {
@@ -41,5 +41,9 @@ export default class WorkbenchRequestTreeItem extends TreeItem implements Workbe
     }
 
     return new ThemeIcon("search-show-context");
+  }
+
+  setIconPath() {
+    this.iconPath = this.getIconPath();
   }
 }

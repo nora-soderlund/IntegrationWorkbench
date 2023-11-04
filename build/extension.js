@@ -37,7 +37,7 @@ module.exports = __toCommonJS(extension_exports);
 var vscode = __toESM(require("vscode"));
 
 // src/trees/WorkbenchTreeDataProvider.ts
-var import_vscode10 = require("vscode");
+var import_vscode11 = require("vscode");
 
 // src/trees/items/WorkbenchTreeItem.ts
 var import_vscode = require("vscode");
@@ -52,9 +52,12 @@ var WorkbenchTreeItem = class extends import_vscode.TreeItem {
 };
 
 // src/trees/items/WorkbenchRequestTreeItem.ts
-var import_vscode5 = require("vscode");
+var import_vscode6 = require("vscode");
 var import_path2 = __toESM(require("path"));
 var import_fs2 = require("fs");
+
+// src/workbenches/requests/WorkbenchHttpRequest.ts
+var import_vscode5 = require("vscode");
 
 // src/workbenches/requests/WorkbenchRequest.ts
 var import_vscode4 = require("vscode");
@@ -92,17 +95,6 @@ var RequestWebviewPanel = class {
         ]
       }
     );
-    const outputChannel = import_vscode3.window.createOutputChannel(`${request.name}`, "json");
-    outputChannel.replace(
-      JSON.stringify(
-        {
-          message: "Hello world"
-        },
-        void 0,
-        2
-      )
-    );
-    outputChannel.show();
     this.webviewPanel.onDidDispose(() => this.dispose(), null, this.disposables);
     const webviewUri = getWebviewUri(this.webviewPanel.webview, context.extensionUri, ["build", "webviews", "request.js"]);
     const styleUri = getWebviewUri(this.webviewPanel.webview, context.extensionUri, ["resources", "request", "styles", "request.css"]);
@@ -129,6 +121,7 @@ var RequestWebviewPanel = class {
 
           <script type="text/javascript">
             window.shikiUri = "${shikiUri}";
+            window.workbenchRequest = JSON.parse(\`${JSON.stringify(request.getData())}\`);
           </script>
 
           <script type="module" src="${webviewUri}"></script>
@@ -138,9 +131,13 @@ var RequestWebviewPanel = class {
     this.webviewPanel.webview.onDidReceiveMessage(
       (message) => {
         const command = message.command;
-        const text = message.text;
+        console.debug("Received event from request webview:", command);
         switch (command) {
-          case "sendRequest": {
+          case "integrationEvent.changeHttpRequestMethod": {
+            const [method] = message.arguments;
+            if (this.request instanceof WorkbenchHttpRequest) {
+              this.request.setMethod(method);
+            }
             return;
           }
         }
@@ -163,29 +160,34 @@ var RequestWebviewPanel = class {
         disposable.dispose();
       }
     }
+    this.request.disposeWebviewPanel();
   }
 };
 
 // src/workbenches/requests/WorkbenchRequest.ts
 var WorkbenchRequest = class {
-  id;
-  name;
-  requestWebviewPanel;
-  constructor(id, name) {
+  constructor(parent, id, name) {
+    this.parent = parent;
     this.id = id;
     this.name = name;
   }
+  id;
+  name;
+  requestWebviewPanel;
+  treeDataViewItems = [];
   getData() {
     return {
       id: this.id,
       name: this.name,
       type: "HTTP",
-      data: {}
+      data: {
+        method: ""
+      }
     };
   }
-  static fromData(data) {
+  static fromData(parent, data) {
     if (isHttpRequestData(data)) {
-      return WorkbenchHttpRequest.fromData(data);
+      return WorkbenchHttpRequest.fromData(parent, data);
     }
     throw new Error("Tried to parse invalid request type.");
   }
@@ -200,12 +202,15 @@ var WorkbenchRequest = class {
     }
     import_vscode4.commands.executeCommand("integrationWorkbench.openResponse", this);
   }
+  disposeWebviewPanel() {
+    delete this.requestWebviewPanel;
+  }
 };
 
 // src/workbenches/requests/WorkbenchHttpRequest.ts
 var WorkbenchHttpRequest = class extends WorkbenchRequest {
-  constructor(id, name, data) {
-    super(id, name);
+  constructor(parent, id, name, data) {
+    super(parent, id, name);
     this.data = data;
   }
   getData() {
@@ -216,27 +221,33 @@ var WorkbenchHttpRequest = class extends WorkbenchRequest {
       data: this.data
     };
   }
-  static fromData(data) {
-    return new WorkbenchHttpRequest(data.id, data.name, data.data);
+  static fromData(parent, data) {
+    return new WorkbenchHttpRequest(parent, data.id, data.name, data.data);
   }
   send() {
+  }
+  setMethod(method) {
+    this.data.method = method;
+    this.treeDataViewItems.forEach((treeDataViewItem) => treeDataViewItem.setIconPath());
+    import_vscode5.commands.executeCommand("integrationWorkbench.refreshWorkbenches");
+    this.parent.save();
   }
 };
 
 // src/trees/items/WorkbenchRequestTreeItem.ts
-var WorkbenchRequestTreeItem = class extends import_vscode5.TreeItem {
+var WorkbenchRequestTreeItem = class extends import_vscode6.TreeItem {
   constructor(workbench, request, collection) {
-    super(request.name, import_vscode5.TreeItemCollapsibleState.None);
+    super(request.name, import_vscode6.TreeItemCollapsibleState.None);
     this.workbench = workbench;
     this.request = request;
     this.collection = collection;
     this.tooltip = `${request.name} request`;
-    this.iconPath = this.getIconPath();
     this.command = {
       title: "Open request",
       command: "integrationWorkbench.openRequest",
       arguments: [workbench, request, collection]
     };
+    this.setIconPath();
   }
   getIconPath() {
     if (this.request instanceof WorkbenchHttpRequest) {
@@ -250,44 +261,55 @@ var WorkbenchRequestTreeItem = class extends import_vscode5.TreeItem {
         }
       }
     }
-    return new import_vscode5.ThemeIcon("search-show-context");
+    return new import_vscode6.ThemeIcon("search-show-context");
+  }
+  setIconPath() {
+    this.iconPath = this.getIconPath();
   }
 };
 
 // src/trees/items/WorkbenchCollectionTreeItem.ts
-var import_vscode6 = require("vscode");
-var WorkbenchCollectionTreeItem = class extends import_vscode6.TreeItem {
+var import_vscode7 = require("vscode");
+var WorkbenchCollectionTreeItem = class extends import_vscode7.TreeItem {
   constructor(workbench, collection) {
-    super(collection.name, import_vscode6.TreeItemCollapsibleState.Expanded);
+    super(collection.name, import_vscode7.TreeItemCollapsibleState.Expanded);
     this.workbench = workbench;
     this.collection = collection;
     this.tooltip = `${collection.name} collection`;
     this.contextValue = "collection";
   }
-  iconPath = new import_vscode6.ThemeIcon("folder");
+  iconPath = new import_vscode7.ThemeIcon("folder");
 };
 
 // src/Workbenches.ts
-var import_vscode9 = require("vscode");
+var import_vscode10 = require("vscode");
 
 // src/workbenches/Workbench.ts
 var import_fs3 = require("fs");
-var import_vscode7 = require("vscode");
+var import_vscode8 = require("vscode");
 var import_path3 = __toESM(require("path"));
 
 // src/workbenches/collections/WorkbenchCollection.ts
 var WorkbenchCollection = class {
+  parent;
+  id;
   name;
   requests;
-  constructor(name, requests) {
+  constructor(parent, id, name, requests) {
+    this.parent = parent;
+    this.id = id;
     this.name = name;
-    this.requests = requests.map((request) => WorkbenchRequest.fromData(request));
+    this.requests = requests.map((request) => WorkbenchRequest.fromData(this, request));
   }
   getData() {
     return {
+      id: this.id,
       name: this.name,
       requests: this.requests.map((request) => request.getData())
     };
+  }
+  save() {
+    this.parent.save();
   }
 };
 
@@ -295,10 +317,12 @@ var WorkbenchCollection = class {
 var Workbench = class {
   constructor(data, path9) {
     this.path = path9;
+    this.id = data.id;
     this.name = data.name;
     this.storage = data.storage;
-    this.collections = data.collections.map((collection) => new WorkbenchCollection(collection.name, collection.requests));
+    this.collections = data.collections.map((collection) => new WorkbenchCollection(this, collection.id, collection.name, collection.requests));
   }
+  id;
   name;
   storage;
   collections;
@@ -307,6 +331,7 @@ var Workbench = class {
   }
   getData() {
     return {
+      id: this.id,
       name: this.name,
       storage: this.storage,
       collections: this.collections.map((collection) => collection.getData())
@@ -320,12 +345,12 @@ var Workbench = class {
         });
       }
     } catch (error) {
-      import_vscode7.window.showErrorMessage("VS Code may not have permissions to create files in the current workspace folder:\n\n" + error);
+      import_vscode8.window.showErrorMessage("VS Code may not have permissions to create files in the current workspace folder:\n\n" + error);
     }
     try {
       (0, import_fs3.writeFileSync)(this.getMetadataPath(), JSON.stringify(this.getData(), void 0, 2));
     } catch (error) {
-      import_vscode7.window.showErrorMessage(`Failed to save workbench '${this.name}':
+      import_vscode8.window.showErrorMessage(`Failed to save workbench '${this.name}':
 
 ` + error);
     }
@@ -337,10 +362,10 @@ var import_fs4 = require("fs");
 var import_path4 = __toESM(require("path"));
 
 // src/utils/GetRootPath.ts
-var import_vscode8 = require("vscode");
+var import_vscode9 = require("vscode");
 function getRootPath() {
-  if (import_vscode8.workspace.workspaceFolders?.length) {
-    return import_vscode8.workspace.workspaceFolders[0].uri.fsPath;
+  if (import_vscode9.workspace.workspaceFolders?.length) {
+    return import_vscode9.workspace.workspaceFolders[0].uri.fsPath;
   }
   return void 0;
 }
@@ -376,7 +401,7 @@ function scanForWorkbenches(context, refresh = true) {
     return new Workbench(input, folder);
   }));
   if (refresh) {
-    import_vscode9.commands.executeCommand(`integrationWorkbench.refreshWorkbenches`);
+    import_vscode10.commands.executeCommand(`integrationWorkbench.refreshWorkbenches`);
   }
   return workbenches;
 }
@@ -399,7 +424,11 @@ var WorkbenchTreeDataProvider = class {
     } else {
       if (element instanceof WorkbenchCollectionTreeItem) {
         return Promise.resolve(
-          element.collection.requests.map((request) => new WorkbenchRequestTreeItem(element.workbench, request, element.collection))
+          element.collection.requests.map((request) => {
+            const requestTreeItem = new WorkbenchRequestTreeItem(element.workbench, request, element.collection);
+            request.treeDataViewItems.push(requestTreeItem);
+            return requestTreeItem;
+          })
         );
       } else if (element instanceof WorkbenchTreeItem) {
         return Promise.resolve(
@@ -409,7 +438,7 @@ var WorkbenchTreeDataProvider = class {
     }
     return Promise.resolve([]);
   }
-  _onDidChangeTreeData = new import_vscode10.EventEmitter();
+  _onDidChangeTreeData = new import_vscode11.EventEmitter();
   onDidChangeTreeData = this._onDidChangeTreeData.event;
   refresh() {
     this._onDidChangeTreeData.fire();
@@ -417,17 +446,18 @@ var WorkbenchTreeDataProvider = class {
 };
 
 // src/commands/collections/CreateCollectionCommand.ts
-var import_vscode11 = require("vscode");
+var import_vscode12 = require("vscode");
+var import_crypto = require("crypto");
 var CreateCollectionCommand = class {
   constructor(context) {
     this.context = context;
     context.subscriptions.push(
-      import_vscode11.commands.registerCommand("integrationWorkbench.createCollection", this.handle.bind(this))
+      import_vscode12.commands.registerCommand("integrationWorkbench.createCollection", this.handle.bind(this))
     );
   }
   async handle(reference) {
-    import_vscode11.window.showInformationMessage("Create collection");
-    import_vscode11.window.showInputBox({
+    import_vscode12.window.showInformationMessage("Create collection");
+    import_vscode12.window.showInputBox({
       prompt: "Enter a collection name",
       validateInput(value) {
         if (!value.length) {
@@ -441,28 +471,28 @@ var CreateCollectionCommand = class {
       }
       if (reference instanceof WorkbenchTreeItem) {
         reference.workbench.collections.push(
-          new WorkbenchCollection(value, [])
+          new WorkbenchCollection(reference.workbench, (0, import_crypto.randomUUID)(), value, [])
         );
         reference.workbench.save();
-        import_vscode11.commands.executeCommand("integrationWorkbench.refreshWorkbenches");
+        import_vscode12.commands.executeCommand("integrationWorkbench.refreshWorkbenches");
       }
     });
   }
 };
 
 // src/commands/requests/CreateRequestCommand.ts
-var import_vscode12 = require("vscode");
-var import_crypto = require("crypto");
+var import_vscode13 = require("vscode");
+var import_crypto2 = require("crypto");
 var CreateRequestCommand = class {
   constructor(context) {
     this.context = context;
     context.subscriptions.push(
-      import_vscode12.commands.registerCommand("integrationWorkbench.createRequest", this.handle.bind(this))
+      import_vscode13.commands.registerCommand("integrationWorkbench.createRequest", this.handle.bind(this))
     );
   }
   async handle(reference) {
-    import_vscode12.window.showInformationMessage("Create request");
-    import_vscode12.window.showInputBox({
+    import_vscode13.window.showInformationMessage("Create request");
+    import_vscode13.window.showInputBox({
       prompt: "Enter the request name",
       validateInput(value) {
         if (!value.length) {
@@ -476,25 +506,25 @@ var CreateRequestCommand = class {
       }
       if (reference instanceof WorkbenchCollectionTreeItem) {
         reference.collection.requests.push(
-          new WorkbenchHttpRequest((0, import_crypto.randomUUID)(), value, {
+          new WorkbenchHttpRequest(reference.collection, (0, import_crypto2.randomUUID)(), value, {
             method: "GET",
             url: "https://httpbin.org/get"
           })
         );
         reference.workbench.save();
-        import_vscode12.commands.executeCommand("integrationWorkbench.refreshWorkbenches");
+        import_vscode13.commands.executeCommand("integrationWorkbench.refreshWorkbenches");
       }
     });
   }
 };
 
 // src/commands/requests/OpenRequestCommand.ts
-var import_vscode13 = require("vscode");
+var import_vscode14 = require("vscode");
 var OpenRequestCommand = class {
   constructor(context) {
     this.context = context;
     context.subscriptions.push(
-      import_vscode13.commands.registerCommand("integrationWorkbench.openRequest", this.handle.bind(this))
+      import_vscode14.commands.registerCommand("integrationWorkbench.openRequest", this.handle.bind(this))
     );
   }
   async handle(workbench, request, collection) {
@@ -503,21 +533,21 @@ var OpenRequestCommand = class {
 };
 
 // src/commands/workbenches/CreateWorkbenchCommand.ts
-var import_vscode15 = require("vscode");
+var import_vscode16 = require("vscode");
 
 // src/utils/GetWorkbenchStorageOption.ts
-var import_vscode14 = require("vscode");
+var import_vscode15 = require("vscode");
 var import_fs5 = require("fs");
 var import_path5 = __toESM(require("path"));
 async function getWorkbenchStorageOption(context, name) {
-  let workbenchStorage = import_vscode14.workspace.getConfiguration("integrationWorkbench").get("defaultWorkbenchStorage");
+  let workbenchStorage = import_vscode15.workspace.getConfiguration("integrationWorkbench").get("defaultWorkbenchStorage");
   let workbenchStoragePath;
   if (!workbenchStorage || workbenchStorage === "prompt") {
     const options = [
       "Repository workbench (stored in the repository filesystem)",
       "User workbench (stored in the VS Code user storage)"
     ];
-    const result = await import_vscode14.window.showQuickPick(options, {
+    const result = await import_vscode15.window.showQuickPick(options, {
       canPickMany: false,
       placeHolder: "Select where the workbench files should be saved:"
     });
@@ -540,8 +570,8 @@ async function getWorkbenchStorageOption(context, name) {
   if (workbenchStorage === "repository") {
     const rootPath = getRootPath();
     if (!rootPath) {
-      const result = await import_vscode14.window.showSaveDialog({
-        defaultUri: import_vscode14.Uri.file(`/.workbench/${name.toLocaleLowerCase()}/`),
+      const result = await import_vscode15.window.showSaveDialog({
+        defaultUri: import_vscode15.Uri.file(`/.workbench/${name.toLocaleLowerCase()}/`),
         saveLabel: "Select"
       });
       if (!result) {
@@ -549,7 +579,7 @@ async function getWorkbenchStorageOption(context, name) {
       }
       workbenchStoragePath = result;
     } else {
-      workbenchStoragePath = import_vscode14.Uri.file(rootPath);
+      workbenchStoragePath = import_vscode15.Uri.file(rootPath);
     }
   } else if (workbenchStorage === "user") {
     workbenchStoragePath = context.globalStorageUri;
@@ -564,7 +594,7 @@ async function getWorkbenchStorageOption(context, name) {
       });
     }
   } catch (error) {
-    import_vscode14.window.showErrorMessage("VS Code may not have permissions to create files in the current workspace folder:\n\n" + error);
+    import_vscode15.window.showErrorMessage("VS Code may not have permissions to create files in the current workspace folder:\n\n" + error);
     return null;
   }
   return {
@@ -606,12 +636,12 @@ var CreateWorkbenchCommand = class {
   constructor(context) {
     this.context = context;
     context.subscriptions.push(
-      import_vscode15.commands.registerCommand("integrationWorkbench.createWorkbench", this.handle.bind(this))
+      import_vscode16.commands.registerCommand("integrationWorkbench.createWorkbench", this.handle.bind(this))
     );
   }
   async handle() {
-    import_vscode15.window.showInformationMessage("Create workbench");
-    const name = await import_vscode15.window.showInputBox({
+    import_vscode16.window.showInformationMessage("Create workbench");
+    const name = await import_vscode16.window.showInputBox({
       placeHolder: "Enter the name of this workbench:",
       validateInput(value) {
         if (!value.length) {
@@ -629,7 +659,7 @@ var CreateWorkbenchCommand = class {
     }
     const uniqueWorkbenchPath = getUniqueFolderPath(storageOption.path, getCamelizedString(name));
     if (!uniqueWorkbenchPath) {
-      import_vscode15.window.showErrorMessage("There is too many workbenches with the same name in this storage option, please choose a different name.");
+      import_vscode16.window.showErrorMessage("There is too many workbenches with the same name in this storage option, please choose a different name.");
       return null;
     }
     const rootPath = getRootPath();
@@ -643,17 +673,17 @@ var CreateWorkbenchCommand = class {
     }, uniqueWorkbenchPath);
     workbench.save();
     workbenches.push(workbench);
-    import_vscode15.commands.executeCommand("integrationWorkbench.refreshWorkbenches");
+    import_vscode16.commands.executeCommand("integrationWorkbench.refreshWorkbenches");
   }
 };
 
 // src/commands/responses/OpenResponseCommand.ts
-var import_vscode16 = require("vscode");
+var import_vscode17 = require("vscode");
 var OpenResponseCommand = class {
   constructor(context) {
     this.context = context;
     context.subscriptions.push(
-      import_vscode16.commands.registerCommand("integrationWorkbench.openResponse", this.handle.bind(this))
+      import_vscode17.commands.registerCommand("integrationWorkbench.openResponse", this.handle.bind(this))
     );
   }
   async handle(request) {

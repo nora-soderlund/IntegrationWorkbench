@@ -20035,22 +20035,31 @@ var init_dist3 = __esm({
   }
 });
 
+// src/interfaces/workbenches/requests/utils/WorkbenchRequestDataTypeValidations.ts
+function isHttpRequestData(requestData) {
+  return requestData.type === "HTTP";
+}
+
 // src/webviews/request/index.ts
 var { provideVSCodeDesignSystem: provideVSCodeDesignSystem2, vsCodeButton: vsCodeButton2, vsCodeTextField: vsCodeTextField2, vsCodeDropdown: vsCodeDropdown2, vsCodeOption: vsCodeOption2, vsCodePanels: vsCodePanels2, vsCodePanelTab: vsCodePanelTab2, vsCodePanelView: vsCodePanelView2 } = (init_dist3(), __toCommonJS(dist_exports));
 provideVSCodeDesignSystem2().register(vsCodeButton2(), vsCodeTextField2(), vsCodeDropdown2(), vsCodeOption2(), vsCodePanels2(), vsCodePanelTab2(), vsCodePanelView2());
 var vscode = acquireVsCodeApi();
 window.addEventListener("load", main);
 function main() {
-  const howdyButton = document.getElementById("howdy");
-  howdyButton?.addEventListener("click", handleHowdyClick);
-}
-function handleHowdyClick() {
-  vscode.postMessage({
-    command: "hello",
-    arguments: [
-      {}
-    ]
-  });
+  if (isHttpRequestData(window.workbenchRequest)) {
+    const httpRequestUrlInput = document.getElementById("http-request-url-input");
+    httpRequestUrlInput.value = window.workbenchRequest.data.url ?? "";
+    const httpRequestMethodDropdown = document.getElementById("http-request-method-dropdown");
+    httpRequestMethodDropdown.value = window.workbenchRequest.data.method;
+    httpRequestMethodDropdown.addEventListener("change", () => {
+      vscode.postMessage({
+        command: "integrationEvent.changeHttpRequestMethod",
+        arguments: [
+          httpRequestMethodDropdown.value
+        ]
+      });
+    });
+  }
 }
 /*! Bundled license information:
 

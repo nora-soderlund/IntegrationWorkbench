@@ -26,9 +26,13 @@ export default class WorkbenchTreeDataProvider implements TreeDataProvider<Workb
     else {
       if (element instanceof WorkbenchCollectionTreeItem) {
         return Promise.resolve(
-          element.collection.requests.map((request) => (
-            new WorkbenchRequestTreeItem(element.workbench, request, element.collection)
-          ))
+          element.collection.requests.map((request) => {
+            const requestTreeItem = new WorkbenchRequestTreeItem(element.workbench, request, element.collection);
+
+            request.treeDataViewItems.push(requestTreeItem);
+          
+            return requestTreeItem;
+          })
         );
       }
       else if (element instanceof WorkbenchTreeItem) {

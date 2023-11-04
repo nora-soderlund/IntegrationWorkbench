@@ -4,7 +4,7 @@ export type WorkbenchHttpRequestData = {
   type: "HTTP";
   
   data: {
-    method?: string;
+    method: string;
     url?: string;
   };
 };

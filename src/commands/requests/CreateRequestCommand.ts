@@ -30,7 +30,7 @@ export default class CreateRequestCommand {
 
       if(reference instanceof WorkbenchCollectionTreeItem) {
         reference.collection.requests.push(
-          new WorkbenchHttpRequest(randomUUID(), value, {
+          new WorkbenchHttpRequest(reference.collection, randomUUID(), value, {
             method: "GET",
             url: "https://httpbin.org/get"
           })
