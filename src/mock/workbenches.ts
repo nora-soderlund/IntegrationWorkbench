@@ -1,5 +1,5 @@
-import { Workbench } from "../interfaces/workbenches/Workbench";
-import { WorkbenchInput } from "../interfaces/workbenches/WorkbenchInput";
+import { Workbench } from "../workbenches/Workbench";
+import { WorkbenchInput } from "../interfaces/workbenches/WorkbenchData";
 
 export const workbenches: WorkbenchInput[] = [
     {

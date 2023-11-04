@@ -1,8 +1,7 @@
-import { Command, ExtensionContext, commands } from "vscode";
-import { Workbench } from "../../interfaces/workbenches/Workbench";
-import { WorkbenchRequest } from "../../interfaces/workbenches/requests/WorkbenchRequest";
-import { WorkbenchCollection } from "../../interfaces/workbenches/collections/WorkbenchCollection";
-import { RequestWebviewPanel } from "../../panels/RequestWebviewPanel";
+import { ExtensionContext, commands } from "vscode";
+import { Workbench } from "../../workbenches/Workbench";
+import WorkbenchRequest from "../../workbenches/requests/WorkbenchRequest";
+import { WorkbenchCollection } from "../../workbenches/collections/WorkbenchCollection";
 
 export default class OpenResponseCommand {
   constructor(private readonly context: ExtensionContext) {
@@ -12,9 +11,7 @@ export default class OpenResponseCommand {
   }
   
   async handle(
-    workbench: Workbench,
-    request: WorkbenchRequest,
-    collection?: WorkbenchCollection
+    request: WorkbenchRequest
   ) {
     
   };

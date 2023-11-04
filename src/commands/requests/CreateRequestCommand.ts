@@ -1,6 +1,8 @@
 import { ExtensionContext, commands, window } from "vscode";
 import WorkbenchCollectionTreeItem from "../../trees/items/WorkbenchCollectionTreeItem";
 import { randomUUID } from "crypto";
+import WorkbenchRequest from "../../workbenches/requests/WorkbenchRequest";
+import WorkbenchHttpRequest from "../../workbenches/requests/WorkbenchHttpRequest";
 
 export default class CreateRequestCommand {
   constructor(private readonly context: ExtensionContext) {
@@ -27,11 +29,12 @@ export default class CreateRequestCommand {
       }
 
       if(reference instanceof WorkbenchCollectionTreeItem) {
-        reference.collection.requests.push({
-          id: randomUUID(),
-          name: value,
-          type: null
-        });
+        reference.collection.requests.push(
+          new WorkbenchHttpRequest(randomUUID(), value, {
+            method: "GET",
+            url: "https://httpbin.org/get"
+          })
+        );
 
         reference.workbench.save();
 

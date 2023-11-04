@@ -1,6 +1,5 @@
-import { TabInputWebview, ThemeIcon, TreeItem, TreeItemCollapsibleState } from "vscode";
-import { Workbench } from "../../interfaces/workbenches/Workbench";
-import path from "path";
+import { TreeItem, TreeItemCollapsibleState } from "vscode";
+import { Workbench } from "../../workbenches/Workbench";
 
 export default class WorkbenchTreeItem extends TreeItem {
     constructor(

@@ -1,42 +1,45 @@
 import { ThemeIcon, TreeItem, TreeItemCollapsibleState } from "vscode";
 import WorkbenchTreeItem from "./WorkbenchTreeItem";
-import { Workbench } from "../../interfaces/workbenches/Workbench";
-import { WorkbenchRequest } from "../../interfaces/workbenches/requests/WorkbenchRequest";
-import { WorkbenchCollection } from "../../interfaces/workbenches/collections/WorkbenchCollection";
+import { Workbench } from "../../workbenches/Workbench";
 import path from "path";
 import { existsSync } from "fs";
+import WorkbenchRequest from "../../workbenches/requests/WorkbenchRequest";
+import { WorkbenchCollection } from "../../workbenches/collections/WorkbenchCollection";
+import WorkbenchHttpRequest from "../../workbenches/requests/WorkbenchHttpRequest";
 
 export default class WorkbenchRequestTreeItem extends TreeItem implements WorkbenchTreeItem {
-    constructor(
-        public readonly workbench: Workbench,
-        public readonly request: WorkbenchRequest,
-        public readonly collection?: WorkbenchCollection
-    ) {
-        super(request.name, TreeItemCollapsibleState.None);
-        
-        this.tooltip = `${request.name} request`;
-     
-        this.iconPath = this.getIconPath();
+  constructor(
+    public readonly workbench: Workbench,
+    public readonly request: WorkbenchRequest,
+    public readonly collection?: WorkbenchCollection
+  ) {
+    super(request.name, TreeItemCollapsibleState.None);
 
-        this.command = {
-            title: "Open request",
-            command: "integrationWorkbench.openRequest",
-            arguments: [ workbench, request, collection ]
-        };
-    }
+    this.tooltip = `${request.name} request`;
 
-    getIconPath() {
-        if(this.request.type === "HTTP") {
-            const iconPath = path.join(__filename, '..', '..', '..', '..', 'resources', 'icons', 'methods', `${this.request.details.method}.png`);
+    this.iconPath = this.getIconPath();
 
-            if(existsSync(iconPath)) {
-                return {
-                    light: iconPath,
-                    dark: iconPath
-                };
-            }
+    this.command = {
+      title: "Open request",
+      command: "integrationWorkbench.openRequest",
+      arguments: [workbench, request, collection]
+    };
+  }
+
+  getIconPath() {
+    if (this.request instanceof WorkbenchHttpRequest) {
+      if (this.request.data.method) {
+        const iconPath = path.join(__filename, '..', '..', 'resources', 'icons', 'methods', `${this.request.data.method}.png`);
+
+        if (existsSync(iconPath)) {
+          return {
+            light: iconPath,
+            dark: iconPath
+          };
         }
-
-        return new ThemeIcon("search-show-context");
+      }
     }
+
+    return new ThemeIcon("search-show-context");
+  }
 }

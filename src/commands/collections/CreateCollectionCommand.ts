@@ -1,5 +1,6 @@
 import { ExtensionContext, commands, window } from "vscode";
 import WorkbenchTreeItem from "../../trees/items/WorkbenchTreeItem";
+import { WorkbenchCollection } from "../../workbenches/collections/WorkbenchCollection";
 
 export default class CreateCollectionCommand {
   constructor(private readonly context: ExtensionContext) {
@@ -26,10 +27,9 @@ export default class CreateCollectionCommand {
       }
 
       if(reference instanceof WorkbenchTreeItem) {
-        reference.workbench.collections.push({
-          name: value,
-          requests: []
-        });
+        reference.workbench.collections.push(
+          new WorkbenchCollection(value, [])
+        );
 
         reference.workbench.save();
 

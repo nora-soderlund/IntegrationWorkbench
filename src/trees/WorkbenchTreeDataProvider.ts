@@ -1,9 +1,8 @@
-import { window, TreeDataProvider, TreeItem, Event, EventEmitter, ExtensionContext } from 'vscode';
+import { TreeDataProvider, TreeItem, Event, EventEmitter, ExtensionContext } from 'vscode';
 import WorkbenchTreeItem from './items/WorkbenchTreeItem';
 import WorkbenchRequestTreeItem from './items/WorkbenchRequestTreeItem';
 import WorkbenchCollectionTreeItem from './items/WorkbenchCollectionTreeItem';
-import { Workbench } from '../interfaces/workbenches/Workbench';
-import { scanForWorkbenches, workbenches } from '../Workbenches';
+import { scanForWorkbenches } from '../Workbenches';
 
 export default class WorkbenchTreeDataProvider implements TreeDataProvider<WorkbenchTreeItem> {
   constructor(

@@ -3,7 +3,7 @@ import getWorkbenchStorageOption from "../../utils/GetWorkbenchStorageOption";
 import getUniqueFolderPath from "../../utils/GetUniqueFolderPath";
 import getCamelizedString from "../../utils/GetCamelizedString";
 import getRootPath from "../../utils/GetRootPath";
-import { Workbench } from "../../interfaces/workbenches/Workbench";
+import { Workbench } from "../../workbenches/Workbench";
 import path from "path";
 import { workbenches } from "../../Workbenches";
 

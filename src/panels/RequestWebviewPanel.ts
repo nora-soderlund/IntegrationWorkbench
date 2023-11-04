@@ -1,11 +1,10 @@
 import { Disposable, ExtensionContext, Uri, ViewColumn, WebviewPanel, TextDocument, window, workspace } from "vscode";
-import { Workbench } from "../interfaces/workbenches/Workbench";
-import { WorkbenchRequest } from "../interfaces/workbenches/requests/WorkbenchRequest";
-import { WorkbenchCollection } from "../interfaces/workbenches/collections/WorkbenchCollection";
+import { Workbench } from "../workbenches/Workbench";
 import { getWebviewUri } from "../utils/GetWebviewUri";
 import getWebviewNonce from "../utils/GetWebviewNonce";
 import { readFileSync } from "fs";
 import path from "path";
+import WorkbenchRequest from "../workbenches/requests/WorkbenchRequest";
 
 export class RequestWebviewPanel {
   private readonly webviewPanel: WebviewPanel;
@@ -13,9 +12,7 @@ export class RequestWebviewPanel {
 
   constructor(
     private readonly context: ExtensionContext,
-    private readonly workbench: Workbench,
-		private readonly request: WorkbenchRequest,
-		private readonly collection?: WorkbenchCollection
+		private readonly request: WorkbenchRequest
   ) {
     this.webviewPanel = window.createWebviewPanel(
       "integrationWorkbench.request",

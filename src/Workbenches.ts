@@ -1,5 +1,5 @@
 import { ExtensionContext, commands } from "vscode";
-import { Workbench } from "./interfaces/workbenches/Workbench";
+import { Workbench } from "./workbenches/Workbench";
 import { existsSync, readFileSync, readdirSync } from "fs";
 import path from "path";
 import getRootPath from "./utils/GetRootPath";

@@ -1,8 +1,8 @@
 import { Command, ExtensionContext, commands } from "vscode";
-import { Workbench } from "../../interfaces/workbenches/Workbench";
-import { WorkbenchRequest } from "../../interfaces/workbenches/requests/WorkbenchRequest";
-import { WorkbenchCollection } from "../../interfaces/workbenches/collections/WorkbenchCollection";
+import { Workbench } from "../../workbenches/Workbench";
 import { RequestWebviewPanel } from "../../panels/RequestWebviewPanel";
+import WorkbenchRequest from "../../workbenches/requests/WorkbenchRequest";
+import { WorkbenchCollection } from "../../workbenches/collections/WorkbenchCollection";
 
 export default class OpenRequestCommand {
   constructor(private readonly context: ExtensionContext) {
@@ -16,13 +16,6 @@ export default class OpenRequestCommand {
     request: WorkbenchRequest,
     collection?: WorkbenchCollection
   ) {
-    if(!request.webviewPanel) {
-      request.webviewPanel = new RequestWebviewPanel(this.context, workbench, request, collection);
-    }
-    else {
-      request.webviewPanel.reveal();
-    }
-		
-    commands.executeCommand("integrationWorkbench.openResponse", workbench, request, collection);
+    request.showWebviewPanel(this.context);
   };
 }
