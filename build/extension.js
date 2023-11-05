@@ -269,6 +269,13 @@ var WorkbenchRequest = class {
     }
     import_vscode5.commands.executeCommand("integrationWorkbench.openResponse", this);
   }
+  setName(name) {
+    this.name = name;
+    if (this.requestWebviewPanel) {
+      this.requestWebviewPanel.webviewPanel.title = name;
+    }
+    this.parent.save();
+  }
   disposeWebviewPanel() {
     delete this.requestWebviewPanel;
   }
@@ -316,6 +323,7 @@ var WorkbenchRequestTreeItem = class extends import_vscode7.TreeItem {
     this.request = request;
     this.collection = collection;
     this.tooltip = `${request.name} request`;
+    this.contextValue = "request";
     this.command = {
       title: "Open request",
       command: "integrationWorkbench.openRequest",
@@ -349,7 +357,8 @@ var WorkbenchCollectionTreeItem = class extends import_vscode8.TreeItem {
     super(collection.name, import_vscode8.TreeItemCollapsibleState.Expanded);
     this.workbench = workbench;
     this.collection = collection;
-    this.tooltip = `${collection.name} collection`;
+    this.tooltip = `${collection.name}: ${collection.description}`;
+    this.description = collection.description;
     this.contextValue = "collection";
   }
   iconPath = new import_vscode8.ThemeIcon("folder");
@@ -368,17 +377,20 @@ var WorkbenchCollection = class {
   parent;
   id;
   name;
+  description;
   requests;
-  constructor(parent, id, name, requests) {
+  constructor(parent, id, name, description, requests) {
     this.parent = parent;
     this.id = id;
     this.name = name;
+    this.description = description;
     this.requests = requests.map((request) => WorkbenchRequest.fromData(this, request));
   }
   getData() {
     return {
       id: this.id,
       name: this.name,
+      description: this.description,
       requests: this.requests.map((request) => request.getData())
     };
   }
@@ -394,7 +406,7 @@ var Workbench = class {
     this.id = data.id;
     this.name = data.name;
     this.storage = data.storage;
-    this.collections = data.collections.map((collection) => new WorkbenchCollection(this, collection.id, collection.name, collection.requests));
+    this.collections = data.collections.map((collection) => new WorkbenchCollection(this, collection.id, collection.name, collection.description, collection.requests));
   }
   id;
   name;
@@ -864,6 +876,108 @@ var WorkbenchesRequestsTreeDataProvider = class {
   }
 };
 
+// src/commands/collections/EditCollectionNameCommand.ts
+var import_vscode22 = require("vscode");
+var EditCollectionNameCommand = class {
+  constructor(context) {
+    this.context = context;
+    context.subscriptions.push(
+      import_vscode22.commands.registerCommand("integrationWorkbench.editCollectionName", this.handle.bind(this))
+    );
+  }
+  async handle(reference) {
+    let collection;
+    if (reference instanceof WorkbenchCollectionTreeItem) {
+      collection = reference.collection;
+    } else {
+      throw new Error("Unknown entry point for editing collection name.");
+    }
+    import_vscode22.window.showInputBox({
+      prompt: "Enter a collection name",
+      value: collection.name,
+      validateInput(value) {
+        if (!value.length) {
+          return "You must enter a collection name or cancel.";
+        }
+        return null;
+      }
+    }).then((value) => {
+      if (!value) {
+        return;
+      }
+      collection.name = value;
+      collection.save();
+      import_vscode22.commands.executeCommand("integrationWorkbench.refreshWorkbenches");
+    });
+  }
+};
+
+// src/commands/collections/EditCollectionDescriptionCommand.ts
+var import_vscode23 = require("vscode");
+var EditCollectionDescriptionCommand = class {
+  constructor(context) {
+    this.context = context;
+    context.subscriptions.push(
+      import_vscode23.commands.registerCommand("integrationWorkbench.editCollectionDescription", this.handle.bind(this))
+    );
+  }
+  async handle(reference) {
+    let collection;
+    if (reference instanceof WorkbenchCollectionTreeItem) {
+      collection = reference.collection;
+    } else {
+      throw new Error("Unknown entry point for editing collection description.");
+    }
+    import_vscode23.window.showInputBox({
+      prompt: "Enter a collection description",
+      value: collection.description
+    }).then((value) => {
+      if (!value) {
+        delete collection.description;
+      } else {
+        collection.description = value;
+      }
+      collection.save();
+      import_vscode23.commands.executeCommand("integrationWorkbench.refreshWorkbenches");
+    });
+  }
+};
+
+// src/commands/requests/EditRequestNameCommand.ts
+var import_vscode24 = require("vscode");
+var EditRequestNameCommand = class {
+  constructor(context) {
+    this.context = context;
+    context.subscriptions.push(
+      import_vscode24.commands.registerCommand("integrationWorkbench.editRequestName", this.handle.bind(this))
+    );
+  }
+  async handle(reference) {
+    let request;
+    if (reference instanceof WorkbenchRequestTreeItem) {
+      request = reference.request;
+    } else {
+      throw new Error("Unknown entry point for editing request name.");
+    }
+    import_vscode24.window.showInputBox({
+      prompt: "Enter a request name",
+      value: request.name,
+      validateInput(value) {
+        if (!value.length) {
+          return "You must enter a request name or cancel.";
+        }
+        return null;
+      }
+    }).then((value) => {
+      if (!value) {
+        return;
+      }
+      request.setName(value);
+      import_vscode24.commands.executeCommand("integrationWorkbench.refreshWorkbenches");
+    });
+  }
+};
+
 // src/extension.ts
 function activate(context) {
   console.log('Congratulations, your extension "integrationworkbench" is now active!');
@@ -930,8 +1044,11 @@ function activate(context) {
     treeDataProvider: workbenchesResponsesTreeDataProvider
   });
   new CreateCollectionCommand(context);
+  new EditCollectionNameCommand(context);
+  new EditCollectionDescriptionCommand(context);
   new CreateRequestCommand(context);
   new OpenRequestCommand(context);
+  new EditRequestNameCommand(context);
   new OpenResponseCommand(context);
   new CreateWorkbenchCommand(context);
   context.subscriptions.push(vscode.commands.registerCommand("integrationWorkbench.refreshWorkbenches", () => {

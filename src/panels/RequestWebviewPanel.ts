@@ -1,4 +1,4 @@
-import { Disposable, ExtensionContext, Uri, ViewColumn, WebviewPanel, TextDocument, window, workspace, commands } from "vscode";
+import { Disposable, ExtensionContext, Uri, ViewColumn, WebviewPanel, TextDocument, window, workspace, commands, ThemeIcon } from "vscode";
 import { Workbench } from "../workbenches/Workbench";
 import { getWebviewUri } from "../utils/GetWebviewUri";
 import getWebviewNonce from "../utils/GetWebviewNonce";
@@ -11,7 +11,7 @@ import WorkbenchHttpResponse from "../workbenches/responses/WorkbenchHttpRespons
 import { randomUUID } from "crypto";
 
 export class RequestWebviewPanel {
-  private readonly webviewPanel: WebviewPanel;
+  public readonly webviewPanel: WebviewPanel;
   private readonly disposables: Disposable[] = [];
 
   constructor(
@@ -31,6 +31,14 @@ export class RequestWebviewPanel {
         ]
       }
     );
+
+    
+
+    /*const iconPath = request.getIconPath();
+
+    if(!(iconPath instanceof ThemeIcon)) {
+      this.webviewPanel.iconPath = iconPath;
+    }*/
 
     this.webviewPanel.onDidDispose(() => this.dispose(), null, this.disposables);
 

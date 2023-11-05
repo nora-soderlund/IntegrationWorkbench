@@ -1,9 +1,10 @@
-import { commands } from "vscode";
+import { ThemeIcon, Uri, commands } from "vscode";
 import { WorkbenchHttpRequestData } from "../../interfaces/workbenches/requests/WorkbenchHttpRequestData";
-import WorkbenchRequestTreeItem from "../trees/workbenches/items/WorkbenchRequestTreeItem";
 import { Workbench } from "../Workbench";
 import { WorkbenchCollection } from "../collections/WorkbenchCollection";
 import WorkbenchRequest from "./WorkbenchRequest";
+import path from "path";
+import { existsSync } from "fs";
 
 export default class WorkbenchHttpRequest extends WorkbenchRequest {
   constructor(

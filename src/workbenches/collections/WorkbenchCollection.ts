@@ -7,17 +7,20 @@ export class WorkbenchCollection {
   parent: Workbench;
   id: string;
   name: string;
+  description?: string;
   requests: WorkbenchRequest[];
 
   constructor(
     parent: Workbench,
     id: string,
     name: string,
+    description: string | undefined,
     requests: WorkbenchRequestData[]
   ) {
     this.parent = parent;
     this.id = id;
     this.name = name;
+    this.description = description;
     this.requests = requests.map((request) => WorkbenchRequest.fromData(this, request));
   }
 
@@ -25,6 +28,7 @@ export class WorkbenchCollection {
     return {
       id: this.id,
       name: this.name,
+      description: this.description,
       requests: this.requests.map((request) => request.getData())
     };
   }

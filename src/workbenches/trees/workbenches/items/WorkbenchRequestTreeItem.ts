@@ -16,6 +16,7 @@ export default class WorkbenchRequestTreeItem extends TreeItem implements Workbe
     super(request.name, TreeItemCollapsibleState.None);
 
     this.tooltip = `${request.name} request`;
+    this.contextValue = "request";
 
     this.command = {
       title: "Open request",

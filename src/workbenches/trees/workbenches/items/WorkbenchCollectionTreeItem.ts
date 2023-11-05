@@ -9,7 +9,8 @@ export default class WorkbenchCollectionTreeItem extends TreeItem implements Wor
         public readonly collection: WorkbenchCollection
     ) {
       super(collection.name, TreeItemCollapsibleState.Expanded);
-      this.tooltip = `${collection.name} collection`;
+      this.tooltip = `${collection.name}: ${collection.description}`;
+      this.description = collection.description;
 
       this.contextValue = "collection";
     }

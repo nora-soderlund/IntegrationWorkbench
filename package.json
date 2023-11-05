@@ -63,9 +63,24 @@
         "icon": "$(new-folder)"
       },
       {
+        "command": "integrationWorkbench.editCollectionName",
+        "title": "Edit",
+        "icon": "$(pencil)"
+      },
+      {
+        "command": "integrationWorkbench.editCollectionDescription",
+        "title": "Edit description",
+        "icon": "$(pencil)"
+      },
+      {
         "command": "integrationWorkbench.createRequest",
         "title": "Create a Request",
         "icon": "$(new-file)"
+      },
+      {
+        "command": "integrationWorkbench.editRequestName",
+        "title": "Edit",
+        "icon": "$(pencil)"
       },
       {
         "command": "integrationWorkbench.deleteResponse",
@@ -161,9 +176,21 @@
           "group": "inline"
         },
         {
+          "command": "integrationWorkbench.editCollectionName",
+          "when": "view == workbenches && (viewItem == collection)"
+        },
+        {
+          "command": "integrationWorkbench.editCollectionDescription",
+          "when": "view == workbenches && (viewItem == collection)"
+        },
+        {
           "command": "integrationWorkbench.createRequest",
           "when": "view == workbenches && ((config.integrationWorkbench.allowRequestsInWorkbench && viewItem == workbench) || viewItem == collection)",
           "group": "inline"
+        },
+        {
+          "command": "integrationWorkbench.editRequestName",
+          "when": "view == workbenches && (viewItem == request)"
         },
         {
           "command": "integrationWorkbench.cancelResponse",

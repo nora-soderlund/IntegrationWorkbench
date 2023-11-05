@@ -13,6 +13,9 @@ import { readFileSync } from 'fs';
 import path from 'path';
 import WorkbenchesRequestsTreeDataProvider from './workbenches/trees/responses/WorkbenchesRequestsTreeDataProvider';
 import { WorkbenchResponse } from './workbenches/responses/WorkbenchResponse';
+import EditCollectionNameCommand from './commands/collections/EditCollectionNameCommand';
+import EditCollectionDescriptionCommand from './commands/collections/EditCollectionDescriptionCommand';
+import EditRequestNameCommand from './commands/requests/EditRequestNameCommand';
 
 // This method is called when your extension is activated
 // Your extension is activated the very first time the command is executed
@@ -93,9 +96,12 @@ export function activate(context: vscode.ExtensionContext) {
 	});
 	
 	new CreateCollectionCommand(context);
+	new EditCollectionNameCommand(context);
+	new EditCollectionDescriptionCommand(context);
 	
 	new CreateRequestCommand(context);
 	new OpenRequestCommand(context);
+	new EditRequestNameCommand(context);
 
 	new OpenResponseCommand(context);
 

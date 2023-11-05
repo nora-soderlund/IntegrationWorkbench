@@ -16,7 +16,7 @@ export class Workbench {
         this.name = data.name;
         this.storage = data.storage;
 
-        this.collections = data.collections.map((collection) => new WorkbenchCollection(this, collection.id, collection.name, collection.requests));
+        this.collections = data.collections.map((collection) => new WorkbenchCollection(this, collection.id, collection.name, collection.description, collection.requests));
     };
 
     getMetadataPath() {

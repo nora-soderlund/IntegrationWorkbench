@@ -1,4 +1,4 @@
-import { ExtensionContext, commands } from "vscode";
+import { ExtensionContext, ThemeIcon, Uri, commands } from "vscode";
 import { WorkbenchRequestData } from "../../interfaces/workbenches/requests/WorkbenchRequestData";
 import { isHttpRequestData } from "../../interfaces/workbenches/requests/utils/WorkbenchRequestDataTypeValidations";
 import { RequestWebviewPanel } from "../../panels/RequestWebviewPanel";
@@ -51,6 +51,16 @@ export default class WorkbenchRequest {
     }
 		
     commands.executeCommand("integrationWorkbench.openResponse", this);
+  }
+  
+  setName(name: string) {
+    this.name = name;
+    
+    if(this.requestWebviewPanel) {
+      this.requestWebviewPanel.webviewPanel.title = name;
+    }
+    
+    this.parent.save();
   }
 
   disposeWebviewPanel() {
