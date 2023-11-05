@@ -56,10 +56,25 @@ export class Workbench {
         }
     };
 
+    removeCollection(workbenchCollection: WorkbenchCollection) {
+      const index = this.collections.indexOf(workbenchCollection);
+  
+      if(index !== -1) {
+        workbenchCollection.parent.requests.push(...workbenchCollection.requests);
+
+        this.collections.splice(index, 1);
+        this.save();
+  
+        commands.executeCommand(`integrationWorkbench.refreshWorkbenches`);
+      }
+    }
+
     removeRequest(workbenchRequest: WorkbenchRequest) {
       const index = this.requests.indexOf(workbenchRequest);
   
       if(index !== -1) {
+        workbenchRequest.disposeWebviewPanel();
+        
         this.requests.splice(index, 1);
         this.save();
   

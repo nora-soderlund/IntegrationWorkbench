@@ -11,7 +11,7 @@ export default class WorkbenchRequestTreeItem extends TreeItem implements Workbe
   constructor(
     public readonly workbench: Workbench,
     public readonly request: WorkbenchRequest,
-    public readonly collection?: WorkbenchCollection
+    public readonly collection?: Workbench | WorkbenchCollection
   ) {
     super(request.name, TreeItemCollapsibleState.None);
 

@@ -3,6 +3,9 @@ import WorkbenchCollectionTreeItem from "../../workbenches/trees/workbenches/ite
 import { randomUUID } from "crypto";
 import WorkbenchRequest from "../../workbenches/requests/WorkbenchRequest";
 import WorkbenchHttpRequest from "../../workbenches/requests/WorkbenchHttpRequest";
+import WorkbenchTreeItem from "../../workbenches/trees/workbenches/items/WorkbenchTreeItem";
+import { Workbench } from "../../workbenches/Workbench";
+import { WorkbenchCollection } from "../../workbenches/collections/WorkbenchCollection";
 
 export default class CreateRequestCommand {
   constructor(private readonly context: ExtensionContext) {
@@ -28,9 +31,18 @@ export default class CreateRequestCommand {
         return;
       }
 
-      if(reference instanceof WorkbenchCollectionTreeItem) {
-        reference.collection.requests.push(
-          new WorkbenchHttpRequest(reference.collection, randomUUID(), value, {
+      let workbenchItem: Workbench | WorkbenchCollection | undefined;
+
+      if(reference instanceof WorkbenchTreeItem) {
+        workbenchItem = reference.workbench;
+      }
+      else if(reference instanceof WorkbenchCollectionTreeItem) {
+        workbenchItem = reference.collection;
+      }
+
+      if(workbenchItem) {
+        workbenchItem.requests.push(
+          new WorkbenchHttpRequest(workbenchItem, randomUUID(), value, {
             method: "GET",
             url: "https://httpbin.org/get",
             body: {
@@ -39,7 +51,7 @@ export default class CreateRequestCommand {
           })
         );
 
-        reference.workbench.save();
+        workbenchItem.save();
 
         commands.executeCommand("integrationWorkbench.refreshWorkbenches");
       }

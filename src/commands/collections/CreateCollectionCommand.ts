@@ -29,7 +29,7 @@ export default class CreateCollectionCommand {
 
       if(reference instanceof WorkbenchTreeItem) {
         reference.workbench.collections.push(
-          new WorkbenchCollection(reference.workbench, randomUUID(), value, [])
+          new WorkbenchCollection(reference.workbench, randomUUID(), value, undefined, [])
         );
 
         reference.workbench.save();

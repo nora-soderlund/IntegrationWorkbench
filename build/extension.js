@@ -518,9 +518,19 @@ var Workbench = class {
 ` + error);
     }
   }
+  removeCollection(workbenchCollection) {
+    const index = this.collections.indexOf(workbenchCollection);
+    if (index !== -1) {
+      workbenchCollection.parent.requests.push(...workbenchCollection.requests);
+      this.collections.splice(index, 1);
+      this.save();
+      import_vscode10.commands.executeCommand(`integrationWorkbench.refreshWorkbenches`);
+    }
+  }
   removeRequest(workbenchRequest) {
     const index = this.requests.indexOf(workbenchRequest);
     if (index !== -1) {
+      workbenchRequest.disposeWebviewPanel();
       this.requests.splice(index, 1);
       this.save();
       import_vscode10.commands.executeCommand(`integrationWorkbench.refreshWorkbenches`);
@@ -602,9 +612,14 @@ var WorkbenchTreeDataProvider = class {
           })
         );
       } else if (element instanceof WorkbenchTreeItem) {
-        return Promise.resolve(
-          element.workbench.collections.map((collection) => new WorkbenchCollectionTreeItem(element.workbench, collection))
-        );
+        return Promise.resolve([
+          ...element.workbench.collections.map((collection) => new WorkbenchCollectionTreeItem(element.workbench, collection)),
+          ...element.workbench.requests.map((request) => {
+            const requestTreeItem = new WorkbenchRequestTreeItem(element.workbench, request, element.workbench);
+            request.treeDataViewItem = requestTreeItem;
+            return requestTreeItem;
+          })
+        ]);
       }
     }
     return Promise.resolve([]);
@@ -642,7 +657,7 @@ var CreateCollectionCommand = class {
       }
       if (reference instanceof WorkbenchTreeItem) {
         reference.workbench.collections.push(
-          new WorkbenchCollection(reference.workbench, (0, import_crypto2.randomUUID)(), value, [])
+          new WorkbenchCollection(reference.workbench, (0, import_crypto2.randomUUID)(), value, void 0, [])
         );
         reference.workbench.save();
         import_vscode14.commands.executeCommand("integrationWorkbench.refreshWorkbenches");
@@ -675,9 +690,15 @@ var CreateRequestCommand = class {
       if (!value) {
         return;
       }
-      if (reference instanceof WorkbenchCollectionTreeItem) {
-        reference.collection.requests.push(
-          new WorkbenchHttpRequest(reference.collection, (0, import_crypto3.randomUUID)(), value, {
+      let workbenchItem;
+      if (reference instanceof WorkbenchTreeItem) {
+        workbenchItem = reference.workbench;
+      } else if (reference instanceof WorkbenchCollectionTreeItem) {
+        workbenchItem = reference.collection;
+      }
+      if (workbenchItem) {
+        workbenchItem.requests.push(
+          new WorkbenchHttpRequest(workbenchItem, (0, import_crypto3.randomUUID)(), value, {
             method: "GET",
             url: "https://httpbin.org/get",
             body: {
@@ -685,7 +706,7 @@ var CreateRequestCommand = class {
             }
           })
         );
-        reference.workbench.save();
+        workbenchItem.save();
         import_vscode15.commands.executeCommand("integrationWorkbench.refreshWorkbenches");
       }
     });
@@ -1136,6 +1157,26 @@ var DeleteRequestCommand = class {
   }
 };
 
+// src/commands/collections/DeleteCollectionCommand.ts
+var import_vscode29 = require("vscode");
+var DeleteCollectionCommand = class {
+  constructor(context) {
+    this.context = context;
+    context.subscriptions.push(
+      import_vscode29.commands.registerCommand("integrationWorkbench.deleteCollection", this.handle.bind(this))
+    );
+  }
+  async handle(reference) {
+    let collection;
+    if (reference instanceof WorkbenchCollectionTreeItem) {
+      collection = reference.collection;
+    } else {
+      throw new Error("Unknown entry point for deleting collection.");
+    }
+    collection.parent.removeCollection(collection);
+  }
+};
+
 // src/extension.ts
 function activate(context) {
   console.log('Congratulations, your extension "integrationworkbench" is now active!');
@@ -1239,6 +1280,7 @@ function activate(context) {
   new EditCollectionNameCommand(context);
   new EditCollectionDescriptionCommand(context);
   new RunCollectionCommand(context);
+  new DeleteCollectionCommand(context);
   new CreateRequestCommand(context);
   new OpenRequestCommand(context);
   new EditRequestNameCommand(context);

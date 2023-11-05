@@ -36,11 +36,18 @@ export default class WorkbenchTreeDataProvider implements TreeDataProvider<Workb
         );
       }
       else if (element instanceof WorkbenchTreeItem) {
-        return Promise.resolve(
-          element.workbench.collections.map((collection) => (
+        return Promise.resolve([
+          ...element.workbench.collections.map((collection) => (
             new WorkbenchCollectionTreeItem(element.workbench, collection)
-          ))
-        );
+          )),
+          ...element.workbench.requests.map((request) => {
+            const requestTreeItem = new WorkbenchRequestTreeItem(element.workbench, request, element.workbench);
+
+            request.treeDataViewItem = requestTreeItem;
+          
+            return requestTreeItem;
+          })
+        ]);
       }
     }
 

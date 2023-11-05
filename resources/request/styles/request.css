@@ -62,7 +62,7 @@ vscode-panels {
 .http-request-body-code {
   height: 100%;
 
-  padding: 10px 0;
+  padding: 0;
   box-sizing: border-box;
 }
 

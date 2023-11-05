@@ -88,6 +88,11 @@
         "icon": "$(run)"
       },
       {
+        "command": "integrationWorkbench.deleteCollection",
+        "title": "Delete",
+        "icon": "$(trashcan)"
+      },
+      {
         "command": "integrationWorkbench.createRequest",
         "title": "Create a Request",
         "icon": "$(new-file)"
@@ -210,6 +215,10 @@
         },
         {
           "command": "integrationWorkbench.editCollectionDescription",
+          "when": "view == workbenches && (viewItem == collection)"
+        },
+        {
+          "command": "integrationWorkbench.deleteCollection",
           "when": "view == workbenches && (viewItem == collection)"
         },
         {
