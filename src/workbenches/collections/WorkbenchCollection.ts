@@ -1,3 +1,4 @@
+import { commands } from "vscode";
 import { WorkbenchCollectionData } from "../../interfaces/workbenches/collections/WorkbenchCollectionData";
 import { WorkbenchRequestData } from "../../interfaces/workbenches/requests/WorkbenchRequestData";
 import { Workbench } from "../Workbench";
@@ -35,5 +36,18 @@ export class WorkbenchCollection {
 
   save() {
     this.parent.save();
+  }
+
+  removeRequest(workbenchRequest: WorkbenchRequest) {
+    const index = this.requests.indexOf(workbenchRequest);
+
+    if(index !== -1) {
+      workbenchRequest.disposeWebviewPanel();
+      
+      this.requests.splice(index, 1);
+      this.save();
+
+      commands.executeCommand(`integrationWorkbench.refreshWorkbenches`);
+    }
   }
 }

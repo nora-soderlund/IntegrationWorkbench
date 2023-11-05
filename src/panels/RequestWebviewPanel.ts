@@ -152,6 +152,6 @@ export class RequestWebviewPanel {
       }
     }
 
-    this.request.disposeWebviewPanel();
+    this.request.deleteWebviewPanel();
   }
 }

@@ -19,6 +19,7 @@ import EditRequestNameCommand from './commands/requests/EditRequestNameCommand';
 import RunCollectionCommand from './commands/collections/RunCollectionCommand';
 import RunRequestCommand from './commands/requests/RunRequestCommand';
 import WorkbenchResponseTreeItem from './workbenches/trees/responses/items/WorkbenchResponseTreeItem';
+import DeleteRequestCommand from './commands/requests/DeleteRequestCommand';
 
 // This method is called when your extension is activated
 // Your extension is activated the very first time the command is executed
@@ -154,6 +155,7 @@ export function activate(context: vscode.ExtensionContext) {
 	new OpenRequestCommand(context);
 	new EditRequestNameCommand(context);
 	new RunRequestCommand(context);
+	new DeleteRequestCommand(context);
 
 	new OpenResponseCommand(context);
 

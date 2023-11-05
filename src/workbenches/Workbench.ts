@@ -1,21 +1,24 @@
 import { existsSync, mkdirSync, writeFileSync } from "fs";
 import { WorkbenchStorage } from "../interfaces/workbenches/WorkbenchStorage";
-import { window } from "vscode";
+import { commands, window } from "vscode";
 import path from "path";
 import { WorkbenchData } from "../interfaces/workbenches/WorkbenchData";
 import { WorkbenchCollection } from "./collections/WorkbenchCollection";
+import WorkbenchRequest from "./requests/WorkbenchRequest";
 
 export class Workbench {
     id: string;
     name: string;
     storage: WorkbenchStorage;
     collections: WorkbenchCollection[];
+    requests: WorkbenchRequest[];
 
     constructor(data: WorkbenchData, private readonly path: string) {
         this.id = data.id;
         this.name = data.name;
         this.storage = data.storage;
 
+        this.requests = data.requests.map((request) => WorkbenchRequest.fromData(this, request));
         this.collections = data.collections.map((collection) => new WorkbenchCollection(this, collection.id, collection.name, collection.description, collection.requests));
     };
 
@@ -28,6 +31,7 @@ export class Workbench {
             id: this.id,
             name: this.name,
             storage: this.storage,
+            requests: this.requests.map((request) => request.getData()),
             collections: this.collections.map((collection) => collection.getData())
         };
     }
@@ -51,4 +55,15 @@ export class Workbench {
             window.showErrorMessage(`Failed to save workbench '${this.name}':\n\n` + error);
         }
     };
+
+    removeRequest(workbenchRequest: WorkbenchRequest) {
+      const index = this.requests.indexOf(workbenchRequest);
+  
+      if(index !== -1) {
+        this.requests.splice(index, 1);
+        this.save();
+  
+        commands.executeCommand(`integrationWorkbench.refreshWorkbenches`);
+      }
+    }
 };

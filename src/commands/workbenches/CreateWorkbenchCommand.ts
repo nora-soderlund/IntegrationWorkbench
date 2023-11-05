@@ -6,6 +6,7 @@ import getRootPath from "../../utils/GetRootPath";
 import { Workbench } from "../../workbenches/Workbench";
 import path from "path";
 import { workbenches } from "../../Workbenches";
+import { randomUUID } from "crypto";
 
 export default class CreateWorkbenchCommand {
   constructor(private readonly context: ExtensionContext) {
@@ -50,11 +51,13 @@ export default class CreateWorkbenchCommand {
     const rootPath = getRootPath();
   
     const workbench = new Workbench({
+      id: randomUUID(),
       name,
       storage: {
         location: storageOption.location,
         base: (rootPath)?(path.basename(rootPath)):(undefined)
       },
+      requests: [],
       collections: []
     }, uniqueWorkbenchPath);
   

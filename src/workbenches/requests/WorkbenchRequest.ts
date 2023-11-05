@@ -61,11 +61,7 @@ export default class WorkbenchRequest {
   }
 
   setWebviewPanelIcon(icon: Uri) {
-    console.log("set icon path");
-
     if(this.requestWebviewPanel) {
-      console.log("seting icon path", icon);
-      
       this.requestWebviewPanel.webviewPanel.iconPath = icon;
     }
   }
@@ -80,7 +76,11 @@ export default class WorkbenchRequest {
     this.parent.save();
   }
 
-  disposeWebviewPanel() {
+  deleteWebviewPanel() {
     delete this.requestWebviewPanel;
+  }
+
+  disposeWebviewPanel() {
+    this.requestWebviewPanel?.dispose();
   }
 };

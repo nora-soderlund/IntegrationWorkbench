@@ -45,6 +45,11 @@
           "default": 50,
           "description": "How many responses to retain in the responses panel, excluding saved responses."
         },
+        "integrationWorkbench.retainResponsesDuration": {
+          "type": [ "number", "null" ],
+          "default": null,
+          "description": "How long a response should be kept in the editor before clearing it out on the next refresh."
+        },
         "integrationWorkbench.showRunRequestButton": {
           "type": "boolean",
           "default": true,
@@ -91,6 +96,11 @@
         "command": "integrationWorkbench.editRequestName",
         "title": "Edit",
         "icon": "$(pencil)"
+      },
+      {
+        "command": "integrationWorkbench.deleteRequest",
+        "title": "Delete",
+        "icon": "$(trashcan)"
       },
       {
         "command": "integrationWorkbench.runRequest",
@@ -215,6 +225,10 @@
           "command": "integrationWorkbench.runRequest",
           "when": "view == workbenches && (viewItem == request) && config.integrationWorkbench.showRunRequestButton",
           "group": "inline"
+        },
+        {
+          "command": "integrationWorkbench.deleteRequest",
+          "when": "view == workbenches && (viewItem == request)"
         },
         {
           "command": "integrationWorkbench.runRequest",
