@@ -1,8 +1,9 @@
 import { isHttpRequestData } from "../../interfaces/workbenches/requests/utils/WorkbenchRequestDataTypeValidations";
+import createHttpRequestBodyPanel from "./http/CreateHttpRequestBodyPanel";
 
-const { provideVSCodeDesignSystem, vsCodeButton, vsCodeTextField, vsCodeDropdown, vsCodeOption, vsCodePanels, vsCodePanelTab, vsCodePanelView } = require("@vscode/webview-ui-toolkit");
+const { provideVSCodeDesignSystem, vsCodeButton, vsCodeTextArea, vsCodeTextField, vsCodeDropdown, vsCodeOption, vsCodePanels, vsCodePanelTab, vsCodePanelView, vsCodeRadioGroup, vsCodeRadio } = require("@vscode/webview-ui-toolkit");
 
-provideVSCodeDesignSystem().register(vsCodeButton(), vsCodeTextField(), vsCodeDropdown(), vsCodeOption(), vsCodePanels(), vsCodePanelTab(), vsCodePanelView());
+provideVSCodeDesignSystem().register(vsCodeButton(), vsCodeTextArea(), vsCodeTextField(), vsCodeDropdown(), vsCodeOption(), vsCodePanels(), vsCodePanelTab(), vsCodePanelView(), vsCodeRadioGroup(), vsCodeRadio());
 
 const vscode = acquireVsCodeApi();
 
@@ -52,6 +53,53 @@ function main() {
               arguments: []
             });
           });
+
+          const httpRequestBodyRadioGroup = document.getElementById("http-request-body-radio") as HTMLInputElement;
+
+          httpRequestBodyRadioGroup.querySelector<HTMLInputElement>(`vscode-radio[value="${requestData.data.body.type}"]`)!.checked = true;
+
+          httpRequestBodyRadioGroup.addEventListener("change", () => {
+            console.log(httpRequestBodyRadioGroup.value);
+
+            switch(httpRequestBodyRadioGroup.value) {
+              case "none": {
+                requestData.data.body = {
+                  type: "none"
+                };
+
+                break;
+              }
+
+              case "raw": {
+                requestData.data.body = {
+                  type: "raw",
+                  body: ""
+                };
+
+                break;
+              }
+
+              case "application/json": {
+                requestData.data.body = {
+                  type: "application/json",
+                  body: `{\n  "foo": "bar"\n}`
+                };
+
+                break;
+              }
+            }
+
+            vscode.postMessage({
+              command: "integrationWorkbench.changeHttpRequestBody",
+              arguments: [
+                requestData.data.body
+              ]
+            });
+
+            createHttpRequestBodyPanel(vscode, requestData);
+          });
+
+          createHttpRequestBodyPanel(vscode, requestData);
         }
 
         break;

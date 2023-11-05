@@ -11,19 +11,21 @@ export default class WorkbenchResponseTreeItem extends TreeItem {
   ) {
     super(response.request.name, TreeItemCollapsibleState.None);
 
-    this.contextValue = (response.result)?("response"):("responseLoading");
-
     this.tooltip = `${response.request.name} response`;
-    this.description = `${response.requestedAt.getHours()}:${response.requestedAt.getMinutes().toString().padStart(2, '0')}`;
 
-    this.setIconPath();
-    this.updateDescription();
+    this.update();
 
     this.command = {
       title: "Show response",
       command: "integrationWorkbench.showResponse",
-      arguments: [response]
+      arguments: [this]
     };
+  }
+
+  update() {
+    this.contextValue = "response-" + this.response.status;
+    this.description = this.getDescription();
+    this.iconPath = this.getIconPath();
   }
 
   getDescription() {
@@ -42,12 +44,8 @@ export default class WorkbenchResponseTreeItem extends TreeItem {
     return Math.floor(difference / 1000 / 60 / 60) + " hours ago";
   }
 
-  updateDescription() {
-    this.description = this.getDescription();
-  }
-
   getIconPath() {
-    if(this.response.result) {
+    if(this.response.status === "done") {
       if (isHttpRequestData(this.response.request)) {
         const iconPath = path.join(__filename, '..', '..', 'resources', 'icons', 'methods', `${this.response.request.data.method}.png`);
 
@@ -61,11 +59,11 @@ export default class WorkbenchResponseTreeItem extends TreeItem {
       
       return new ThemeIcon("search-show-context");
     }
+
+    if(this.response.status === "failed") {
+      return new ThemeIcon("run-errors", new ThemeColor("terminalCommandDecoration.errorBackground"));
+    }
     
     return new ThemeIcon("loading~spin", new ThemeColor("progressBar.background"));
-  }
-
-  setIconPath() {
-    this.iconPath = this.getIconPath();
   }
 }

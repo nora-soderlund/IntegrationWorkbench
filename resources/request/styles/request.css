@@ -1,3 +1,13 @@
+html, body {
+  height: 100%;
+}
+
+body {
+  display: flex;
+
+  flex-direction: column;
+}
+
 header {
   display: flex;
   flex-direction: row;
@@ -19,4 +29,46 @@ header .header-http-request {
 
 header .header-http-request vscode-text-field {
   flex: 1;
+}
+
+#http-request-body-radio {
+  margin: 0;
+
+  margin-bottom: .5em;
+}
+
+vscode-panels {
+  height: 100%;
+
+  flex: 1;
+
+  overflow: hidden;
+}
+
+#http-request-body-panel-view {
+  flex: 1;
+
+  height: 100%;
+
+  flex-direction: column;
+}
+
+#http-request-body {
+  margin: .5em 0;
+
+  flex: 1;
+}
+
+.http-request-body-code {
+  height: 100%;
+
+  padding: 10px 0;
+  box-sizing: border-box;
+}
+
+.http-request-body-code-monaco {
+  height: 100%;
+
+  border: 1px solid var(--vscode-editorWidget-border);
+  box-sizing: border-box;
 }

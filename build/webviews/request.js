@@ -2,6 +2,13 @@ var __defProp = Object.defineProperty;
 var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
 var __getOwnPropNames = Object.getOwnPropertyNames;
 var __hasOwnProp = Object.prototype.hasOwnProperty;
+var __require = /* @__PURE__ */ ((x) => typeof require !== "undefined" ? require : typeof Proxy !== "undefined" ? new Proxy(x, {
+  get: (a, b) => (typeof require !== "undefined" ? require : a)[b]
+}) : x)(function(x) {
+  if (typeof require !== "undefined")
+    return require.apply(this, arguments);
+  throw new Error('Dynamic require of "' + x + '" is not supported');
+});
 var __esm = (fn, res) => function __init() {
   return fn && (res = (0, fn[__getOwnPropNames(fn)[0]])(fn = 0)), res;
 };
@@ -20039,10 +20046,71 @@ var init_dist3 = __esm({
 function isHttpRequestData(requestData) {
   return requestData.type === "HTTP";
 }
+function isHttpRequestApplicationJsonBodyData(bodyData) {
+  return bodyData.type === "application/json";
+}
+
+// src/webviews/request/http/CreateHttpRequestBodyPanel.ts
+function createHttpRequestBodyPanel(vscode2, requestData) {
+  const httpRequestBody = document.getElementById("http-request-body");
+  switch (requestData.data.body.type) {
+    case "none": {
+      httpRequestBody.innerHTML = `
+        <p>This request has no body.</p>
+      `;
+      break;
+    }
+    case "raw": {
+      httpRequestBody.innerHTML = `
+        <p>Raw.</p>
+      `;
+      break;
+    }
+    case "application/json": {
+      httpRequestBody.innerHTML = `
+        <div class="http-request-body-code">
+          <div class="http-request-body-code-monaco"></div>
+        </div>
+      `;
+      const httpRequestBodyCode = httpRequestBody.querySelector(".http-request-body-code-monaco");
+      __require(["vs/editor/editor.main"], () => {
+        if (isHttpRequestApplicationJsonBodyData(requestData.data.body)) {
+          const editor = monaco.editor.create(httpRequestBodyCode, {
+            value: requestData.data.body.body,
+            language: "json",
+            theme: "vs-dark",
+            wordWrap: "bounded",
+            minimap: {
+              enabled: false
+            },
+            scrollBeyondLastLine: false
+          });
+          editor.getModel().onDidChangeContent((event) => {
+            requestData.data.body = {
+              type: "application/json",
+              body: editor.getValue()
+            };
+            vscode2.postMessage({
+              command: "integrationWorkbench.changeHttpRequestBody",
+              arguments: [
+                requestData.data.body
+              ]
+            });
+          });
+        }
+      });
+      break;
+    }
+    default: {
+      httpRequestBody.innerHTML = "";
+      break;
+    }
+  }
+}
 
 // src/webviews/request/index.ts
-var { provideVSCodeDesignSystem: provideVSCodeDesignSystem2, vsCodeButton: vsCodeButton2, vsCodeTextField: vsCodeTextField2, vsCodeDropdown: vsCodeDropdown2, vsCodeOption: vsCodeOption2, vsCodePanels: vsCodePanels2, vsCodePanelTab: vsCodePanelTab2, vsCodePanelView: vsCodePanelView2 } = (init_dist3(), __toCommonJS(dist_exports));
-provideVSCodeDesignSystem2().register(vsCodeButton2(), vsCodeTextField2(), vsCodeDropdown2(), vsCodeOption2(), vsCodePanels2(), vsCodePanelTab2(), vsCodePanelView2());
+var { provideVSCodeDesignSystem: provideVSCodeDesignSystem2, vsCodeButton: vsCodeButton2, vsCodeTextArea: vsCodeTextArea2, vsCodeTextField: vsCodeTextField2, vsCodeDropdown: vsCodeDropdown2, vsCodeOption: vsCodeOption2, vsCodePanels: vsCodePanels2, vsCodePanelTab: vsCodePanelTab2, vsCodePanelView: vsCodePanelView2, vsCodeRadioGroup: vsCodeRadioGroup2, vsCodeRadio: vsCodeRadio2 } = (init_dist3(), __toCommonJS(dist_exports));
+provideVSCodeDesignSystem2().register(vsCodeButton2(), vsCodeTextArea2(), vsCodeTextField2(), vsCodeDropdown2(), vsCodeOption2(), vsCodePanels2(), vsCodePanelTab2(), vsCodePanelView2(), vsCodeRadioGroup2(), vsCodeRadio2());
 var vscode = acquireVsCodeApi();
 window.addEventListener("load", main);
 function main() {
@@ -20082,6 +20150,43 @@ function main() {
               arguments: []
             });
           });
+          const httpRequestBodyRadioGroup = document.getElementById("http-request-body-radio");
+          httpRequestBodyRadioGroup.querySelector(`vscode-radio[value="${requestData.data.body.type}"]`).checked = true;
+          httpRequestBodyRadioGroup.addEventListener("change", () => {
+            console.log(httpRequestBodyRadioGroup.value);
+            switch (httpRequestBodyRadioGroup.value) {
+              case "none": {
+                requestData.data.body = {
+                  type: "none"
+                };
+                break;
+              }
+              case "raw": {
+                requestData.data.body = {
+                  type: "raw",
+                  body: ""
+                };
+                break;
+              }
+              case "application/json": {
+                requestData.data.body = {
+                  type: "application/json",
+                  body: `{
+  "foo": "bar"
+}`
+                };
+                break;
+              }
+            }
+            vscode.postMessage({
+              command: "integrationWorkbench.changeHttpRequestBody",
+              arguments: [
+                requestData.data.body
+              ]
+            });
+            createHttpRequestBodyPanel(vscode, requestData);
+          });
+          createHttpRequestBodyPanel(vscode, requestData);
         }
         break;
       }

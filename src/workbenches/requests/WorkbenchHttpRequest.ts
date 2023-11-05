@@ -1,10 +1,12 @@
 import { ThemeIcon, Uri, commands } from "vscode";
-import { WorkbenchHttpRequestData } from "../../interfaces/workbenches/requests/WorkbenchHttpRequestData";
+import { WorkbenchHttpRequestBodyData, WorkbenchHttpRequestData } from "../../interfaces/workbenches/requests/WorkbenchHttpRequestData";
 import { Workbench } from "../Workbench";
 import { WorkbenchCollection } from "../collections/WorkbenchCollection";
 import WorkbenchRequest from "./WorkbenchRequest";
 import path from "path";
 import { existsSync } from "fs";
+import WorkbenchHttpResponse from "../responses/WorkbenchHttpResponse";
+import { randomUUID } from "crypto";
 
 export default class WorkbenchHttpRequest extends WorkbenchRequest {
   constructor(
@@ -23,7 +25,10 @@ export default class WorkbenchHttpRequest extends WorkbenchRequest {
       type: "HTTP",
       data: {
         method: this.data.method,
-        url: this.data.url
+        url: this.data.url,
+        body: {
+          ...this.data.body
+        }
       }
     };
   }
@@ -33,13 +38,17 @@ export default class WorkbenchHttpRequest extends WorkbenchRequest {
   }
 
   send(): void {
-    
+    commands.executeCommand("integrationWorkbench.addResponse", new WorkbenchHttpResponse(
+      randomUUID(),
+      this.getData(),
+      new Date()
+    ));
   }
   
   setMethod(method: string) {
     this.data.method = method;
 
-    this.treeDataViewItems.forEach((treeDataViewItem) => treeDataViewItem.setIconPath());
+    this.treeDataViewItem?.setIconPath();
 
     commands.executeCommand("integrationWorkbench.refreshWorkbenches");
 
@@ -48,6 +57,12 @@ export default class WorkbenchHttpRequest extends WorkbenchRequest {
   
   setUrl(url: string) {
     this.data.url = url;
+
+    this.parent.save();
+  }
+
+  setBody(bodyData: WorkbenchHttpRequestBodyData) {
+    this.data.body = bodyData;
 
     this.parent.save();
   }

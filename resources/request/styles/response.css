@@ -9,6 +9,12 @@ body {
   
   width: 100%;
   height: 100%;
+
+  background: var(--vscode-editor-background);
+}
+
+#response {
+  width: 100%;
 }
 
 vscode-panels {

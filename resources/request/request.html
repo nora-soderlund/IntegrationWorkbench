@@ -15,12 +15,28 @@
 </header>
 
 <vscode-panels>
-  <vscode-panel-tab id="tab-1">PARAMETERS</vscode-panel-tab>
-  <vscode-panel-tab id="tab-2">HEADERS</vscode-panel-tab>
-  <vscode-panel-tab id="tab-3">BODY</vscode-panel-tab>
-  <vscode-panel-tab id="tab-4">AUTHORIZATION</vscode-panel-tab>
-  <vscode-panel-view id="view-1">Parameters content.</vscode-panel-view>
-  <vscode-panel-view id="view-2">Headers content.</vscode-panel-view>
-  <vscode-panel-view id="view-3">Body content.</vscode-panel-view>
-  <vscode-panel-view id="view-4">Authorization content.</vscode-panel-view>
+  <vscode-panel-tab id="http-request-body-panel-tab">BODY</vscode-panel-tab>
+  <vscode-panel-tab id="http-request-headers-panel-tab">HEADERS</vscode-panel-tab>
+  <vscode-panel-tab id="http-request-parameters-panel-tab">PARAMETERS</vscode-panel-tab>
+  <vscode-panel-tab id="http-request-authorization-panel-tab">AUTHORIZATION</vscode-panel-tab>
+
+  <vscode-panel-view id="http-request-body-panel-view">
+    <vscode-radio-group id="http-request-body-radio">
+      <vscode-radio value="none">None</vscode-radio>
+      <vscode-radio value="raw">Raw</vscode-radio>
+      <vscode-radio value="application/json">application/json</vscode-radio>
+      <vscode-radio value="multipart/form-data">multipart/form-data</vscode-radio>
+      <vscode-radio value="application/x-www-form-urlencoded">application/x-www-form-urlencoded</vscode-radio>
+    </vscode-radio-group>
+
+    <div id="http-request-body">
+
+    </div>
+  </vscode-panel-view>
+
+  <vscode-panel-view id="http-request-headers-panel-view">Headers content.</vscode-panel-view>
+  
+  <vscode-panel-view id="http-request-parameters-panel-view">Parameters content.</vscode-panel-view>
+  
+  <vscode-panel-view id="http-request-authorization-panel-view">Authorization content.</vscode-panel-view>
 </vscode-panels>

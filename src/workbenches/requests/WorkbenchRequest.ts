@@ -12,7 +12,7 @@ export default class WorkbenchRequest {
   name: string;
 
   private requestWebviewPanel?: RequestWebviewPanel;
-  public readonly treeDataViewItems: WorkbenchRequestTreeItem[] = [];
+  public treeDataViewItem?: WorkbenchRequestTreeItem;
 
   constructor(public readonly parent: Workbench | WorkbenchCollection, id: string, name: string) {
     this.id = id;
@@ -25,7 +25,10 @@ export default class WorkbenchRequest {
       name: this.name,
       type: "HTTP",
       data: {
-        method: ""
+        method: "",
+        body: {
+          type: "none"
+        }
       }
     };
   }
@@ -45,12 +48,26 @@ export default class WorkbenchRequest {
   showWebviewPanel(context: ExtensionContext) {
     if(!this.requestWebviewPanel) {
       this.requestWebviewPanel = new RequestWebviewPanel(context, this);
+
+      if(this.treeDataViewItem?.iconPath instanceof Uri) {
+        this.setWebviewPanelIcon(this.treeDataViewItem.iconPath);
+      }
     }
     else {
       this.requestWebviewPanel.reveal();
     }
 		
     commands.executeCommand("integrationWorkbench.openResponse", this);
+  }
+
+  setWebviewPanelIcon(icon: Uri) {
+    console.log("set icon path");
+
+    if(this.requestWebviewPanel) {
+      console.log("seting icon path", icon);
+      
+      this.requestWebviewPanel.webviewPanel.iconPath = icon;
+    }
   }
   
   setName(name: string) {

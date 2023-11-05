@@ -27,24 +27,20 @@ export class RequestWebviewPanel {
 
         localResourceRoots: [
           Uri.joinPath(context.extensionUri, 'build'),
-          Uri.joinPath(context.extensionUri, 'resources')
+          Uri.joinPath(context.extensionUri, 'resources'),
+          Uri.joinPath(context.extensionUri, 'node_modules', 'monaco-editor', 'min', 'vs')
         ]
       }
     );
-
-    
-
-    /*const iconPath = request.getIconPath();
-
-    if(!(iconPath instanceof ThemeIcon)) {
-      this.webviewPanel.iconPath = iconPath;
-    }*/
 
     this.webviewPanel.onDidDispose(() => this.dispose(), null, this.disposables);
 
     const webviewUri = getWebviewUri(this.webviewPanel.webview, context.extensionUri, ["build", "webviews", "request.js"]);
     const styleUri = getWebviewUri(this.webviewPanel.webview, context.extensionUri, ["resources", "request", "styles", "request.css"]);
+    const globalStyleUri = getWebviewUri(this.webviewPanel.webview, context.extensionUri, ["resources", "request", "styles", "global.css"]);
     const shikiUri = getWebviewUri(this.webviewPanel.webview, context.extensionUri, ["resources", "shiki"]);
+    const monacoEditorUri = getWebviewUri(this.webviewPanel.webview, context.extensionUri, ["node_modules", "monaco-editor", 'min', 'vs']);
+    const monacoEditorLoaderUri = getWebviewUri(this.webviewPanel.webview, context.extensionUri, ["node_modules", "monaco-editor", 'min', 'vs', 'loader.js']);
 
     this.webviewPanel.webview.html = `
       <!DOCTYPE html>
@@ -57,6 +53,7 @@ export class RequestWebviewPanel {
           <title>Hello World!</title>
 
           <link rel="stylesheet" href="${styleUri}"/>
+          <link rel="stylesheet" href="${globalStyleUri}"/>
         </head>
         <body>
           ${readFileSync(
@@ -68,6 +65,12 @@ export class RequestWebviewPanel {
 
           <script type="text/javascript">
             window.shikiUri = "${shikiUri}";
+          </script>
+
+          <script src="${monacoEditorLoaderUri}"></script>
+
+          <script>
+            require.config({ paths: { vs: '${monacoEditorUri}' } });
           </script>
 
           <script type="module" src="${webviewUri}"></script>
@@ -102,12 +105,18 @@ export class RequestWebviewPanel {
             return;
           }
 
+          case "integrationWorkbench.changeHttpRequestBody": {
+            const [ bodyData ] = message.arguments;
+
+            if(this.request instanceof WorkbenchHttpRequest) {
+              this.request.setBody(bodyData);
+            }
+
+            return;
+          }
+
           case "integrationWorkbench.sendHttpRequest": {
-            commands.executeCommand("integrationWorkbench.addResponse", new WorkbenchHttpResponse(
-              randomUUID(),
-              this.request.getData(),
-              new Date()
-            ));
+            this.request.send();
 
             return;
           }

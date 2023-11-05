@@ -60,15 +60,18 @@ var import_fs2 = require("fs");
 var import_vscode6 = require("vscode");
 
 // src/workbenches/requests/WorkbenchRequest.ts
-var import_vscode5 = require("vscode");
+var import_vscode4 = require("vscode");
 
 // src/interfaces/workbenches/requests/utils/WorkbenchRequestDataTypeValidations.ts
 function isHttpRequestData(requestData) {
   return requestData.type === "HTTP";
 }
+function isHttpRequestApplicationJsonBodyData(bodyData) {
+  return bodyData.type === "application/json";
+}
 
 // src/panels/RequestWebviewPanel.ts
-var import_vscode4 = require("vscode");
+var import_vscode3 = require("vscode");
 
 // src/utils/GetWebviewUri.ts
 var import_vscode2 = require("vscode");
@@ -79,72 +82,30 @@ function getWebviewUri(webview, extensionUri, pathList) {
 // src/panels/RequestWebviewPanel.ts
 var import_fs = require("fs");
 var import_path = __toESM(require("path"));
-
-// src/workbenches/responses/WorkbenchHttpResponse.ts
-var import_vscode3 = require("vscode");
-var WorkbenchHttpResponse = class {
-  constructor(id, request, requestedAt) {
-    this.id = id;
-    this.request = request;
-    this.requestedAt = requestedAt;
-    if (!request.data.url) {
-      import_vscode3.window.showErrorMessage("No URL was provided in the request.");
-      return;
-    }
-    fetch(request.data.url, {
-      method: request.data.method
-    }).then(this.handleResponse.bind(this));
-  }
-  response;
-  result;
-  getData() {
-    return {
-      id: this.id,
-      request: this.request,
-      requestedAt: this.requestedAt.toISOString(),
-      result: this.result && {
-        body: this.result.body,
-        headers: this.result.headers
-      }
-    };
-  }
-  async handleResponse(response) {
-    this.response = response;
-    const headers = {};
-    const body = await response.text();
-    response.headers.forEach((value, key) => {
-      headers[key] = value;
-    });
-    this.result = {
-      body,
-      headers
-    };
-    import_vscode3.commands.executeCommand("integrationWorkbench.refreshResponses");
-  }
-};
-
-// src/panels/RequestWebviewPanel.ts
-var import_crypto = require("crypto");
 var RequestWebviewPanel = class {
   constructor(context, request) {
     this.context = context;
     this.request = request;
-    this.webviewPanel = import_vscode4.window.createWebviewPanel(
+    this.webviewPanel = import_vscode3.window.createWebviewPanel(
       "integrationWorkbench.request",
       request.name,
-      import_vscode4.ViewColumn.One,
+      import_vscode3.ViewColumn.One,
       {
         enableScripts: true,
         localResourceRoots: [
-          import_vscode4.Uri.joinPath(context.extensionUri, "build"),
-          import_vscode4.Uri.joinPath(context.extensionUri, "resources")
+          import_vscode3.Uri.joinPath(context.extensionUri, "build"),
+          import_vscode3.Uri.joinPath(context.extensionUri, "resources"),
+          import_vscode3.Uri.joinPath(context.extensionUri, "node_modules", "monaco-editor", "min", "vs")
         ]
       }
     );
     this.webviewPanel.onDidDispose(() => this.dispose(), null, this.disposables);
     const webviewUri = getWebviewUri(this.webviewPanel.webview, context.extensionUri, ["build", "webviews", "request.js"]);
     const styleUri = getWebviewUri(this.webviewPanel.webview, context.extensionUri, ["resources", "request", "styles", "request.css"]);
+    const globalStyleUri = getWebviewUri(this.webviewPanel.webview, context.extensionUri, ["resources", "request", "styles", "global.css"]);
     const shikiUri = getWebviewUri(this.webviewPanel.webview, context.extensionUri, ["resources", "shiki"]);
+    const monacoEditorUri = getWebviewUri(this.webviewPanel.webview, context.extensionUri, ["node_modules", "monaco-editor", "min", "vs"]);
+    const monacoEditorLoaderUri = getWebviewUri(this.webviewPanel.webview, context.extensionUri, ["node_modules", "monaco-editor", "min", "vs", "loader.js"]);
     this.webviewPanel.webview.html = `
       <!DOCTYPE html>
       <html lang="en">
@@ -156,6 +117,7 @@ var RequestWebviewPanel = class {
           <title>Hello World!</title>
 
           <link rel="stylesheet" href="${styleUri}"/>
+          <link rel="stylesheet" href="${globalStyleUri}"/>
         </head>
         <body>
           ${(0, import_fs.readFileSync)(
@@ -167,6 +129,12 @@ var RequestWebviewPanel = class {
 
           <script type="text/javascript">
             window.shikiUri = "${shikiUri}";
+          </script>
+
+          <script src="${monacoEditorLoaderUri}"></script>
+
+          <script>
+            require.config({ paths: { vs: '${monacoEditorUri}' } });
           </script>
 
           <script type="module" src="${webviewUri}"></script>
@@ -192,12 +160,15 @@ var RequestWebviewPanel = class {
             }
             return;
           }
+          case "integrationWorkbench.changeHttpRequestBody": {
+            const [bodyData] = message.arguments;
+            if (this.request instanceof WorkbenchHttpRequest) {
+              this.request.setBody(bodyData);
+            }
+            return;
+          }
           case "integrationWorkbench.sendHttpRequest": {
-            import_vscode4.commands.executeCommand("integrationWorkbench.addResponse", new WorkbenchHttpResponse(
-              (0, import_crypto.randomUUID)(),
-              this.request.getData(),
-              new Date()
-            ));
+            this.request.send();
             return;
           }
           case "integrationWorkbench.getRequest": {
@@ -216,7 +187,7 @@ var RequestWebviewPanel = class {
   webviewPanel;
   disposables = [];
   reveal() {
-    const columnToShowIn = import_vscode4.window.activeTextEditor ? import_vscode4.window.activeTextEditor.viewColumn : void 0;
+    const columnToShowIn = import_vscode3.window.activeTextEditor ? import_vscode3.window.activeTextEditor.viewColumn : void 0;
     this.webviewPanel.reveal(columnToShowIn);
   }
   dispose() {
@@ -241,14 +212,17 @@ var WorkbenchRequest = class {
   id;
   name;
   requestWebviewPanel;
-  treeDataViewItems = [];
+  treeDataViewItem;
   getData() {
     return {
       id: this.id,
       name: this.name,
       type: "HTTP",
       data: {
-        method: ""
+        method: "",
+        body: {
+          type: "none"
+        }
       }
     };
   }
@@ -264,10 +238,20 @@ var WorkbenchRequest = class {
   showWebviewPanel(context) {
     if (!this.requestWebviewPanel) {
       this.requestWebviewPanel = new RequestWebviewPanel(context, this);
+      if (this.treeDataViewItem?.iconPath instanceof import_vscode4.Uri) {
+        this.setWebviewPanelIcon(this.treeDataViewItem.iconPath);
+      }
     } else {
       this.requestWebviewPanel.reveal();
     }
-    import_vscode5.commands.executeCommand("integrationWorkbench.openResponse", this);
+    import_vscode4.commands.executeCommand("integrationWorkbench.openResponse", this);
+  }
+  setWebviewPanelIcon(icon) {
+    console.log("set icon path");
+    if (this.requestWebviewPanel) {
+      console.log("seting icon path", icon);
+      this.requestWebviewPanel.webviewPanel.iconPath = icon;
+    }
   }
   setName(name) {
     this.name = name;
@@ -281,7 +265,74 @@ var WorkbenchRequest = class {
   }
 };
 
+// src/workbenches/responses/WorkbenchHttpResponse.ts
+var import_vscode5 = require("vscode");
+var WorkbenchHttpResponse = class {
+  constructor(id, request, requestedAt) {
+    this.id = id;
+    this.request = request;
+    this.requestedAt = requestedAt;
+    if (!request.data.url) {
+      import_vscode5.window.showErrorMessage("No URL was provided in the request.");
+      return;
+    }
+    const headers = new Headers();
+    let body;
+    if (isHttpRequestApplicationJsonBodyData(this.request.data.body)) {
+      headers.set("Content-Type", "application/json");
+      body = this.request.data.body.body;
+    }
+    fetch(request.data.url, {
+      method: request.data.method,
+      headers,
+      body
+    }).then(this.handleResponse.bind(this)).catch(this.handleResponseError.bind(this));
+  }
+  response;
+  error;
+  result;
+  status = "loading";
+  treeItem;
+  getData() {
+    return {
+      id: this.id,
+      status: this.status,
+      request: this.request,
+      requestedAt: this.requestedAt.toISOString(),
+      error: this.error,
+      result: this.result && {
+        body: this.result.body,
+        headers: this.result.headers
+      }
+    };
+  }
+  async handleResponse(response) {
+    this.status = "done";
+    this.response = response;
+    const headers = {};
+    const body = await response.text();
+    response.headers.forEach((value, key) => {
+      headers[key] = value;
+    });
+    this.result = {
+      body,
+      headers
+    };
+    import_vscode5.commands.executeCommand("integrationWorkbench.refreshResponses", this);
+  }
+  async handleResponseError(reason) {
+    this.status = "failed";
+    if (reason instanceof Error) {
+      this.error = reason.message;
+    } else if (typeof reason === "string") {
+      this.error = reason;
+    }
+    import_vscode5.commands.executeCommand("integrationWorkbench.refreshResponses", this);
+  }
+};
+
 // src/workbenches/requests/WorkbenchHttpRequest.ts
+var import_crypto = require("crypto");
 var WorkbenchHttpRequest = class extends WorkbenchRequest {
   constructor(parent, id, name, data) {
     super(parent, id, name);
@@ -294,7 +345,10 @@ var WorkbenchHttpRequest = class extends WorkbenchRequest {
       type: "HTTP",
       data: {
         method: this.data.method,
-        url: this.data.url
+        url: this.data.url,
+        body: {
+          ...this.data.body
+        }
       }
     };
   }
@@ -302,15 +356,24 @@ var WorkbenchHttpRequest = class extends WorkbenchRequest {
     return new WorkbenchHttpRequest(parent, data.id, data.name, data.data);
   }
   send() {
+    import_vscode6.commands.executeCommand("integrationWorkbench.addResponse", new WorkbenchHttpResponse(
+      (0, import_crypto.randomUUID)(),
+      this.getData(),
+      new Date()
+    ));
   }
   setMethod(method) {
     this.data.method = method;
-    this.treeDataViewItems.forEach((treeDataViewItem) => treeDataViewItem.setIconPath());
+    this.treeDataViewItem?.setIconPath();
     import_vscode6.commands.executeCommand("integrationWorkbench.refreshWorkbenches");
     this.parent.save();
   }
   setUrl(url) {
     this.data.url = url;
+    this.parent.save();
+  }
+  setBody(bodyData) {
+    this.data.body = bodyData;
     this.parent.save();
   }
 };
@@ -336,10 +399,7 @@ var WorkbenchRequestTreeItem = class extends import_vscode7.TreeItem {
       if (this.request.data.method) {
         const iconPath = import_path2.default.join(__filename, "..", "..", "resources", "icons", "methods", `${this.request.data.method}.png`);
         if ((0, import_fs2.existsSync)(iconPath)) {
-          return {
-            light: iconPath,
-            dark: iconPath
-          };
+          return import_vscode7.Uri.file(iconPath);
         }
       }
     }
@@ -347,6 +407,9 @@ var WorkbenchRequestTreeItem = class extends import_vscode7.TreeItem {
   }
   setIconPath() {
     this.iconPath = this.getIconPath();
+    if (this.iconPath instanceof import_vscode7.Uri) {
+      this.request.setWebviewPanelIcon(this.iconPath);
+    }
   }
 };
 
@@ -512,7 +575,7 @@ var WorkbenchTreeDataProvider = class {
         return Promise.resolve(
           element.collection.requests.map((request) => {
             const requestTreeItem = new WorkbenchRequestTreeItem(element.workbench, request, element.collection);
-            request.treeDataViewItems.push(requestTreeItem);
+            request.treeDataViewItem = requestTreeItem;
             return requestTreeItem;
           })
         );
@@ -594,7 +657,10 @@ var CreateRequestCommand = class {
         reference.collection.requests.push(
           new WorkbenchHttpRequest(reference.collection, (0, import_crypto3.randomUUID)(), value, {
             method: "GET",
-            url: "https://httpbin.org/get"
+            url: "https://httpbin.org/get",
+            body: {
+              type: "none"
+            }
           })
         );
         reference.workbench.save();
@@ -781,69 +847,15 @@ var import_fs8 = require("fs");
 var import_path9 = __toESM(require("path"));
 
 // src/workbenches/trees/responses/WorkbenchesRequestsTreeDataProvider.ts
-var import_vscode21 = require("vscode");
-
-// src/workbenches/trees/responses/items/WorkbenchResponseTreeItem.ts
-var import_vscode19 = require("vscode");
-var import_path8 = __toESM(require("path"));
-var import_fs7 = require("fs");
-var WorkbenchResponseTreeItem = class extends import_vscode19.TreeItem {
-  constructor(response) {
-    super(response.request.name, import_vscode19.TreeItemCollapsibleState.None);
-    this.response = response;
-    this.contextValue = response.result ? "response" : "responseLoading";
-    this.tooltip = `${response.request.name} response`;
-    this.description = `${response.requestedAt.getHours()}:${response.requestedAt.getMinutes().toString().padStart(2, "0")}`;
-    this.setIconPath();
-    this.updateDescription();
-    this.command = {
-      title: "Show response",
-      command: "integrationWorkbench.showResponse",
-      arguments: [response]
-    };
-  }
-  getDescription() {
-    const now = Date.now();
-    const then = this.response.requestedAt.getTime();
-    const difference = now - then;
-    if (difference < 60 * 1e3) {
-      return "just now";
-    }
-    if (difference < 60 * 60 * 1e3) {
-      return Math.floor(difference / 1e3 / 60) + " minutes ago";
-    }
-    return Math.floor(difference / 1e3 / 60 / 60) + " hours ago";
-  }
-  updateDescription() {
-    this.description = this.getDescription();
-  }
-  getIconPath() {
-    if (this.response.result) {
-      if (isHttpRequestData(this.response.request)) {
-        const iconPath = import_path8.default.join(__filename, "..", "..", "resources", "icons", "methods", `${this.response.request.data.method}.png`);
-        if ((0, import_fs7.existsSync)(iconPath)) {
-          return {
-            light: iconPath,
-            dark: iconPath
-          };
-        }
-      }
-      return new import_vscode19.ThemeIcon("search-show-context");
-    }
-    return new import_vscode19.ThemeIcon("loading~spin", new import_vscode19.ThemeColor("progressBar.background"));
-  }
-  setIconPath() {
-    this.iconPath = this.getIconPath();
-  }
-};
+var import_vscode20 = require("vscode");
 
 // src/workbenches/trees/responses/items/WorkbenchResponsesBookmarkTreeItem.ts
-var import_vscode20 = require("vscode");
-var WorkbenchResponsesBookmarkTreeItem = class extends import_vscode20.TreeItem {
+var import_vscode19 = require("vscode");
+var WorkbenchResponsesBookmarkTreeItem = class extends import_vscode19.TreeItem {
   constructor() {
-    super("Bookmarks", import_vscode20.TreeItemCollapsibleState.None);
+    super("Bookmarks", import_vscode19.TreeItemCollapsibleState.None);
     this.tooltip = `Response Bookmarks`;
-    this.iconPath = new import_vscode20.ThemeIcon("bookmark");
+    this.iconPath = new import_vscode19.ThemeIcon("bookmark");
   }
 };
 
@@ -853,23 +865,29 @@ var WorkbenchesRequestsTreeDataProvider = class {
     this.context = context;
   }
   workbenchResponses = [];
+  selectAfterRefresh;
+  getParent(element) {
+    return null;
+  }
   getTreeItem(element) {
     return element;
   }
   getChildren(element) {
+    if (this.selectAfterRefresh) {
+      import_vscode20.commands.executeCommand("integrationWorkbench.showResponse", this.selectAfterRefresh);
+      delete this.selectAfterRefresh;
+    }
     if (!element) {
       return Promise.resolve(
         [
           new WorkbenchResponsesBookmarkTreeItem(),
-          ...this.workbenchResponses.map(
-            (response) => new WorkbenchResponseTreeItem(response)
-          )
+          ...this.workbenchResponses
         ]
       );
     }
     return Promise.resolve([]);
   }
-  _onDidChangeTreeData = new import_vscode21.EventEmitter();
+  _onDidChangeTreeData = new import_vscode20.EventEmitter();
   onDidChangeTreeData = this._onDidChangeTreeData.event;
   refresh() {
     this._onDidChangeTreeData.fire();
@@ -877,12 +895,12 @@ var WorkbenchesRequestsTreeDataProvider = class {
 };
 
 // src/commands/collections/EditCollectionNameCommand.ts
-var import_vscode22 = require("vscode");
+var import_vscode21 = require("vscode");
 var EditCollectionNameCommand = class {
   constructor(context) {
     this.context = context;
     context.subscriptions.push(
-      import_vscode22.commands.registerCommand("integrationWorkbench.editCollectionName", this.handle.bind(this))
+      import_vscode21.commands.registerCommand("integrationWorkbench.editCollectionName", this.handle.bind(this))
     );
   }
   async handle(reference) {
@@ -892,7 +910,7 @@ var EditCollectionNameCommand = class {
     } else {
       throw new Error("Unknown entry point for editing collection name.");
     }
-    import_vscode22.window.showInputBox({
+    import_vscode21.window.showInputBox({
       prompt: "Enter a collection name",
       value: collection.name,
       validateInput(value) {
@@ -907,18 +925,18 @@ var EditCollectionNameCommand = class {
       }
       collection.name = value;
       collection.save();
-      import_vscode22.commands.executeCommand("integrationWorkbench.refreshWorkbenches");
+      import_vscode21.commands.executeCommand("integrationWorkbench.refreshWorkbenches");
     });
   }
 };
 
 // src/commands/collections/EditCollectionDescriptionCommand.ts
-var import_vscode23 = require("vscode");
+var import_vscode22 = require("vscode");
 var EditCollectionDescriptionCommand = class {
   constructor(context) {
     this.context = context;
     context.subscriptions.push(
-      import_vscode23.commands.registerCommand("integrationWorkbench.editCollectionDescription", this.handle.bind(this))
+      import_vscode22.commands.registerCommand("integrationWorkbench.editCollectionDescription", this.handle.bind(this))
     );
   }
   async handle(reference) {
@@ -928,7 +946,7 @@ var EditCollectionDescriptionCommand = class {
     } else {
       throw new Error("Unknown entry point for editing collection description.");
     }
-    import_vscode23.window.showInputBox({
+    import_vscode22.window.showInputBox({
       prompt: "Enter a collection description",
       value: collection.description
     }).then((value) => {
@@ -938,18 +956,18 @@ var EditCollectionDescriptionCommand = class {
         collection.description = value;
       }
       collection.save();
-      import_vscode23.commands.executeCommand("integrationWorkbench.refreshWorkbenches");
+      import_vscode22.commands.executeCommand("integrationWorkbench.refreshWorkbenches");
     });
   }
 };
 
 // src/commands/requests/EditRequestNameCommand.ts
-var import_vscode24 = require("vscode");
+var import_vscode23 = require("vscode");
 var EditRequestNameCommand = class {
   constructor(context) {
     this.context = context;
     context.subscriptions.push(
-      import_vscode24.commands.registerCommand("integrationWorkbench.editRequestName", this.handle.bind(this))
+      import_vscode23.commands.registerCommand("integrationWorkbench.editRequestName", this.handle.bind(this))
     );
   }
   async handle(reference) {
@@ -959,7 +977,7 @@ var EditRequestNameCommand = class {
     } else {
       throw new Error("Unknown entry point for editing request name.");
     }
-    import_vscode24.window.showInputBox({
+    import_vscode23.window.showInputBox({
       prompt: "Enter a request name",
       value: request.name,
       validateInput(value) {
@@ -973,8 +991,103 @@ var EditRequestNameCommand = class {
         return;
       }
       request.setName(value);
-      import_vscode24.commands.executeCommand("integrationWorkbench.refreshWorkbenches");
+      import_vscode23.commands.executeCommand("integrationWorkbench.refreshWorkbenches");
     });
+  }
+};
+
+// src/commands/collections/RunCollectionCommand.ts
+var import_vscode24 = require("vscode");
+var RunCollectionCommand = class {
+  constructor(context) {
+    this.context = context;
+    context.subscriptions.push(
+      import_vscode24.commands.registerCommand("integrationWorkbench.runCollection", this.handle.bind(this))
+    );
+  }
+  async handle(reference) {
+    let collection;
+    if (reference instanceof WorkbenchCollectionTreeItem) {
+      collection = reference.collection;
+    } else {
+      throw new Error("Unknown entry point for running collection.");
+    }
+    [...collection.requests].reverse().forEach((request) => {
+      request.send();
+    });
+  }
+};
+
+// src/commands/requests/RunRequestCommand.ts
+var import_vscode25 = require("vscode");
+var RunRequestCommand = class {
+  constructor(context) {
+    this.context = context;
+    context.subscriptions.push(
+      import_vscode25.commands.registerCommand("integrationWorkbench.runRequest", this.handle.bind(this))
+    );
+  }
+  async handle(reference) {
+    let request;
+    if (reference instanceof WorkbenchRequestTreeItem) {
+      request = reference.request;
+    } else {
+      throw new Error("Unknown entry point for editing request name.");
+    }
+    request.send();
+  }
+};
+
+// src/workbenches/trees/responses/items/WorkbenchResponseTreeItem.ts
+var import_vscode26 = require("vscode");
+var import_path8 = __toESM(require("path"));
+var import_fs7 = require("fs");
+var WorkbenchResponseTreeItem = class extends import_vscode26.TreeItem {
+  constructor(response) {
+    super(response.request.name, import_vscode26.TreeItemCollapsibleState.None);
+    this.response = response;
+    this.tooltip = `${response.request.name} response`;
+    this.update();
+    this.command = {
+      title: "Show response",
+      command: "integrationWorkbench.showResponse",
+      arguments: [this]
+    };
+  }
+  update() {
+    this.contextValue = "response-" + this.response.status;
+    this.description = this.getDescription();
+    this.iconPath = this.getIconPath();
+  }
+  getDescription() {
+    const now = Date.now();
+    const then = this.response.requestedAt.getTime();
+    const difference = now - then;
+    if (difference < 60 * 1e3) {
+      return "just now";
+    }
+    if (difference < 60 * 60 * 1e3) {
+      return Math.floor(difference / 1e3 / 60) + " minutes ago";
+    }
+    return Math.floor(difference / 1e3 / 60 / 60) + " hours ago";
+  }
+  getIconPath() {
+    if (this.response.status === "done") {
+      if (isHttpRequestData(this.response.request)) {
+        const iconPath = import_path8.default.join(__filename, "..", "..", "resources", "icons", "methods", `${this.response.request.data.method}.png`);
+        if ((0, import_fs7.existsSync)(iconPath)) {
+          return {
+            light: iconPath,
+            dark: iconPath
+          };
+        }
+      }
+      return new import_vscode26.ThemeIcon("search-show-context");
+    }
+    if (this.response.status === "failed") {
+      return new import_vscode26.ThemeIcon("run-errors", new import_vscode26.ThemeColor("terminalCommandDecoration.errorBackground"));
+    }
+    return new import_vscode26.ThemeIcon("loading~spin", new import_vscode26.ThemeColor("progressBar.background"));
   }
 };
 
@@ -982,6 +1095,13 @@ var EditRequestNameCommand = class {
 function activate(context) {
   console.log('Congratulations, your extension "integrationworkbench" is now active!');
   const workbenchesTreeDataProvider = new WorkbenchTreeDataProvider(context);
+  const workbenchTreeView = vscode.window.createTreeView("workbenches", {
+    treeDataProvider: workbenchesTreeDataProvider
+  });
+  const workbenchesResponsesTreeDataProvider = new WorkbenchesRequestsTreeDataProvider(context);
+  const workbenchesResponsesTreeView = vscode.window.createTreeView("requests", {
+    treeDataProvider: workbenchesResponsesTreeDataProvider
+  });
   vscode.window.registerWebviewViewProvider("response", {
     resolveWebviewView: (webviewView, _context, _token) => {
       webviewView.webview.options = {
@@ -1028,37 +1148,65 @@ function activate(context) {
 					</body>
 				</html>
 			`;
-      context.subscriptions.push(vscode.commands.registerCommand("integrationWorkbench.showResponse", (response) => {
+      let currentWorkbenchResponse;
+      context.subscriptions.push(vscode.commands.registerCommand("integrationWorkbench.showResponse", (workbenchResponseTreeItem) => {
+        currentWorkbenchResponse = workbenchResponseTreeItem.response;
+        workbenchesResponsesTreeView.reveal(workbenchResponseTreeItem, {
+          select: true
+        });
         webviewView.webview.postMessage({
           command: "integrationWorkbench.showResponse",
-          arguments: [response.getData()]
+          arguments: [workbenchResponseTreeItem.response.getData()]
         });
       }));
+      context.subscriptions.push(vscode.commands.registerCommand("integrationWorkbench.refreshResponses", (workbenchResponse) => {
+        const workbenchResponseTreeItem = workbenchesResponsesTreeDataProvider.workbenchResponses.find((workbenchTreeView2) => workbenchTreeView2.response.id === workbenchResponse.id);
+        workbenchResponseTreeItem?.update();
+        workbenchesResponsesTreeDataProvider.refresh();
+        if (currentWorkbenchResponse?.id === workbenchResponse.id) {
+          webviewView.webview.postMessage({
+            command: "integrationWorkbench.showResponse",
+            arguments: [currentWorkbenchResponse.getData()]
+          });
+        }
+      }));
+      context.subscriptions.push(vscode.commands.registerCommand("integrationWorkbench.deleteResponse", (reference) => {
+        if (reference instanceof WorkbenchResponseTreeItem) {
+          const index = workbenchesResponsesTreeDataProvider.workbenchResponses.indexOf(reference);
+          if (index !== -1) {
+            workbenchesResponsesTreeDataProvider.workbenchResponses.splice(index, 1);
+            workbenchesResponsesTreeDataProvider.refresh();
+            if (currentWorkbenchResponse?.id === reference.response.id) {
+              currentWorkbenchResponse = void 0;
+              webviewView.webview.postMessage({
+                command: "integrationWorkbench.showResponse",
+                arguments: [currentWorkbenchResponse]
+              });
+            }
+          } else {
+            vscode.window.showWarningMessage("Failed to find request to delete.");
+          }
+        }
+      }));
     }
-  });
-  const workbenchTreeView = vscode.window.createTreeView("workbenches", {
-    treeDataProvider: workbenchesTreeDataProvider
-  });
-  const workbenchesResponsesTreeDataProvider = new WorkbenchesRequestsTreeDataProvider(context);
-  vscode.window.createTreeView("requests", {
-    treeDataProvider: workbenchesResponsesTreeDataProvider
   });
   new CreateCollectionCommand(context);
   new EditCollectionNameCommand(context);
   new EditCollectionDescriptionCommand(context);
+  new RunCollectionCommand(context);
   new CreateRequestCommand(context);
   new OpenRequestCommand(context);
   new EditRequestNameCommand(context);
+  new RunRequestCommand(context);
   new OpenResponseCommand(context);
   new CreateWorkbenchCommand(context);
   context.subscriptions.push(vscode.commands.registerCommand("integrationWorkbench.refreshWorkbenches", () => {
     workbenchesTreeDataProvider.refresh();
   }));
   context.subscriptions.push(vscode.commands.registerCommand("integrationWorkbench.addResponse", (workbenchResponse) => {
-    workbenchesResponsesTreeDataProvider.workbenchResponses.unshift(workbenchResponse);
-    workbenchesResponsesTreeDataProvider.refresh();
-  }));
-  context.subscriptions.push(vscode.commands.registerCommand("integrationWorkbench.refreshResponses", () => {
+    const workbenchResponseTreeItem = new WorkbenchResponseTreeItem(workbenchResponse);
+    workbenchesResponsesTreeDataProvider.workbenchResponses.unshift(workbenchResponseTreeItem);
+    workbenchesResponsesTreeDataProvider.selectAfterRefresh = workbenchResponseTreeItem;
     workbenchesResponsesTreeDataProvider.refresh();
   }));
   context.subscriptions.push(vscode.commands.registerCommand("integrationWorkbench.openWalkthrough", () => {

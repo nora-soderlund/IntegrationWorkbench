@@ -16,6 +16,9 @@ import { WorkbenchResponse } from './workbenches/responses/WorkbenchResponse';
 import EditCollectionNameCommand from './commands/collections/EditCollectionNameCommand';
 import EditCollectionDescriptionCommand from './commands/collections/EditCollectionDescriptionCommand';
 import EditRequestNameCommand from './commands/requests/EditRequestNameCommand';
+import RunCollectionCommand from './commands/collections/RunCollectionCommand';
+import RunRequestCommand from './commands/requests/RunRequestCommand';
+import WorkbenchResponseTreeItem from './workbenches/trees/responses/items/WorkbenchResponseTreeItem';
 
 // This method is called when your extension is activated
 // Your extension is activated the very first time the command is executed
@@ -25,6 +28,16 @@ export function activate(context: vscode.ExtensionContext) {
 	console.log('Congratulations, your extension "integrationworkbench" is now active!');
 
 	const workbenchesTreeDataProvider = new WorkbenchTreeDataProvider(context);
+	
+	const workbenchTreeView = vscode.window.createTreeView('workbenches', {
+		treeDataProvider: workbenchesTreeDataProvider
+	});
+
+	const workbenchesResponsesTreeDataProvider = new WorkbenchesRequestsTreeDataProvider(context);
+	
+	const workbenchesResponsesTreeView = vscode.window.createTreeView('requests', {
+		treeDataProvider: workbenchesResponsesTreeDataProvider
+	});
 
 	vscode.window.registerWebviewViewProvider("response", {
 		resolveWebviewView: (webviewView, _context, _token) => {
@@ -76,32 +89,71 @@ export function activate(context: vscode.ExtensionContext) {
 				</html>
 			`;
 
-			context.subscriptions.push(vscode.commands.registerCommand('integrationWorkbench.showResponse', (response: WorkbenchResponse) => {
+			let currentWorkbenchResponse: WorkbenchResponse | undefined;
+
+			context.subscriptions.push(vscode.commands.registerCommand('integrationWorkbench.showResponse', (workbenchResponseTreeItem: WorkbenchResponseTreeItem) => {
+				currentWorkbenchResponse = workbenchResponseTreeItem.response;
+				
+				workbenchesResponsesTreeView.reveal(workbenchResponseTreeItem, {
+					select: true
+				});
+
 				webviewView.webview.postMessage({
 					command: "integrationWorkbench.showResponse",
-					arguments: [ response.getData() ]
+					arguments: [ workbenchResponseTreeItem.response.getData() ]
 				});
 			}));
-		}
-	});
-	
-	const workbenchTreeView = vscode.window.createTreeView('workbenches', {
-		treeDataProvider: workbenchesTreeDataProvider
-	});
 
-	const workbenchesResponsesTreeDataProvider = new WorkbenchesRequestsTreeDataProvider(context);
-	
-	vscode.window.createTreeView('requests', {
-		treeDataProvider: workbenchesResponsesTreeDataProvider
+			context.subscriptions.push(vscode.commands.registerCommand('integrationWorkbench.refreshResponses', (workbenchResponse: WorkbenchResponse) => {
+				const workbenchResponseTreeItem = workbenchesResponsesTreeDataProvider.workbenchResponses.find((workbenchTreeView) => workbenchTreeView.response.id === workbenchResponse.id);
+		
+				workbenchResponseTreeItem?.update();
+		
+				workbenchesResponsesTreeDataProvider.refresh();
+
+				if(currentWorkbenchResponse?.id === workbenchResponse.id) {
+					webviewView.webview.postMessage({
+						command: "integrationWorkbench.showResponse",
+						arguments: [ currentWorkbenchResponse.getData() ]
+					});
+				}
+			}));
+
+			context.subscriptions.push(vscode.commands.registerCommand('integrationWorkbench.deleteResponse', (reference: unknown) => {
+				if(reference instanceof WorkbenchResponseTreeItem) {
+					const index = workbenchesResponsesTreeDataProvider.workbenchResponses.indexOf(reference);
+		
+					if(index !== -1) {
+						workbenchesResponsesTreeDataProvider.workbenchResponses.splice(index, 1);
+		
+						workbenchesResponsesTreeDataProvider.refresh();
+
+						if(currentWorkbenchResponse?.id === reference.response.id) {
+							currentWorkbenchResponse = undefined;
+
+							webviewView.webview.postMessage({
+								command: "integrationWorkbench.showResponse",
+								arguments: [ currentWorkbenchResponse ]
+							});
+						}
+					}
+					else {
+						vscode.window.showWarningMessage("Failed to find request to delete.");
+					}
+				}
+			}));
+		}
 	});
 	
 	new CreateCollectionCommand(context);
 	new EditCollectionNameCommand(context);
 	new EditCollectionDescriptionCommand(context);
+	new RunCollectionCommand(context);
 	
 	new CreateRequestCommand(context);
 	new OpenRequestCommand(context);
 	new EditRequestNameCommand(context);
+	new RunRequestCommand(context);
 
 	new OpenResponseCommand(context);
 
@@ -111,13 +163,12 @@ export function activate(context: vscode.ExtensionContext) {
 		workbenchesTreeDataProvider.refresh();
 	}));
 
-	context.subscriptions.push(vscode.commands.registerCommand('integrationWorkbench.addResponse', (workbenchResponse) => {
-		workbenchesResponsesTreeDataProvider.workbenchResponses.unshift(workbenchResponse);
+	context.subscriptions.push(vscode.commands.registerCommand('integrationWorkbench.addResponse', (workbenchResponse: WorkbenchResponse) => {
+		const workbenchResponseTreeItem = new WorkbenchResponseTreeItem(workbenchResponse);
 
-		workbenchesResponsesTreeDataProvider.refresh();
-	}));
+		workbenchesResponsesTreeDataProvider.workbenchResponses.unshift(workbenchResponseTreeItem);
+		workbenchesResponsesTreeDataProvider.selectAfterRefresh = workbenchResponseTreeItem;
 
-	context.subscriptions.push(vscode.commands.registerCommand('integrationWorkbench.refreshResponses', () => {
 		workbenchesResponsesTreeDataProvider.refresh();
 	}));
 

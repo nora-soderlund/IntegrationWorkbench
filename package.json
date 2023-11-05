@@ -44,6 +44,11 @@
           "type": "number",
           "default": 50,
           "description": "How many responses to retain in the responses panel, excluding saved responses."
+        },
+        "integrationWorkbench.showRunRequestButton": {
+          "type": "boolean",
+          "default": true,
+          "description": "If a run button should be shown inline with each request within a workbench."
         }
       }
     },
@@ -73,6 +78,11 @@
         "icon": "$(pencil)"
       },
       {
+        "command": "integrationWorkbench.runCollection",
+        "title": "Run all",
+        "icon": "$(run)"
+      },
+      {
         "command": "integrationWorkbench.createRequest",
         "title": "Create a Request",
         "icon": "$(new-file)"
@@ -81,6 +91,11 @@
         "command": "integrationWorkbench.editRequestName",
         "title": "Edit",
         "icon": "$(pencil)"
+      },
+      {
+        "command": "integrationWorkbench.runRequest",
+        "title": "Run",
+        "icon": "$(run)"
       },
       {
         "command": "integrationWorkbench.deleteResponse",
@@ -176,6 +191,10 @@
           "group": "inline"
         },
         {
+          "command": "integrationWorkbench.runCollection",
+          "when": "view == workbenches && (viewItem == collection)"
+        },
+        {
           "command": "integrationWorkbench.editCollectionName",
           "when": "view == workbenches && (viewItem == collection)"
         },
@@ -193,13 +212,22 @@
           "when": "view == workbenches && (viewItem == request)"
         },
         {
+          "command": "integrationWorkbench.runRequest",
+          "when": "view == workbenches && (viewItem == request) && config.integrationWorkbench.showRunRequestButton",
+          "group": "inline"
+        },
+        {
+          "command": "integrationWorkbench.runRequest",
+          "when": "view == workbenches && (viewItem == request) && !config.integrationWorkbench.showRunRequestButton"
+        },
+        {
           "command": "integrationWorkbench.cancelResponse",
-          "when": "view == requests && viewItem == responseLoading",
+          "when": "view == requests && viewItem == response-started",
           "group": "inline"
         },
         {
           "command": "integrationWorkbench.deleteResponse",
-          "when": "view == requests && viewItem == response",
+          "when": "view == requests && (viewItem == response-done || viewItem == response-failed)",
           "group": "inline"
         }
       ],
@@ -280,6 +308,8 @@
     "eslint": "^8.52.0",
     "glob": "^10.3.10",
     "mocha": "^10.2.0",
+    "monaco-editor": "^0.44.0",
+    "monaco-editor-webpack-plugin": "^7.1.0",
     "shiki": "^0.14.5",
     "typescript": "^5.2.2"
   }

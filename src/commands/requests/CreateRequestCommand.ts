@@ -32,7 +32,10 @@ export default class CreateRequestCommand {
         reference.collection.requests.push(
           new WorkbenchHttpRequest(reference.collection, randomUUID(), value, {
             method: "GET",
-            url: "https://httpbin.org/get"
+            url: "https://httpbin.org/get",
+            body: {
+              type: "none"
+            }
           })
         );
 

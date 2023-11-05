@@ -1,4 +1,4 @@
-import { ThemeIcon, TreeItem, TreeItemCollapsibleState } from "vscode";
+import { ThemeIcon, TreeItem, TreeItemCollapsibleState, Uri } from "vscode";
 import WorkbenchTreeItem from "./WorkbenchTreeItem";
 import { Workbench } from "../../../Workbench";
 import path from "path";
@@ -33,10 +33,7 @@ export default class WorkbenchRequestTreeItem extends TreeItem implements Workbe
         const iconPath = path.join(__filename, '..', '..', 'resources', 'icons', 'methods', `${this.request.data.method}.png`);
 
         if (existsSync(iconPath)) {
-          return {
-            light: iconPath,
-            dark: iconPath
-          };
+          return Uri.file(iconPath);
         }
       }
     }
@@ -46,5 +43,9 @@ export default class WorkbenchRequestTreeItem extends TreeItem implements Workbe
 
   setIconPath() {
     this.iconPath = this.getIconPath();
+
+    if(this.iconPath instanceof Uri) {
+      this.request.setWebviewPanelIcon(this.iconPath);
+    }
   }
 }

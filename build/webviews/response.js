@@ -25821,8 +25821,7 @@ provideVSCodeDesignSystem2().register(vsCodeButton2(), vsCodeTextField2(), vsCod
 var vscode = acquireVsCodeApi();
 window.addEventListener("load", main);
 async function main() {
-  const responsePanel = document.getElementById("response-panel");
-  const responseHeadersBadge = document.getElementById("response-headers-badge");
+  const response = document.getElementById("response");
   setThemeColorVariables();
   shiki.setCDN(window.shikiUri);
   const highlighter = await shiki.getHighlighter({
@@ -25835,35 +25834,74 @@ async function main() {
     switch (command) {
       case "integrationWorkbench.showResponse": {
         const responseData = event.data.arguments[0];
-        if (isHttpResponseData(responseData)) {
-          if (responseData.result) {
-            if (responseData.result?.body) {
-              if (responseData.result.headers["Content-Type"]?.toLowerCase() === "application/json") {
-                try {
-                  const body = JSON.parse(responseData.result.body);
-                  responsePanel.innerHTML = highlighter.codeToHtml(JSON.stringify(body, void 0, 2), { lang: "json" });
-                } catch {
-                  responsePanel.innerHTML = "Bad response.";
-                }
-              } else {
-                try {
-                  const body = JSON.parse(responseData.result.body);
-                  responsePanel.innerHTML = `
-                    <div class="infobox infobox-warning">
-                      <i class="codicon codicon-warning"></i>
+        if (!responseData) {
+          response.innerHTML = `
+            <vscode-panel-view>
+              No response selected.
+            </vscode-panel-view>
+          `;
+        } else if (isHttpResponseData(responseData)) {
+          switch (responseData.status) {
+            case "failed": {
+              response.innerHTML = `
+                <vscode-panel-view>
+                  <div class="infobox infobox-error">
+                    <i class="codicon codicon-error"></i>
 
-                      Response body was parsed as JSON but the Content-Type header was not <code>application/json</code>!
-                    </div>
+                    Request failed programmatically with error: ${responseData.error}
+                  </div>
+                </vscode-panel-view>
+              `;
+              break;
+            }
+            case "done": {
+              if (responseData.result) {
+                response.innerHTML = `
+                  <vscode-panels>
+                    <vscode-panel-tab id="tab-1">BODY</vscode-panel-tab>
+                    <vscode-panel-tab id="tab-2">
+                      HEADERS <vscode-badge id="response-headers-badge">${Object.entries(responseData.result.headers).length}</vscode-badge>
+                    </vscode-panel-tab>
+                    <vscode-panel-tab id="tab-3">RAW</vscode-panel-tab>
+                    
+                    <vscode-panel-view id="view-1">
+                      <div class="response-panel"></div>
+                    </vscode-panel-view>
 
-                    ${highlighter.codeToHtml(JSON.stringify(body, void 0, 2), { lang: "json" })}
-                  `;
-                } catch {
-                  responsePanel.innerText = responseData.result.body;
+                    <vscode-panel-view id="view-2">Headers content.</vscode-panel-view>
+
+                    <vscode-panel-view id="view-3">Raw content.</vscode-panel-view>
+                  </vscode-panels>
+                `;
+                const responsePanel = response.querySelector(".response-panel");
+                if (responseData.result.body) {
+                  if (responseData.result.headers["Content-Type"]?.toLowerCase() === "application/json") {
+                    try {
+                      const body = JSON.parse(responseData.result.body);
+                      responsePanel.innerHTML = highlighter.codeToHtml(JSON.stringify(body, void 0, 2), { lang: "json" });
+                    } catch {
+                      responsePanel.innerHTML = "Bad response.";
+                    }
+                  } else {
+                    try {
+                      const body = JSON.parse(responseData.result.body);
+                      responsePanel.innerHTML = `
+                        <div class="infobox infobox-warning">
+                          <i class="codicon codicon-warning"></i>
+
+                          Response body was parsed as JSON but the Content-Type header was not <code>application/json</code>!
+                        </div>
+
+                        ${highlighter.codeToHtml(JSON.stringify(body, void 0, 2), { lang: "json" })}
+                      `;
+                    } catch {
+                      responsePanel.innerText = responseData.result.body;
+                    }
+                  }
                 }
               }
+              break;
             }
-            const headersCount = Object.entries(responseData.result.headers).length;
-            responseHeadersBadge.innerText = headersCount.toString();
           }
         }
         break;
