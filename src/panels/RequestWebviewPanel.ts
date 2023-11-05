@@ -1,4 +1,4 @@
-import { Disposable, ExtensionContext, Uri, ViewColumn, WebviewPanel, TextDocument, window, workspace } from "vscode";
+import { Disposable, ExtensionContext, Uri, ViewColumn, WebviewPanel, TextDocument, window, workspace, commands } from "vscode";
 import { Workbench } from "../workbenches/Workbench";
 import { getWebviewUri } from "../utils/GetWebviewUri";
 import getWebviewNonce from "../utils/GetWebviewNonce";
@@ -6,6 +6,9 @@ import { readFileSync } from "fs";
 import path from "path";
 import WorkbenchRequest from "../workbenches/requests/WorkbenchRequest";
 import WorkbenchHttpRequest from "../workbenches/requests/WorkbenchHttpRequest";
+import { WorkbenchResponseData } from "../interfaces/workbenches/responses/WorkbenchResponseData";
+import WorkbenchHttpResponse from "../workbenches/responses/WorkbenchHttpResponse";
+import { randomUUID } from "crypto";
 
 export class RequestWebviewPanel {
   private readonly webviewPanel: WebviewPanel;
@@ -57,14 +60,12 @@ export class RequestWebviewPanel {
 
           <script type="text/javascript">
             window.shikiUri = "${shikiUri}";
-            window.workbenchRequest = JSON.parse(\`${JSON.stringify(request.getData())}\`);
           </script>
 
           <script type="module" src="${webviewUri}"></script>
         </body>
       </html>
     `;
-
 
     this.webviewPanel.webview.onDidReceiveMessage(
       (message: any) => {
@@ -73,12 +74,41 @@ export class RequestWebviewPanel {
         console.debug("Received event from request webview:", command);
 
         switch (command) {
-          case "integrationEvent.changeHttpRequestMethod": {
+          case "integrationWorkbench.changeHttpRequestMethod": {
             const [ method ] = message.arguments;
 
             if(this.request instanceof WorkbenchHttpRequest) {
               this.request.setMethod(method);
             }
+
+            return;
+          }
+
+          case "integrationWorkbench.changeHttpRequestUrl": {
+            const [ url ] = message.arguments;
+
+            if(this.request instanceof WorkbenchHttpRequest) {
+              this.request.setUrl(url);
+            }
+
+            return;
+          }
+
+          case "integrationWorkbench.sendHttpRequest": {
+            commands.executeCommand("integrationWorkbench.addResponse", new WorkbenchHttpResponse(
+              randomUUID(),
+              this.request.getData(),
+              new Date()
+            ));
+
+            return;
+          }
+
+          case "integrationWorkbench.getRequest": {
+            this.webviewPanel.webview.postMessage({
+              command: "integrationWorkbench.updateRequest",
+              arguments: [ this.request.getData() ]
+            });
 
             return;
           }

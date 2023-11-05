@@ -1,6 +1,6 @@
 import { commands } from "vscode";
 import { WorkbenchHttpRequestData } from "../../interfaces/workbenches/requests/WorkbenchHttpRequestData";
-import WorkbenchRequestTreeItem from "../../trees/items/WorkbenchRequestTreeItem";
+import WorkbenchRequestTreeItem from "../trees/workbenches/items/WorkbenchRequestTreeItem";
 import { Workbench } from "../Workbench";
 import { WorkbenchCollection } from "../collections/WorkbenchCollection";
 import WorkbenchRequest from "./WorkbenchRequest";
@@ -20,7 +20,10 @@ export default class WorkbenchHttpRequest extends WorkbenchRequest {
       id: this.id,
       name: this.name,
       type: "HTTP",
-      data: this.data
+      data: {
+        method: this.data.method,
+        url: this.data.url
+      }
     };
   }
   
@@ -38,6 +41,12 @@ export default class WorkbenchHttpRequest extends WorkbenchRequest {
     this.treeDataViewItems.forEach((treeDataViewItem) => treeDataViewItem.setIconPath());
 
     commands.executeCommand("integrationWorkbench.refreshWorkbenches");
+
+    this.parent.save();
+  }
+  
+  setUrl(url: string) {
+    this.data.url = url;
 
     this.parent.save();
   }

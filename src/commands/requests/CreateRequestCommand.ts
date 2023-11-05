@@ -1,5 +1,5 @@
 import { ExtensionContext, commands, window } from "vscode";
-import WorkbenchCollectionTreeItem from "../../trees/items/WorkbenchCollectionTreeItem";
+import WorkbenchCollectionTreeItem from "../../workbenches/trees/workbenches/items/WorkbenchCollectionTreeItem";
 import { randomUUID } from "crypto";
 import WorkbenchRequest from "../../workbenches/requests/WorkbenchRequest";
 import WorkbenchHttpRequest from "../../workbenches/requests/WorkbenchHttpRequest";

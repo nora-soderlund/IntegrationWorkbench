@@ -2,7 +2,7 @@ import { TreeDataProvider, TreeItem, Event, EventEmitter, ExtensionContext } fro
 import WorkbenchTreeItem from './items/WorkbenchTreeItem';
 import WorkbenchRequestTreeItem from './items/WorkbenchRequestTreeItem';
 import WorkbenchCollectionTreeItem from './items/WorkbenchCollectionTreeItem';
-import { scanForWorkbenches } from '../Workbenches';
+import { scanForWorkbenches } from '../../../Workbenches';
 
 export default class WorkbenchTreeDataProvider implements TreeDataProvider<WorkbenchTreeItem> {
   constructor(

@@ -20046,20 +20046,51 @@ provideVSCodeDesignSystem2().register(vsCodeButton2(), vsCodeTextField2(), vsCod
 var vscode = acquireVsCodeApi();
 window.addEventListener("load", main);
 function main() {
-  if (isHttpRequestData(window.workbenchRequest)) {
-    const httpRequestUrlInput = document.getElementById("http-request-url-input");
-    httpRequestUrlInput.value = window.workbenchRequest.data.url ?? "";
-    const httpRequestMethodDropdown = document.getElementById("http-request-method-dropdown");
-    httpRequestMethodDropdown.value = window.workbenchRequest.data.method;
-    httpRequestMethodDropdown.addEventListener("change", () => {
-      vscode.postMessage({
-        command: "integrationEvent.changeHttpRequestMethod",
-        arguments: [
-          httpRequestMethodDropdown.value
-        ]
-      });
-    });
-  }
+  window.addEventListener("message", (event) => {
+    const { command } = event.data;
+    console.debug("Received event from extension:", command);
+    switch (command) {
+      case "integrationWorkbench.updateRequest": {
+        const [requestData] = event.data.arguments;
+        if (isHttpRequestData(requestData)) {
+          const httpRequestUrlInput = document.getElementById("http-request-url-input");
+          httpRequestUrlInput.value = requestData.data.url ?? "";
+          httpRequestUrlInput.addEventListener("change", () => {
+            requestData.data.url = httpRequestUrlInput.value;
+            vscode.postMessage({
+              command: "integrationWorkbench.changeHttpRequestUrl",
+              arguments: [
+                requestData.data.url
+              ]
+            });
+          });
+          const httpRequestMethodDropdown = document.getElementById("http-request-method-dropdown");
+          httpRequestMethodDropdown.value = requestData.data.method;
+          httpRequestMethodDropdown.addEventListener("change", () => {
+            requestData.data.method = httpRequestMethodDropdown.value;
+            vscode.postMessage({
+              command: "integrationWorkbench.changeHttpRequestMethod",
+              arguments: [
+                requestData.data.method
+              ]
+            });
+          });
+          const httpRequestSendButton = document.getElementById("http-request-send-button");
+          httpRequestSendButton.addEventListener("click", () => {
+            vscode.postMessage({
+              command: "integrationWorkbench.sendHttpRequest",
+              arguments: []
+            });
+          });
+        }
+        break;
+      }
+    }
+  });
+  vscode.postMessage({
+    command: "integrationWorkbench.getRequest",
+    arguments: []
+  });
 }
 /*! Bundled license information:
 

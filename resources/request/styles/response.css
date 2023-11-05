@@ -7,6 +7,7 @@ body {
 
   padding: 0;
   
+  width: 100%;
   height: 100%;
 }
 
@@ -15,7 +16,12 @@ vscode-panels {
 
   padding-left: 20px;
 
+  width: 100%;
   height: 100%;
+}
+
+vscode-panel-view {
+  width: 100%;
 }
 
 vscode-panel-tab {
@@ -26,10 +32,16 @@ vscode-panel-tab {
   padding: 0;
 
   margin-left: -20px;
+  padding-right: 20px;
 
   background: var(--vscode-editor-background);
 
   height: 100%;
+  width: calc(100% + 20px);
+}
+
+.response-panel .infobox {
+  width: calc(100% + 20px);
 }
 
 code {

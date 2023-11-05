@@ -1,0 +1,19 @@
+.codicon {
+  vertical-align: bottom;
+}
+
+.infobox {
+  border: 1px solid;
+
+  width: 100%;
+
+  padding: 0.5em;
+
+  box-sizing: border-box;
+}
+
+.infobox-warning {
+  background: var(--vscode-inputValidation-warningBackground);
+  color: var(--vscode-inputValidation-warningForeground);
+  border-color: var(--vscode-inputValidation-warningBorder);
+}

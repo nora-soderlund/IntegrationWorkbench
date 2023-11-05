@@ -39,6 +39,11 @@
           ],
           "default": "prompt",
           "description": "Where new workbenches should be saved to."
+        },
+        "integrationWorkbench.retainResponsesAmount": {
+          "type": "number",
+          "default": 50,
+          "description": "How many responses to retain in the responses panel, excluding saved responses."
         }
       }
     },
@@ -61,6 +66,16 @@
         "command": "integrationWorkbench.createRequest",
         "title": "Create a Request",
         "icon": "$(new-file)"
+      },
+      {
+        "command": "integrationWorkbench.deleteResponse",
+        "title": "Delete Response",
+        "icon": "$(trashcan)"
+      },
+      {
+        "command": "integrationWorkbench.cancelResponse",
+        "title": "Cancel Request",
+        "icon": "$(chrome-close)"
       },
       {
         "command": "integrationWorkbench.editRequest",
@@ -108,14 +123,16 @@
           "id": "requests",
           "name": "Requests",
           "icon": "media/workbench.svg",
-          "contextualTitle": "Requests"
+          "contextualTitle": "Requests",
+          "initialSize": 0
         },
         {
           "id": "response",
           "name": "Response",
           "icon": "media/workbench.svg",
           "contextualTitle": "Response",
-          "type": "webview"
+          "type": "webview",
+          "initialSize": 1
         }
       ]
     },
@@ -123,6 +140,10 @@
       {
         "view": "workbenches",
         "contents": "No workbenches yet! Create your first one to get started.\n[Create a Workbench](command:integrationWorkbench.createWorkbench)\n[Open the walkthrough](command:integrationWorkbench.openWalkthrough) to learn how Integration Workbench works."
+      },
+      {
+        "view": "requests",
+        "contents": "No requests has been made in this session yet!"
       }
     ],
     "menus": {
@@ -142,6 +163,16 @@
         {
           "command": "integrationWorkbench.createRequest",
           "when": "view == workbenches && ((config.integrationWorkbench.allowRequestsInWorkbench && viewItem == workbench) || viewItem == collection)",
+          "group": "inline"
+        },
+        {
+          "command": "integrationWorkbench.cancelResponse",
+          "when": "view == requests && viewItem == responseLoading",
+          "group": "inline"
+        },
+        {
+          "command": "integrationWorkbench.deleteResponse",
+          "when": "view == requests && viewItem == response",
           "group": "inline"
         }
       ],
@@ -215,6 +246,7 @@
     "@types/vscode-webview": "^1.57.3",
     "@typescript-eslint/eslint-plugin": "^6.9.0",
     "@typescript-eslint/parser": "^6.9.0",
+    "@vscode/codicons": "^0.0.35",
     "@vscode/test-electron": "^2.3.6",
     "@vscode/webview-ui-toolkit": "^1.2.2",
     "esbuild": "0.16.17",

@@ -25794,6 +25794,11 @@ var require_dist = __commonJS({
   }
 });
 
+// src/interfaces/workbenches/responses/utils/WorkbenchResponseTypeValidations.ts
+function isHttpResponseData(responseData) {
+  return responseData.request.type === "HTTP";
+}
+
 // src/webviews/theme/SetThemeColorVariables.ts
 function setThemeColorVariables() {
   document.documentElement.style.setProperty("--shiki-color-text", "var(--vscode-editor-foreground)");
@@ -25810,24 +25815,60 @@ function setThemeColorVariables() {
 }
 
 // src/webviews/response/index.ts
-var { provideVSCodeDesignSystem: provideVSCodeDesignSystem2, vsCodeButton: vsCodeButton2, vsCodeTextField: vsCodeTextField2, vsCodeDropdown: vsCodeDropdown2, vsCodeOption: vsCodeOption2, vsCodePanels: vsCodePanels2, vsCodePanelTab: vsCodePanelTab2, vsCodePanelView: vsCodePanelView2 } = (init_dist3(), __toCommonJS(dist_exports));
+var { provideVSCodeDesignSystem: provideVSCodeDesignSystem2, vsCodeButton: vsCodeButton2, vsCodeTextField: vsCodeTextField2, vsCodeDropdown: vsCodeDropdown2, vsCodeOption: vsCodeOption2, vsCodePanels: vsCodePanels2, vsCodePanelTab: vsCodePanelTab2, vsCodePanelView: vsCodePanelView2, vsCodeBadge: vsCodeBadge2 } = (init_dist3(), __toCommonJS(dist_exports));
 var shiki = require_dist();
-provideVSCodeDesignSystem2().register(vsCodeButton2(), vsCodeTextField2(), vsCodeDropdown2(), vsCodeOption2(), vsCodePanels2(), vsCodePanelTab2(), vsCodePanelView2());
+provideVSCodeDesignSystem2().register(vsCodeButton2(), vsCodeTextField2(), vsCodeDropdown2(), vsCodeOption2(), vsCodePanels2(), vsCodePanelTab2(), vsCodePanelView2(), vsCodeBadge2());
 var vscode = acquireVsCodeApi();
 window.addEventListener("load", main);
-function main() {
-  const codeElement = document.getElementById("response");
+async function main() {
+  const responsePanel = document.getElementById("response-panel");
+  const responseHeadersBadge = document.getElementById("response-headers-badge");
   setThemeColorVariables();
   shiki.setCDN(window.shikiUri);
-  shiki.getHighlighter({
+  const highlighter = await shiki.getHighlighter({
     theme: "css-variables",
     langs: ["json"]
-  }).then((highlighter) => {
-    const result = {
-      message: "hello world"
-    };
-    const codeHtml = highlighter.codeToHtml(JSON.stringify(result, void 0, 2), { lang: "json" });
-    codeElement.innerHTML = codeHtml;
+  });
+  window.addEventListener("message", (event) => {
+    const { command } = event.data;
+    console.debug("Received event from extension:", command);
+    switch (command) {
+      case "integrationWorkbench.showResponse": {
+        const responseData = event.data.arguments[0];
+        if (isHttpResponseData(responseData)) {
+          if (responseData.result) {
+            if (responseData.result?.body) {
+              if (responseData.result.headers["Content-Type"]?.toLowerCase() === "application/json") {
+                try {
+                  const body = JSON.parse(responseData.result.body);
+                  responsePanel.innerHTML = highlighter.codeToHtml(JSON.stringify(body, void 0, 2), { lang: "json" });
+                } catch {
+                  responsePanel.innerHTML = "Bad response.";
+                }
+              } else {
+                try {
+                  const body = JSON.parse(responseData.result.body);
+                  responsePanel.innerHTML = `
+                    <div class="infobox infobox-warning">
+                      <i class="codicon codicon-warning"></i>
+
+                      Response body was parsed as JSON but the Content-Type header was not <code>application/json</code>!
+                    </div>
+
+                    ${highlighter.codeToHtml(JSON.stringify(body, void 0, 2), { lang: "json" })}
+                  `;
+                } catch {
+                  responsePanel.innerText = responseData.result.body;
+                }
+              }
+            }
+            const headersCount = Object.entries(responseData.result.headers).length;
+            responseHeadersBadge.innerText = headersCount.toString();
+          }
+        }
+        break;
+      }
+    }
   });
 }
 /*! Bundled license information:

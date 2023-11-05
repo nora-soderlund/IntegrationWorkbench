@@ -5,7 +5,7 @@ import { RequestWebviewPanel } from "../../panels/RequestWebviewPanel";
 import HttpRequest from "./WorkbenchHttpRequest";
 import { Workbench } from "../Workbench";
 import { WorkbenchCollection } from "../collections/WorkbenchCollection";
-import WorkbenchRequestTreeItem from "../../trees/items/WorkbenchRequestTreeItem";
+import WorkbenchRequestTreeItem from "../trees/workbenches/items/WorkbenchRequestTreeItem";
 
 export default class WorkbenchRequest {
   id: string;

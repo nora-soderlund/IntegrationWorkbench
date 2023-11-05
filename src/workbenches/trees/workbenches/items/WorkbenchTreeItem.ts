@@ -1,5 +1,5 @@
 import { TreeItem, TreeItemCollapsibleState } from "vscode";
-import { Workbench } from "../../workbenches/Workbench";
+import { Workbench } from "../../../Workbench";
 
 export default class WorkbenchTreeItem extends TreeItem {
     constructor(
