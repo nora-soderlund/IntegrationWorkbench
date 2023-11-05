@@ -25815,9 +25815,9 @@ function setThemeColorVariables() {
 }
 
 // src/webviews/response/index.ts
-var { provideVSCodeDesignSystem: provideVSCodeDesignSystem2, vsCodeButton: vsCodeButton2, vsCodeTextField: vsCodeTextField2, vsCodeDropdown: vsCodeDropdown2, vsCodeOption: vsCodeOption2, vsCodePanels: vsCodePanels2, vsCodePanelTab: vsCodePanelTab2, vsCodePanelView: vsCodePanelView2, vsCodeBadge: vsCodeBadge2 } = (init_dist3(), __toCommonJS(dist_exports));
+var { provideVSCodeDesignSystem: provideVSCodeDesignSystem2, vsCodeButton: vsCodeButton2, vsCodeTextField: vsCodeTextField2, vsCodeDropdown: vsCodeDropdown2, vsCodeOption: vsCodeOption2, vsCodePanels: vsCodePanels2, vsCodePanelTab: vsCodePanelTab2, vsCodePanelView: vsCodePanelView2, vsCodeBadge: vsCodeBadge2, vsCodeDataGrid: vsCodeDataGrid2, vsCodeDataGridRow: vsCodeDataGridRow2, vsCodeDataGridCell: vsCodeDataGridCell2 } = (init_dist3(), __toCommonJS(dist_exports));
 var shiki = require_dist();
-provideVSCodeDesignSystem2().register(vsCodeButton2(), vsCodeTextField2(), vsCodeDropdown2(), vsCodeOption2(), vsCodePanels2(), vsCodePanelTab2(), vsCodePanelView2(), vsCodeBadge2());
+provideVSCodeDesignSystem2().register(vsCodeButton2(), vsCodeTextField2(), vsCodeDropdown2(), vsCodeOption2(), vsCodePanels2(), vsCodePanelTab2(), vsCodePanelView2(), vsCodeBadge2(), vsCodeDataGrid2(), vsCodeDataGridRow2(), vsCodeDataGridCell2());
 var vscode = acquireVsCodeApi();
 window.addEventListener("load", main);
 async function main() {
@@ -25865,27 +25865,46 @@ async function main() {
                     <vscode-panel-tab id="tab-3">RAW</vscode-panel-tab>
                     
                     <vscode-panel-view id="view-1">
-                      <div class="response-panel"></div>
+                      <div class="response-panel http-response-parsed-body"></div>
                     </vscode-panel-view>
 
-                    <vscode-panel-view id="view-2">Headers content.</vscode-panel-view>
+                    <vscode-panel-view id="view-2">
+                      <div class="response-panel">
+                        <vscode-data-grid aria-label="Basic">
+                          <vscode-data-grid-row row-type="header">
+                            <vscode-data-grid-cell cell-type="columnheader" grid-column="1">Header</vscode-data-grid-cell>
+                            <vscode-data-grid-cell cell-type="columnheader" grid-column="2">Value</vscode-data-grid-cell>
+                          </vscode-data-grid-row>
 
-                    <vscode-panel-view id="view-3">Raw content.</vscode-panel-view>
+                          ${Object.entries(responseData.result.headers).map(([key, value]) => `
+                            <vscode-data-grid-row>
+                              <vscode-data-grid-cell grid-column="1">${key}</vscode-data-grid-cell>
+                              <vscode-data-grid-cell grid-column="2">${value}</vscode-data-grid-cell>
+                            </vscode-data-grid-row>
+                          `).join("")}
+                        </vscode-data-grid>
+                      </div>
+                    </vscode-panel-view>
+
+                    <vscode-panel-view id="view-3">
+                      <div class="response-panel http-response-body"></div>
+                    </vscode-panel-view>
                   </vscode-panels>
                 `;
-                const responsePanel = response.querySelector(".response-panel");
-                if (responseData.result.body) {
-                  if (responseData.result.headers["Content-Type"]?.toLowerCase() === "application/json") {
+                const httpResponseBody = response.querySelector(".http-response-body");
+                const httpResponseParsedBody = response.querySelector(".http-response-parsed-body");
+                if (responseData.result.body?.length) {
+                  if (responseData.result.headers["content-type"]?.toLowerCase() === "application/json") {
                     try {
                       const body = JSON.parse(responseData.result.body);
-                      responsePanel.innerHTML = highlighter.codeToHtml(JSON.stringify(body, void 0, 2), { lang: "json" });
+                      httpResponseParsedBody.innerHTML = highlighter.codeToHtml(JSON.stringify(body, void 0, 2), { lang: "json" });
                     } catch {
-                      responsePanel.innerHTML = "Bad response.";
+                      httpResponseParsedBody.innerHTML = "Bad response.";
                     }
                   } else {
                     try {
                       const body = JSON.parse(responseData.result.body);
-                      responsePanel.innerHTML = `
+                      httpResponseParsedBody.innerHTML = `
                         <div class="infobox infobox-warning">
                           <i class="codicon codicon-warning"></i>
 
@@ -25895,9 +25914,14 @@ async function main() {
                         ${highlighter.codeToHtml(JSON.stringify(body, void 0, 2), { lang: "json" })}
                       `;
                     } catch {
-                      responsePanel.innerText = responseData.result.body;
+                      httpResponseParsedBody.innerText = responseData.result.body;
                     }
                   }
+                  httpResponseBody.innerHTML = highlighter.codeToHtml(responseData.result.body);
+                } else {
+                  httpResponseParsedBody.innerHTML = `
+                    <p>No response body was given.</p>
+                  `;
                 }
               }
               break;

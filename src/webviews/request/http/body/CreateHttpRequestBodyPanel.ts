@@ -1,10 +1,16 @@
 import type * as monaco from "monaco-editor";
-import { WorkbenchRequestData } from "../../../interfaces/workbenches/requests/WorkbenchRequestData";
-import { isHttpRequestApplicationJsonBodyData } from "../../../interfaces/workbenches/requests/utils/WorkbenchRequestDataTypeValidations";
+import { WorkbenchRequestData } from "../../../../interfaces/workbenches/requests/WorkbenchRequestData";
+import { isHttpRequestApplicationJsonBodyData } from "../../../../interfaces/workbenches/requests/utils/WorkbenchRequestDataTypeValidations";
 import { WebviewApi } from "vscode-webview";
 
 export default function createHttpRequestBodyPanel(vscode: WebviewApi<unknown>, requestData: WorkbenchRequestData) {
   const httpRequestBody = document.getElementById("http-request-body") as HTMLDivElement;
+
+  const requestView = document.getElementById("request-view")!;
+
+  const currentHttpRequestBodyRadio = requestView.querySelector<HTMLInputElement>(`vscode-radio[value="${requestData.data.body.type}"]`);
+  currentHttpRequestBodyRadio!.checked = true;
+  
 
   switch(requestData.data.body.type) {
     case "none": {

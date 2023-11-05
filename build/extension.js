@@ -95,7 +95,8 @@ var RequestWebviewPanel = class {
         localResourceRoots: [
           import_vscode3.Uri.joinPath(context.extensionUri, "build"),
           import_vscode3.Uri.joinPath(context.extensionUri, "resources"),
-          import_vscode3.Uri.joinPath(context.extensionUri, "node_modules", "monaco-editor", "min", "vs")
+          import_vscode3.Uri.joinPath(context.extensionUri, "node_modules", "monaco-editor", "min", "vs"),
+          import_vscode3.Uri.joinPath(context.extensionUri, "node_modules", "@vscode", "codicons")
         ]
       }
     );
@@ -106,6 +107,7 @@ var RequestWebviewPanel = class {
     const shikiUri = getWebviewUri(this.webviewPanel.webview, context.extensionUri, ["resources", "shiki"]);
     const monacoEditorUri = getWebviewUri(this.webviewPanel.webview, context.extensionUri, ["node_modules", "monaco-editor", "min", "vs"]);
     const monacoEditorLoaderUri = getWebviewUri(this.webviewPanel.webview, context.extensionUri, ["node_modules", "monaco-editor", "min", "vs", "loader.js"]);
+    const codiconsUri = getWebviewUri(this.webviewPanel.webview, context.extensionUri, ["node_modules", "@vscode/codicons", "dist", "codicon.css"]);
     this.webviewPanel.webview.html = `
       <!DOCTYPE html>
       <html lang="en">
@@ -118,6 +120,7 @@ var RequestWebviewPanel = class {
 
           <link rel="stylesheet" href="${styleUri}"/>
           <link rel="stylesheet" href="${globalStyleUri}"/>
+          <link rel="stylesheet" href="${codiconsUri}"/>
         </head>
         <body>
           ${(0, import_fs.readFileSync)(

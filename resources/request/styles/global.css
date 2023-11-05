@@ -29,3 +29,39 @@
   color: var(--vscode-inputValidation-infoForeground);
   border-color: var(--vscode-inputValidation-infoBorder);
 }
+
+vscode-data-grid-cell vscode-text-field {
+  width: 100%;
+}
+
+.data-grid-buttons-header-row {
+  align-items: center;
+}
+
+.data-grid-buttons-cell {
+  display: flex;
+
+  flex-direction: row;
+
+  width: max-content;
+  /*justify-content: flex-end;*/
+}
+
+.data-grid-unfocusable vscode-data-grid-cell:focus,
+.data-grid-unfocusable vscode-data-grid-cell:active {
+  border: 1px solid none;
+  background: transparent;
+}
+
+.data-grid-unhoverable vscode-data-grid-row:hover {
+  border: none;
+  background: transparent;
+}
+
+.data-grid-buttons-hoverable vscode-button[appearance="icon"] {
+  display: none;
+}
+
+.data-grid-buttons-hoverable:hover vscode-button[appearance="icon"] {
+  display: inline-block;
+}

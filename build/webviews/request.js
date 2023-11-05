@@ -20050,9 +20050,12 @@ function isHttpRequestApplicationJsonBodyData(bodyData) {
   return bodyData.type === "application/json";
 }
 
-// src/webviews/request/http/CreateHttpRequestBodyPanel.ts
+// src/webviews/request/http/body/CreateHttpRequestBodyPanel.ts
 function createHttpRequestBodyPanel(vscode2, requestData) {
   const httpRequestBody = document.getElementById("http-request-body");
+  const requestView = document.getElementById("request-view");
+  const currentHttpRequestBodyRadio = requestView.querySelector(`vscode-radio[value="${requestData.data.body.type}"]`);
+  currentHttpRequestBodyRadio.checked = true;
   switch (requestData.data.body.type) {
     case "none": {
       httpRequestBody.innerHTML = `
@@ -20108,9 +20111,180 @@ function createHttpRequestBodyPanel(vscode2, requestData) {
   }
 }
 
+// src/webviews/request/http/header/CreateHttpRequestHeaderPanel.ts
+function createHttpRequestHeaderPanel(vscode2, requestData) {
+  const httpRequestUrlInput = document.getElementById("http-request-url-input");
+  httpRequestUrlInput.value = requestData.data.url ?? "";
+  httpRequestUrlInput.addEventListener("change", () => {
+    requestData.data.url = httpRequestUrlInput.value;
+    vscode2.postMessage({
+      command: "integrationWorkbench.changeHttpRequestUrl",
+      arguments: [
+        requestData.data.url
+      ]
+    });
+  });
+  const httpRequestMethodDropdown = document.getElementById("http-request-method-dropdown");
+  httpRequestMethodDropdown.value = requestData.data.method;
+  httpRequestMethodDropdown.addEventListener("change", () => {
+    requestData.data.method = httpRequestMethodDropdown.value;
+    vscode2.postMessage({
+      command: "integrationWorkbench.changeHttpRequestMethod",
+      arguments: [
+        requestData.data.method
+      ]
+    });
+  });
+  const httpRequestSendButton = document.getElementById("http-request-send-button");
+  httpRequestSendButton.addEventListener("click", () => {
+    vscode2.postMessage({
+      command: "integrationWorkbench.sendHttpRequest",
+      arguments: []
+    });
+  });
+}
+
+// src/webviews/request/http/CreateHttpRequestView.ts
+function createHttpRequestView(vscode2, requestData) {
+  const requestView = document.getElementById("request-view");
+  requestView.innerHTML = `
+    <header>
+      <div class="header-request header-http-request">
+        <vscode-dropdown id="http-request-method-dropdown">
+          <vscode-option>GET</vscode-option>
+          <vscode-option>DELETE</vscode-option>
+          <vscode-option>PATCH</vscode-option>
+          <vscode-option>PUT</vscode-option>
+          <vscode-option>POST</vscode-option>
+        </vscode-dropdown>
+
+        <vscode-text-field id="http-request-url-input" type="url" placeholder="Enter the URL of this request..."></vscode-text-field>
+      </div>
+
+      <vscode-button id="http-request-send-button" class="header-send">Send HTTP Request</vscode-button>
+    </header>
+
+    <vscode-panels>
+      <vscode-panel-tab id="http-request-body-panel-tab">BODY</vscode-panel-tab>
+      <vscode-panel-tab id="http-request-headers-panel-tab">HEADERS</vscode-panel-tab>
+      <vscode-panel-tab id="http-request-parameters-panel-tab">PARAMETERS</vscode-panel-tab>
+      <vscode-panel-tab id="http-request-authorization-panel-tab">AUTHORIZATION</vscode-panel-tab>
+
+      <vscode-panel-view id="http-request-body-panel-view">
+        <vscode-radio-group id="http-request-body-radio">
+          <vscode-radio value="none">None</vscode-radio>
+          <vscode-radio value="raw">Raw</vscode-radio>
+          <vscode-radio value="application/json">application/json</vscode-radio>
+          <vscode-radio value="multipart/form-data">multipart/form-data</vscode-radio>
+          <vscode-radio value="application/x-www-form-urlencoded">application/x-www-form-urlencoded</vscode-radio>
+        </vscode-radio-group>
+
+        <div id="http-request-body">
+
+        </div>
+      </vscode-panel-view>
+
+      <vscode-panel-view id="http-request-headers-panel-view">Headers content.</vscode-panel-view>
+      
+      <vscode-panel-view id="http-request-parameters-panel-view">
+        <vscode-data-grid aria-label="Basic" class="data-grid-unfocusable data-grid-unhoverable">
+          <vscode-data-grid-row row-type="header">
+            <vscode-data-grid-cell cell-type="columnheader" grid-column="1">Preview</vscode-data-grid-cell>
+          </vscode-data-grid-row>
+
+          <vscode-data-grid-row class="data-grid-buttons-hoverable">
+            <vscode-data-grid-cell grid-column="1">
+              https://httpbin.org/basic-auth/root/password
+            </vscode-data-grid-cell>
+          </vscode-data-grid-row>
+        </vscode-data-grid>
+
+        <vscode-data-grid aria-label="Basic" class="data-grid-unfocusable">
+          <vscode-data-grid-row row-type="header" class="data-grid-buttons-header-row">
+            <vscode-data-grid-cell cell-type="columnheader" grid-column="1">Parameter</vscode-data-grid-cell>
+            
+            <vscode-data-grid-cell cell-type="columnheader" grid-column="2">Value</vscode-data-grid-cell>
+
+            <vscode-data-grid-cell grid-column="3" class="data-grid-buttons-cell">
+              <vscode-button appearance="icon" aria-label="Add">
+                <span class="codicon codicon-add"></span>
+              </vscode-button>
+            </vscode-data-grid-cell>
+          </vscode-data-grid-row>
+
+          <vscode-data-grid-row class="data-grid-buttons-hoverable">
+            <vscode-data-grid-cell grid-column="1">
+              <vscode-text-field type="text" placeholder="Enter the name of this parameter..." value="username"></vscode-text-field>
+            </vscode-data-grid-cell>
+            
+            <vscode-data-grid-cell grid-column="2">
+              <vscode-text-field type="text" placeholder="Enter the value of this parameter..."></vscode-text-field>
+            </vscode-data-grid-cell>
+
+            <vscode-data-grid-cell grid-column="3" class="data-grid-buttons-cell">
+              <vscode-button appearance="icon" aria-label="Delete">
+                <span class="codicon codicon-trashcan"></span>
+              </vscode-button>
+            </vscode-data-grid-cell>
+          </vscode-data-grid-row>
+        </vscode-data-grid>
+      </vscode-panel-view>
+      
+      <vscode-panel-view id="http-request-authorization-panel-view">
+        <vscode-radio-group id="http-request-authorization-radio-group">
+          <vscode-radio value="none">None</vscode-radio>
+          <vscode-radio value="basic">Basic</vscode-radio>
+          <vscode-radio value="bearer">Bearer</vscode-radio>
+        </vscode-radio-group>
+
+        <div id="http-request-authorization">
+
+        </div>
+      </vscode-panel-view>
+    </vscode-panels>
+  `;
+  createHttpRequestHeaderPanel(vscode2, requestData);
+  const httpRequestBodyRadioGroup = requestView.querySelector("#http-request-body-radio");
+  httpRequestBodyRadioGroup.addEventListener("change", () => {
+    console.log(httpRequestBodyRadioGroup.value);
+    switch (httpRequestBodyRadioGroup.value) {
+      case "none": {
+        requestData.data.body = {
+          type: "none"
+        };
+        break;
+      }
+      case "raw": {
+        requestData.data.body = {
+          type: "raw",
+          body: ""
+        };
+        break;
+      }
+      case "application/json": {
+        requestData.data.body = {
+          type: "application/json",
+          body: `{
+  "foo": "bar"
+}`
+        };
+        break;
+      }
+    }
+    vscode2.postMessage({
+      command: "integrationWorkbench.changeHttpRequestBody",
+      arguments: [
+        requestData.data.body
+      ]
+    });
+    createHttpRequestBodyPanel(vscode2, requestData);
+  });
+  createHttpRequestBodyPanel(vscode2, requestData);
+}
+
 // src/webviews/request/index.ts
-var { provideVSCodeDesignSystem: provideVSCodeDesignSystem2, vsCodeButton: vsCodeButton2, vsCodeTextArea: vsCodeTextArea2, vsCodeTextField: vsCodeTextField2, vsCodeDropdown: vsCodeDropdown2, vsCodeOption: vsCodeOption2, vsCodePanels: vsCodePanels2, vsCodePanelTab: vsCodePanelTab2, vsCodePanelView: vsCodePanelView2, vsCodeRadioGroup: vsCodeRadioGroup2, vsCodeRadio: vsCodeRadio2 } = (init_dist3(), __toCommonJS(dist_exports));
-provideVSCodeDesignSystem2().register(vsCodeButton2(), vsCodeTextArea2(), vsCodeTextField2(), vsCodeDropdown2(), vsCodeOption2(), vsCodePanels2(), vsCodePanelTab2(), vsCodePanelView2(), vsCodeRadioGroup2(), vsCodeRadio2());
+var { provideVSCodeDesignSystem: provideVSCodeDesignSystem2, vsCodeButton: vsCodeButton2, vsCodeTextArea: vsCodeTextArea2, vsCodeTextField: vsCodeTextField2, vsCodeDropdown: vsCodeDropdown2, vsCodeOption: vsCodeOption2, vsCodePanels: vsCodePanels2, vsCodePanelTab: vsCodePanelTab2, vsCodePanelView: vsCodePanelView2, vsCodeRadioGroup: vsCodeRadioGroup2, vsCodeRadio: vsCodeRadio2, vsCodeDataGrid: vsCodeDataGrid2, vsCodeDataGridRow: vsCodeDataGridRow2, vsCodeDataGridCell: vsCodeDataGridCell2 } = (init_dist3(), __toCommonJS(dist_exports));
+provideVSCodeDesignSystem2().register(vsCodeButton2(), vsCodeTextArea2(), vsCodeTextField2(), vsCodeDropdown2(), vsCodeOption2(), vsCodePanels2(), vsCodePanelTab2(), vsCodePanelView2(), vsCodeRadioGroup2(), vsCodeRadio2(), vsCodeDataGrid2(), vsCodeDataGridRow2(), vsCodeDataGridCell2());
 var vscode = acquireVsCodeApi();
 window.addEventListener("load", main);
 function main() {
@@ -20121,72 +20295,7 @@ function main() {
       case "integrationWorkbench.updateRequest": {
         const [requestData] = event.data.arguments;
         if (isHttpRequestData(requestData)) {
-          const httpRequestUrlInput = document.getElementById("http-request-url-input");
-          httpRequestUrlInput.value = requestData.data.url ?? "";
-          httpRequestUrlInput.addEventListener("change", () => {
-            requestData.data.url = httpRequestUrlInput.value;
-            vscode.postMessage({
-              command: "integrationWorkbench.changeHttpRequestUrl",
-              arguments: [
-                requestData.data.url
-              ]
-            });
-          });
-          const httpRequestMethodDropdown = document.getElementById("http-request-method-dropdown");
-          httpRequestMethodDropdown.value = requestData.data.method;
-          httpRequestMethodDropdown.addEventListener("change", () => {
-            requestData.data.method = httpRequestMethodDropdown.value;
-            vscode.postMessage({
-              command: "integrationWorkbench.changeHttpRequestMethod",
-              arguments: [
-                requestData.data.method
-              ]
-            });
-          });
-          const httpRequestSendButton = document.getElementById("http-request-send-button");
-          httpRequestSendButton.addEventListener("click", () => {
-            vscode.postMessage({
-              command: "integrationWorkbench.sendHttpRequest",
-              arguments: []
-            });
-          });
-          const httpRequestBodyRadioGroup = document.getElementById("http-request-body-radio");
-          httpRequestBodyRadioGroup.querySelector(`vscode-radio[value="${requestData.data.body.type}"]`).checked = true;
-          httpRequestBodyRadioGroup.addEventListener("change", () => {
-            console.log(httpRequestBodyRadioGroup.value);
-            switch (httpRequestBodyRadioGroup.value) {
-              case "none": {
-                requestData.data.body = {
-                  type: "none"
-                };
-                break;
-              }
-              case "raw": {
-                requestData.data.body = {
-                  type: "raw",
-                  body: ""
-                };
-                break;
-              }
-              case "application/json": {
-                requestData.data.body = {
-                  type: "application/json",
-                  body: `{
-  "foo": "bar"
-}`
-                };
-                break;
-              }
-            }
-            vscode.postMessage({
-              command: "integrationWorkbench.changeHttpRequestBody",
-              arguments: [
-                requestData.data.body
-              ]
-            });
-            createHttpRequestBodyPanel(vscode, requestData);
-          });
-          createHttpRequestBodyPanel(vscode, requestData);
+          createHttpRequestView(vscode, requestData);
         }
         break;
       }
