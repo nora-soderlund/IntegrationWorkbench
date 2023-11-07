@@ -10,7 +10,7 @@
     "Other"
   ],
   "activationEvents": [],
-  "main": "./build/extension.js",
+  "main": "./build/app/extension.js",
   "contributes": {
     "configuration": {
       "title": "Integration Workbenches",
@@ -46,7 +46,10 @@
           "description": "How many responses to retain in the responses panel, excluding saved responses."
         },
         "integrationWorkbench.retainResponsesDuration": {
-          "type": [ "number", "null" ],
+          "type": [
+            "number",
+            "null"
+          ],
           "default": null,
           "description": "How long a response should be kept in the editor before clearing it out on the next refresh."
         },
@@ -66,6 +69,11 @@
         "command": "integrationWorkbench.createWorkbench",
         "title": "Create a Workbench",
         "icon": "$(plus)"
+      },
+      {
+        "command": "integrationWorkbench.deleteWorkbench",
+        "title": "Delete",
+        "icon": "$(trashcan)"
       },
       {
         "command": "integrationWorkbench.createCollection",
@@ -201,6 +209,10 @@
       ],
       "view/item/context": [
         {
+          "command": "integrationWorkbench.deleteWorkbench",
+          "when": "view == workbenches && (viewItem == workbench)"
+        },
+        {
           "command": "integrationWorkbench.createCollection",
           "when": "view == workbenches && viewItem == workbench",
           "group": "inline"
@@ -309,17 +321,15 @@
     ]
   },
   "scripts": {
-    "vscode:prepublish": "yarn run package",
-    "compile": "node ./esbuild.js",
-    "watch": "node ./esbuild.js --watch",
-    "pretest": "yarn run compile && yarn run lint",
-    "lint": "eslint src --ext ts",
-    "test": "node ./build/test/runTest.js",
-    "package": "NODE_ENV=production node ./esbuild.js"
+    "start": "react-scripts start",
+    "vscode:prepublish": "node ./scripts/build-non-split.js && tsc -p tsconfig.extension.json && tsc-alias -p tsconfig.extension.json",
+    "build": "node ./scripts/build-non-split.js && tsc -p tsconfig.extension.json && tsc-alias -p tsconfig.extension.json"
   },
   "devDependencies": {
     "@types/mocha": "^10.0.3",
     "@types/node": "18.x",
+    "@types/react": "^18.2.36",
+    "@types/react-dom": "^18.2.14",
     "@types/vscode": "^1.84.0",
     "@types/vscode-webview": "^1.57.3",
     "@typescript-eslint/eslint-plugin": "^6.9.0",
@@ -333,7 +343,27 @@
     "mocha": "^10.2.0",
     "monaco-editor": "^0.44.0",
     "monaco-editor-webpack-plugin": "^7.1.0",
+    "react-scripts": "^5.0.1",
+    "rewire": "^7.0.0",
     "shiki": "^0.14.5",
+    "tsc-alias": "^1.8.8",
     "typescript": "^5.2.2"
+  },
+  "dependencies": {
+    "@monaco-editor/react": "^4.6.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
   }
 }
