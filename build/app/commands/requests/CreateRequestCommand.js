@@ -49,6 +49,9 @@ class CreateRequestCommand {
                         method: "GET",
                         url: "https://httpbin.org/get",
                         parameters: [],
+                        authorization: {
+                            type: "none"
+                        },
                         headers: [
                             {
                                 name: "Content-Type",

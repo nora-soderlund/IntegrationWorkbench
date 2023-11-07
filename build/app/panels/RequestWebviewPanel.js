@@ -123,6 +123,17 @@ class RequestWebviewPanel {
                     });
                     return;
                 }
+                case "integrationWorkbench.changeHttpRequestAuthorization": {
+                    const [authorizationData] = message.arguments;
+                    if (this.request instanceof WorkbenchHttpRequest_1.default) {
+                        this.request.setAuthorization(authorizationData);
+                    }
+                    this.webviewPanel.webview.postMessage({
+                        command: "integrationWorkbench.updateRequest",
+                        arguments: [this.request.getData()]
+                    });
+                    return;
+                }
                 case "integrationWorkbench.sendHttpRequest": {
                     this.request.send();
                     return;

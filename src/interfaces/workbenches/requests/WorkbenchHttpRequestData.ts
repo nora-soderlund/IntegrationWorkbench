@@ -27,6 +27,21 @@ export type WorkbenchHttpRequestParameterData = {
   value: string;
 };
 
+export type WorkbenchHttpNoneAuthorization = {
+  type: "none";
+};
+
+export type WorkbenchHttpBasicAuthorization = {
+  type: "basic";
+  
+  username: string;
+  password: string;
+};
+
+export type WorkbenchHttpAuthorization = 
+  | WorkbenchHttpNoneAuthorization
+  | WorkbenchHttpBasicAuthorization;
+
 export type WorkbenchHttpRequestData = {
   id: string;
   name: string;
@@ -35,6 +50,8 @@ export type WorkbenchHttpRequestData = {
   data: {
     method: string;
     url?: string;
+
+    authorization: WorkbenchHttpAuthorization;
 
     headers: WorkbenchHttpRequestHeaderData[];
     parameters: WorkbenchHttpRequestParameterData[];

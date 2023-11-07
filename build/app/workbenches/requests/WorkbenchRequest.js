@@ -21,6 +21,9 @@ class WorkbenchRequest {
             data: {
                 method: "",
                 parameters: [],
+                authorization: {
+                    type: "none"
+                },
                 headers: [
                     {
                         name: "Content-Type",

@@ -18,6 +18,7 @@ class WorkbenchHttpRequest extends WorkbenchRequest_1.default {
             name: this.name,
             type: "HTTP",
             data: {
+                authorization: Object.assign({}, this.data.authorization),
                 method: this.data.method,
                 url: this.data.url,
                 headers: [...this.data.headers],
@@ -55,6 +56,10 @@ class WorkbenchHttpRequest extends WorkbenchRequest_1.default {
     }
     setUrl(url) {
         this.data.url = url;
+        this.parent.save();
+    }
+    setAuthorization(authorizationData) {
+        this.data.authorization = authorizationData;
         this.parent.save();
     }
     setBody(bodyData) {

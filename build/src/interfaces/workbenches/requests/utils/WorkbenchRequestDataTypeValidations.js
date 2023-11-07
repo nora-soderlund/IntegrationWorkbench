@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.isHttpRequestApplicationJsonBodyData = exports.isHttpRequestRawBodyData = exports.isHttpRequestNoneBodyData = exports.isHttpRequestData = void 0;
+exports.isHttpRequestBasicAuthorizationData = exports.isHttpRequestNoneAuthorizationData = exports.isHttpRequestApplicationJsonBodyData = exports.isHttpRequestRawBodyData = exports.isHttpRequestNoneBodyData = exports.isHttpRequestData = void 0;
 function isHttpRequestData(requestData) {
     return requestData.type === "HTTP";
 }
@@ -17,4 +17,12 @@ function isHttpRequestApplicationJsonBodyData(bodyData) {
     return bodyData.type === "application/json";
 }
 exports.isHttpRequestApplicationJsonBodyData = isHttpRequestApplicationJsonBodyData;
+function isHttpRequestNoneAuthorizationData(authorization) {
+    return authorization.type === "none";
+}
+exports.isHttpRequestNoneAuthorizationData = isHttpRequestNoneAuthorizationData;
+function isHttpRequestBasicAuthorizationData(authorization) {
+    return authorization.type === "basic";
+}
+exports.isHttpRequestBasicAuthorizationData = isHttpRequestBasicAuthorizationData;
 //# sourceMappingURL=WorkbenchRequestDataTypeValidations.js.map

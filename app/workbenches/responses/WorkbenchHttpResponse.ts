@@ -27,6 +27,14 @@ export default class WorkbenchHttpResponse {
     const headers = new Headers();
     let body: string | undefined;
 
+    switch(this.request.data.authorization.type) {
+      case "basic": {
+        headers.set("Authorization", `Basic ${btoa(`${this.request.data.authorization.username}:${this.request.data.authorization.password}`)}`);
+
+        break;
+      }
+    }
+
     if(isHttpRequestApplicationJsonBodyData(this.request.data.body)) {
       headers.set("Content-Type", "application/json");
 
@@ -37,13 +45,27 @@ export default class WorkbenchHttpResponse {
       });
     }
 
-    fetch(request.data.url, {
+    console.log(headers.get("Authorization"));
+
+    fetch(this.getParsedUrl(request.data.url), {
       method: request.data.method,
       headers,
       body
     })
     .then(this.handleResponse.bind(this))
     .catch(this.handleResponseError.bind(this));
+  }
+
+  getParsedUrl(url: string) {
+    return url.replace(/\{(.+?)\}/g, (_match, key) => {
+      const parameter = this.request.data.parameters.find((parameter) => parameter.name === key);
+
+      if(parameter) {
+        return parameter.value;
+      }
+
+      return '{' + key + '}';
+    });
   }
 
   getData(): WorkbenchHttpResponseData {
