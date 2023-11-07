@@ -2,6 +2,7 @@ import React from "react";
 import { VSCodePanelTab, VSCodePanelView, VSCodePanels } from "@vscode/webview-ui-toolkit/react";
 import { WorkbenchHttpResponseData } from "../../../interfaces/workbenches/responses/WorkbenchHttpResponseData";
 import HttpResponseBodySwitch from "./HttpResponseBodySwitch";
+import HttpResponseHeaders from "./HttpResponseHeaders";
 
 export type HttpResponseProps = {
   responseData: WorkbenchHttpResponseData;
@@ -27,7 +28,7 @@ export default function HttpResponse({ responseData }: HttpResponseProps) {
         </VSCodePanelView>
 
         <VSCodePanelView>
-          <h1>hi</h1>
+          <HttpResponseHeaders responseData={responseData}/>
         </VSCodePanelView>
         
       </VSCodePanels>

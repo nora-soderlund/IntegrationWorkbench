@@ -25,7 +25,8 @@ class WorkbenchRequestTreeItem extends vscode_1.TreeItem {
     getIconPath() {
         if (this.request instanceof WorkbenchHttpRequest_1.default) {
             if (this.request.data.method) {
-                const iconPath = path_1.default.join(__filename, '..', '..', 'resources', 'icons', 'methods', `${this.request.data.method}.png`);
+                const iconPath = path_1.default.join(__filename, '..', '..', '..', '..', '..', '..', '..', 'resources', 'icons', 'methods', `${this.request.data.method}.png`);
+                console.log(iconPath);
                 if ((0, fs_1.existsSync)(iconPath)) {
                     return vscode_1.Uri.file(iconPath);
                 }

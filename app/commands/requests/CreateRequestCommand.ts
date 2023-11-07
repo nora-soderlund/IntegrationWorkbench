@@ -45,6 +45,12 @@ export default class CreateRequestCommand {
           new WorkbenchHttpRequest(workbenchItem, randomUUID(), value, {
             method: "GET",
             url: "https://httpbin.org/get",
+            headers: [
+              {
+                name: "Content-Type",
+                value: "application/json"
+              }
+            ],
             body: {
               type: "none"
             }

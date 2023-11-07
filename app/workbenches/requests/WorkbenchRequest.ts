@@ -26,6 +26,12 @@ export default class WorkbenchRequest {
       type: "HTTP",
       data: {
         method: "",
+        headers: [
+          {
+            name: "Content-Type",
+            value: "application/json"
+          }
+        ],
         body: {
           type: "none"
         }

@@ -20,6 +20,7 @@ class WorkbenchHttpRequest extends WorkbenchRequest_1.default {
             data: {
                 method: this.data.method,
                 url: this.data.url,
+                headers: [...this.data.headers],
                 body: Object.assign({}, this.data.body)
             }
         };
@@ -43,6 +44,10 @@ class WorkbenchHttpRequest extends WorkbenchRequest_1.default {
     }
     setBody(bodyData) {
         this.data.body = bodyData;
+        this.parent.save();
+    }
+    setHeaders(headers) {
+        this.data.headers = headers;
         this.parent.save();
     }
 }

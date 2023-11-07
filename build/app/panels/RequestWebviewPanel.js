@@ -24,7 +24,6 @@ class RequestWebviewPanel {
             ]
         });
         this.webviewPanel.onDidDispose(() => this.dispose(), null, this.disposables);
-        console.log("test");
         const manifest = JSON.parse((0, fs_1.readFileSync)(path_1.default.join(context.extensionPath, 'build', 'asset-manifest.json'), {
             encoding: "utf-8"
         }));
@@ -79,6 +78,17 @@ class RequestWebviewPanel {
                     const [url] = message.arguments;
                     if (this.request instanceof WorkbenchHttpRequest_1.default) {
                         this.request.setUrl(url);
+                    }
+                    this.webviewPanel.webview.postMessage({
+                        command: "integrationWorkbench.updateRequest",
+                        arguments: [this.request.getData()]
+                    });
+                    return;
+                }
+                case "integrationWorkbench.changeHttpRequestHeaders": {
+                    const [headers] = message.arguments;
+                    if (this.request instanceof WorkbenchHttpRequest_1.default) {
+                        this.request.setHeaders(headers);
                     }
                     this.webviewPanel.webview.postMessage({
                         command: "integrationWorkbench.updateRequest",

@@ -1,5 +1,5 @@
 import { ThemeIcon, Uri, commands } from "vscode";
-import { WorkbenchHttpRequestBodyData, WorkbenchHttpRequestData } from "~interfaces/workbenches/requests/WorkbenchHttpRequestData";
+import { WorkbenchHttpRequestBodyData, WorkbenchHttpRequestData, WorkbenchHttpRequestHeaderData } from "~interfaces/workbenches/requests/WorkbenchHttpRequestData";
 import { Workbench } from "../Workbench";
 import { WorkbenchCollection } from "../collections/WorkbenchCollection";
 import WorkbenchRequest from "./WorkbenchRequest";
@@ -26,6 +26,7 @@ export default class WorkbenchHttpRequest extends WorkbenchRequest {
       data: {
         method: this.data.method,
         url: this.data.url,
+        headers: [ ...this.data.headers ],
         body: {
           ...this.data.body
         }
@@ -63,6 +64,12 @@ export default class WorkbenchHttpRequest extends WorkbenchRequest {
 
   setBody(bodyData: WorkbenchHttpRequestBodyData) {
     this.data.body = bodyData;
+
+    this.parent.save();
+  }
+
+  setHeaders(headers: WorkbenchHttpRequestHeaderData[]) {
+    this.data.headers = headers;
 
     this.parent.save();
   }

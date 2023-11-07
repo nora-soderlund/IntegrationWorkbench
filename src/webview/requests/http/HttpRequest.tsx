@@ -4,6 +4,7 @@ import HttpRequestHeader from "./HttpRequestHeader";
 import React from "react";
 import { VSCodePanelTab, VSCodePanelView, VSCodePanels } from "@vscode/webview-ui-toolkit/react";
 import HttpRequestBody from "./HttpRequestBody";
+import HttpRequestHeaders from "./HttpRequestHeaders";
 
 export type HttpRequestProps = {
   requestData: WorkbenchHttpRequestData;
@@ -35,7 +36,10 @@ export default function HttpRequest({ requestData }: HttpRequestProps) {
           <HttpRequestBody requestData={requestData}/>
         </VSCodePanelView>
 
-        <VSCodePanelView>
+        <VSCodePanelView style={{
+          flexDirection: "column"
+        }}>
+          <HttpRequestHeaders requestData={requestData}/>
         </VSCodePanelView>
 
         <VSCodePanelView>

@@ -48,6 +48,12 @@ class CreateRequestCommand {
                     workbenchItem.requests.push(new WorkbenchHttpRequest_1.default(workbenchItem, (0, crypto_1.randomUUID)(), value, {
                         method: "GET",
                         url: "https://httpbin.org/get",
+                        headers: [
+                            {
+                                name: "Content-Type",
+                                value: "application/json"
+                            }
+                        ],
                         body: {
                             type: "none"
                         }

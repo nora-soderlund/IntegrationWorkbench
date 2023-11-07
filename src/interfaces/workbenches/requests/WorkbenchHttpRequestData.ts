@@ -17,6 +17,11 @@ export type WorkbenchHttpRequestBodyData =
   | WorkbenchHttpRequestRawBodyData
   | WorkbenchHttpRequestApplicationJsonBodyData;
 
+export type WorkbenchHttpRequestHeaderData = {
+  name: string;
+  value: string;
+};
+
 export type WorkbenchHttpRequestData = {
   id: string;
   name: string;
@@ -25,6 +30,8 @@ export type WorkbenchHttpRequestData = {
   data: {
     method: string;
     url?: string;
+
+    headers: WorkbenchHttpRequestHeaderData[];
 
     body: WorkbenchHttpRequestBodyData;
   };

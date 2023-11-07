@@ -31,8 +31,6 @@ export class RequestWebviewPanel {
 
     this.webviewPanel.onDidDispose(() => this.dispose(), null, this.disposables);
 
-    console.log("test");
-
 		const manifest = JSON.parse(readFileSync(path.join(context.extensionPath, 'build', 'asset-manifest.json'), {
       encoding: "utf-8"
     }));
@@ -98,6 +96,21 @@ export class RequestWebviewPanel {
 
             if(this.request instanceof WorkbenchHttpRequest) {
               this.request.setUrl(url);
+            }
+
+            this.webviewPanel.webview.postMessage({
+              command: "integrationWorkbench.updateRequest",
+              arguments: [ this.request.getData() ]
+            });
+
+            return;
+          }
+
+          case "integrationWorkbench.changeHttpRequestHeaders": {
+            const [ headers ] = message.arguments;
+
+            if(this.request instanceof WorkbenchHttpRequest) {
+              this.request.setHeaders(headers);
             }
 
             this.webviewPanel.webview.postMessage({

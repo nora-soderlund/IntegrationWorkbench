@@ -39,7 +39,7 @@ class WorkbenchResponseTreeItem extends vscode_1.TreeItem {
     getIconPath() {
         if (this.response.status === "done") {
             if ((0, WorkbenchRequestDataTypeValidations_1.isHttpRequestData)(this.response.request)) {
-                const iconPath = path_1.default.join(__filename, '..', '..', 'resources', 'icons', 'methods', `${this.response.request.data.method}.png`);
+                const iconPath = path_1.default.join(__filename, '..', '..', '..', '..', '..', '..', '..', 'resources', 'icons', 'methods', `${this.response.request.data.method}.png`);
                 if ((0, fs_1.existsSync)(iconPath)) {
                     return {
                         light: iconPath,

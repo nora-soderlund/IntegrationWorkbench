@@ -31,6 +31,10 @@ export default class WorkbenchHttpResponse {
       headers.set("Content-Type", "application/json");
 
       body = this.request.data.body.body;
+
+      this.request.data.headers.forEach((header) => {
+        headers.set(header.name, header.value);
+      });
     }
 
     fetch(request.data.url, {

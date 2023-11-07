@@ -45,10 +45,6 @@ vscode-data-grid-cell vscode-text-field {
   width: 100%;
 }
 
-.data-grid-buttons-header-row {
-  align-items: center;
-}
-
 .data-grid-buttons-cell {
   display: flex;
 

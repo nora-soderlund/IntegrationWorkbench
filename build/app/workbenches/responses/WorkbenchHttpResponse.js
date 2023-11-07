@@ -26,6 +26,9 @@ class WorkbenchHttpResponse {
         if ((0, WorkbenchRequestDataTypeValidations_1.isHttpRequestApplicationJsonBodyData)(this.request.data.body)) {
             headers.set("Content-Type", "application/json");
             body = this.request.data.body.body;
+            this.request.data.headers.forEach((header) => {
+                headers.set(header.name, header.value);
+            });
         }
         fetch(request.data.url, {
             method: request.data.method,

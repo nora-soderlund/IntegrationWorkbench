@@ -28,17 +28,22 @@ export default function HttpResponseEditorBody({ body, language, infoboxes }: Ht
         </div>
       ))}
 
-      <Editor value={body} language={language} theme="vs-dark" options={{
-        scrollBeyondLastLine: false,
-        minimap: {
-          enabled: false
-        },
-        readOnly: true,
-        padding: {
-          top: 6,
-          bottom: 6
-        }
-      }}/>
+      <div style={{
+        flex: 1,
+        height: "100%"
+      }}>
+        <Editor value={body} language={language} theme="vs-dark" options={{
+          scrollBeyondLastLine: false,
+          minimap: {
+            enabled: false
+          },
+          readOnly: true,
+          padding: {
+            top: 6,
+            bottom: 6
+          }
+        }}/>
+      </div>
     </div>
   );
 };
