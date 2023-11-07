@@ -23,3 +23,7 @@ export function isHttpRequestNoneAuthorizationData(authorization: WorkbenchHttpA
 export function isHttpRequestBasicAuthorizationData(authorization: WorkbenchHttpAuthorization): authorization is WorkbenchHttpBasicAuthorization {
   return authorization.type === "basic";
 }
+
+export function isHttpRequestBearerAuthorizationData(authorization: WorkbenchHttpAuthorization): authorization is WorkbenchHttpBasicAuthorization {
+  return authorization.type === "bearer";
+}

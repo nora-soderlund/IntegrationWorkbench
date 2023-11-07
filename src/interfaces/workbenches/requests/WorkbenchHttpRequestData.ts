@@ -38,9 +38,16 @@ export type WorkbenchHttpBasicAuthorization = {
   password: string;
 };
 
+export type WorkbenchHttpBearerAuthorization = {
+  type: "bearer";
+  
+  token: string;
+};
+
 export type WorkbenchHttpAuthorization = 
   | WorkbenchHttpNoneAuthorization
-  | WorkbenchHttpBasicAuthorization;
+  | WorkbenchHttpBasicAuthorization
+  | WorkbenchHttpBearerAuthorization;
 
 export type WorkbenchHttpRequestData = {
   id: string;

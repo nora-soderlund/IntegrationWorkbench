@@ -2,7 +2,7 @@ import React, { Component, useRef } from "react";
 import { HttpRequestProps } from "./HttpRequest";
 import { VSCodeButton, VSCodeDropdown, VSCodeOption, VSCodeRadio, VSCodeRadioGroup, VSCodeTextField } from '@vscode/webview-ui-toolkit/react';
 import HttpRequestBodySwitch from "./HttpRequestBodySwitch";
-import { WorkbenchHttpBasicAuthorization, WorkbenchHttpNoneAuthorization, WorkbenchHttpRequestApplicationJsonBodyData, WorkbenchHttpRequestNoneBodyData, WorkbenchHttpRequestRawBodyData } from "../../../interfaces/workbenches/requests/WorkbenchHttpRequestData";
+import { WorkbenchHttpBasicAuthorization, WorkbenchHttpBearerAuthorization, WorkbenchHttpNoneAuthorization, WorkbenchHttpRequestApplicationJsonBodyData, WorkbenchHttpRequestNoneBodyData, WorkbenchHttpRequestRawBodyData } from "../../../interfaces/workbenches/requests/WorkbenchHttpRequestData";
 import HttpRequestAuthorizationSwitch from "./HttpRequestAuthorizationSwitch";
 
 export default function HttpRequestAuthorization({ requestData }: HttpRequestProps) {
@@ -44,12 +44,28 @@ export default function HttpRequestAuthorization({ requestData }: HttpRequestPro
 
             break;
           }
+
+          case "bearer": {
+            const authorizationData: WorkbenchHttpBearerAuthorization = {
+              type: "bearer",
+
+              token: ""
+            };
+
+            window.vscode.postMessage({
+              command: "integrationWorkbench.changeHttpRequestAuthorization",
+              arguments: [ authorizationData ]
+            });
+
+            break;
+          }
         }
       }} style={{
         marginBottom: "1em"
       }}>
         <VSCodeRadio value="none">None</VSCodeRadio>
         <VSCodeRadio value="basic">Basic</VSCodeRadio>
+        <VSCodeRadio value="bearer">Bearer</VSCodeRadio>
       </VSCodeRadioGroup>
 
       <HttpRequestAuthorizationSwitch requestData={requestData}/>

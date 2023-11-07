@@ -28,6 +28,10 @@ class WorkbenchHttpResponse {
                 headers.set("Authorization", `Basic ${btoa(`${this.request.data.authorization.username}:${this.request.data.authorization.password}`)}`);
                 break;
             }
+            case "bearer": {
+                headers.set("Authorization", `Bearer ${this.request.data.authorization.token}`);
+                break;
+            }
         }
         if ((0, WorkbenchRequestDataTypeValidations_1.isHttpRequestApplicationJsonBodyData)(this.request.data.body)) {
             headers.set("Content-Type", "application/json");

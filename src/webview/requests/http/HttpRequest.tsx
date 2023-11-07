@@ -2,7 +2,7 @@ import { WebviewApi } from "vscode-webview";
 import { WorkbenchHttpRequestData } from "../../../interfaces/workbenches/requests/WorkbenchHttpRequestData";
 import HttpRequestHeader from "./HttpRequestHeader";
 import React from "react";
-import { VSCodePanelTab, VSCodePanelView, VSCodePanels } from "@vscode/webview-ui-toolkit/react";
+import { VSCodeBadge, VSCodePanelTab, VSCodePanelView, VSCodePanels, VSCodeTag } from "@vscode/webview-ui-toolkit/react";
 import HttpRequestBody from "./HttpRequestBody";
 import HttpRequestHeaders from "./HttpRequestHeaders";
 import HttpRequestParameters from "./HttpRequestParameters";
@@ -26,9 +26,26 @@ export default function HttpRequest({ requestData }: HttpRequestProps) {
       <VSCodePanels style={{
         flex: 1
       }}>
-        <VSCodePanelTab>BODY</VSCodePanelTab>
-        <VSCodePanelTab>HEADERS</VSCodePanelTab>
-        <VSCodePanelTab>PARAMETERS</VSCodePanelTab>
+        <VSCodePanelTab>
+          BODY
+        </VSCodePanelTab>
+        
+        <VSCodePanelTab>
+          HEADERS
+
+          {(requestData.data.headers.length > 0) && (
+            <VSCodeBadge>{requestData.data.headers.length}</VSCodeBadge>
+          )}
+        </VSCodePanelTab>
+
+        <VSCodePanelTab>
+          PARAMETERS
+
+          {(requestData.data.parameters.length > 0) && (
+            <VSCodeBadge>{requestData.data.parameters.length}</VSCodeBadge>
+          )}
+        </VSCodePanelTab>
+        
         <VSCodePanelTab>AUTHORIZATION</VSCodePanelTab>
 
         <VSCodePanelView style={{

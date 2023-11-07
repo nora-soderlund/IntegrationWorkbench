@@ -33,6 +33,12 @@ export default class WorkbenchHttpResponse {
 
         break;
       }
+
+      case "bearer": {
+        headers.set("Authorization", `Bearer ${this.request.data.authorization.token}`);
+
+        break;
+      }
     }
 
     if(isHttpRequestApplicationJsonBodyData(this.request.data.body)) {
