@@ -121,6 +121,26 @@ export class RequestWebviewPanel {
             return;
           }
 
+          case "integrationWorkbench.changeHttpRequestParameters": {
+            const [ parameters ] = message.arguments;
+
+            if(this.request instanceof WorkbenchHttpRequest) {
+              this.request.setParameters(parameters);
+            
+              this.webviewPanel.webview.postMessage({
+                command: "integrationWorkbench.updateHttpRequestPreviewUrl",
+                arguments: [ this.request.getParsedUrl() ]
+              });
+            }
+
+            this.webviewPanel.webview.postMessage({
+              command: "integrationWorkbench.updateRequest",
+              arguments: [ this.request.getData() ]
+            });
+
+            return;
+          }
+
           case "integrationWorkbench.changeHttpRequestBody": {
             const [ bodyData ] = message.arguments;
 
@@ -149,6 +169,17 @@ export class RequestWebviewPanel {
               command: "integrationWorkbench.updateRequest",
               arguments: [ this.request.getData() ]
             });
+
+            return;
+          }
+
+          case "integrationWorkbench.getHttpRequestPreviewUrl": {
+            if(this.request instanceof WorkbenchHttpRequest) {
+              this.webviewPanel.webview.postMessage({
+                command: "integrationWorkbench.updateHttpRequestPreviewUrl",
+                arguments: [ this.request.getParsedUrl() ]
+              });
+            }
 
             return;
           }

@@ -22,6 +22,11 @@ export type WorkbenchHttpRequestHeaderData = {
   value: string;
 };
 
+export type WorkbenchHttpRequestParameterData = {
+  name: string;
+  value: string;
+};
+
 export type WorkbenchHttpRequestData = {
   id: string;
   name: string;
@@ -32,6 +37,7 @@ export type WorkbenchHttpRequestData = {
     url?: string;
 
     headers: WorkbenchHttpRequestHeaderData[];
+    parameters: WorkbenchHttpRequestParameterData[];
 
     body: WorkbenchHttpRequestBodyData;
   };

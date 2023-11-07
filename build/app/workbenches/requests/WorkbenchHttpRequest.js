@@ -21,12 +21,27 @@ class WorkbenchHttpRequest extends WorkbenchRequest_1.default {
                 method: this.data.method,
                 url: this.data.url,
                 headers: [...this.data.headers],
+                parameters: [...this.data.parameters],
                 body: Object.assign({}, this.data.body)
             }
         };
     }
     static fromData(parent, data) {
         return new WorkbenchHttpRequest(parent, data.id, data.name, data.data);
+    }
+    getParsedUrl() {
+        var _a;
+        const parsedUrl = (_a = this.data.url) === null || _a === void 0 ? void 0 : _a.replace(/\{(.+?)\}/g, (_match, key) => {
+            const parameter = this.data.parameters.find((parameter) => parameter.name === key);
+            if (parameter) {
+                return parameter.value;
+            }
+            return '{' + key + '}';
+        });
+        if (!parsedUrl) {
+            return undefined;
+        }
+        return parsedUrl;
     }
     send() {
         vscode_1.commands.executeCommand("integrationWorkbench.addResponse", new WorkbenchHttpResponse_1.default((0, crypto_1.randomUUID)(), this.getData(), new Date()));
@@ -48,6 +63,10 @@ class WorkbenchHttpRequest extends WorkbenchRequest_1.default {
     }
     setHeaders(headers) {
         this.data.headers = headers;
+        this.parent.save();
+    }
+    setParameters(parameters) {
+        this.data.parameters = parameters;
         this.parent.save();
     }
 }

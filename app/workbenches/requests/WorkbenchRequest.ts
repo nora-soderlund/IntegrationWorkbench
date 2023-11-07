@@ -26,6 +26,7 @@ export default class WorkbenchRequest {
       type: "HTTP",
       data: {
         method: "",
+        parameters: [],
         headers: [
           {
             name: "Content-Type",

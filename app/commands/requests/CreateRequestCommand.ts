@@ -45,6 +45,7 @@ export default class CreateRequestCommand {
           new WorkbenchHttpRequest(workbenchItem, randomUUID(), value, {
             method: "GET",
             url: "https://httpbin.org/get",
+            parameters: [],
             headers: [
               {
                 name: "Content-Type",

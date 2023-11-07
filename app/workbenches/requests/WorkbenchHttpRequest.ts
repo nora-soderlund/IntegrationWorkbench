@@ -1,5 +1,5 @@
 import { ThemeIcon, Uri, commands } from "vscode";
-import { WorkbenchHttpRequestBodyData, WorkbenchHttpRequestData, WorkbenchHttpRequestHeaderData } from "~interfaces/workbenches/requests/WorkbenchHttpRequestData";
+import { WorkbenchHttpRequestBodyData, WorkbenchHttpRequestData, WorkbenchHttpRequestHeaderData, WorkbenchHttpRequestParameterData } from "~interfaces/workbenches/requests/WorkbenchHttpRequestData";
 import { Workbench } from "../Workbench";
 import { WorkbenchCollection } from "../collections/WorkbenchCollection";
 import WorkbenchRequest from "./WorkbenchRequest";
@@ -27,6 +27,7 @@ export default class WorkbenchHttpRequest extends WorkbenchRequest {
         method: this.data.method,
         url: this.data.url,
         headers: [ ...this.data.headers ],
+        parameters: [ ...this.data.parameters ],
         body: {
           ...this.data.body
         }
@@ -36,6 +37,24 @@ export default class WorkbenchHttpRequest extends WorkbenchRequest {
   
   static fromData(parent: Workbench | WorkbenchCollection, data: WorkbenchHttpRequestData) {
     return new WorkbenchHttpRequest(parent, data.id, data.name, data.data);
+  }
+
+  getParsedUrl() {
+    const parsedUrl = this.data.url?.replace(/\{(.+?)\}/g, (_match, key) => {
+      const parameter = this.data.parameters.find((parameter) => parameter.name === key);
+
+      if(parameter) {
+        return parameter.value;
+      }
+
+      return '{' + key + '}';
+    });
+
+    if(!parsedUrl) {
+      return undefined;
+    }
+
+    return parsedUrl;
   }
 
   send(): void {
@@ -70,6 +89,12 @@ export default class WorkbenchHttpRequest extends WorkbenchRequest {
 
   setHeaders(headers: WorkbenchHttpRequestHeaderData[]) {
     this.data.headers = headers;
+
+    this.parent.save();
+  }
+
+  setParameters(parameters: WorkbenchHttpRequestParameterData[]) {
+    this.data.parameters = parameters;
 
     this.parent.save();
   }

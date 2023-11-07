@@ -13,31 +13,38 @@ export default function HttpResponseBodySwitch({ responseData }: HttpResponsePro
     );
   }
 
-  if(responseData.result.headers["content-type"].toLowerCase() === "application/json") {
-    if(responseData.result?.body) {
-      try {
-        const parsedJson = JSON.parse(responseData.result.body);
+  if(responseData.result.body) {
+    if(responseData.result.headers["content-type"]?.toLowerCase() === "application/json") {
+      if(responseData.result?.body) {
+        try {
+          const parsedJson = JSON.parse(responseData.result.body);
 
-        return (
-          <React.Fragment>
-            <HttpResponseEditorBody body={JSON.stringify(parsedJson, undefined, 4)} language="json"/>
-          </React.Fragment>
-        );
+          return (
+            <React.Fragment>
+              <HttpResponseEditorBody body={JSON.stringify(parsedJson, undefined, 4)} language="json"/>
+            </React.Fragment>
+          );
+        }
+        catch {
+          return (
+            <HttpResponseEditorBody body={responseData.result.body} language="json" infoboxes={[
+              {
+                type: "warning",
+                message: (
+                  <React.Fragment>
+                    Response body was parsed as JSON but the Content-Type header was not <code>application/json</code>!
+                  </React.Fragment>
+                )
+              }
+            ]}/>
+          );
+        }
       }
-      catch {
-        return (
-          <HttpResponseEditorBody body={responseData.result.body} language="json" infoboxes={[
-            {
-              type: "warning",
-              message: (
-                <React.Fragment>
-                  Response body was parsed as JSON but the Content-Type header was not <code>application/json</code>!
-                </React.Fragment>
-              )
-            }
-          ]}/>
-        );
-      }
+    }
+    else {
+      return (
+        <HttpResponseEditorBody body={responseData.result.body} language="automatic"/>
+      );
     }
   }
 
