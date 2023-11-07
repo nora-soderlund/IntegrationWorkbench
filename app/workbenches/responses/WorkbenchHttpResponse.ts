@@ -57,9 +57,12 @@ export default class WorkbenchHttpResponse {
 
       error: this.error,
 
-      result: (this.result) && {
+      result: (this.response && this.result) && {
         body: this.result.body,
-        headers: this.result.headers
+        headers: this.result.headers,
+
+        status: this.response.status,
+        statusText: this.response.statusText
       }
     };
   }
@@ -77,7 +80,10 @@ export default class WorkbenchHttpResponse {
 
     this.result = {
       body,
-      headers
+      headers,
+
+      status: response.status,
+      statusText: response.statusText
     };
 
     commands.executeCommand("integrationWorkbench.refreshResponses", this);

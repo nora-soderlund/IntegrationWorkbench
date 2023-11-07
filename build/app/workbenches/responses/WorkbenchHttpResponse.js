@@ -45,9 +45,11 @@ class WorkbenchHttpResponse {
             request: this.request,
             requestedAt: this.requestedAt.toISOString(),
             error: this.error,
-            result: (this.result) && {
+            result: (this.response && this.result) && {
                 body: this.result.body,
-                headers: this.result.headers
+                headers: this.result.headers,
+                status: this.response.status,
+                statusText: this.response.statusText
             }
         };
     }
@@ -62,7 +64,9 @@ class WorkbenchHttpResponse {
             });
             this.result = {
                 body,
-                headers
+                headers,
+                status: response.status,
+                statusText: response.statusText
             };
             vscode_1.commands.executeCommand("integrationWorkbench.refreshResponses", this);
         });

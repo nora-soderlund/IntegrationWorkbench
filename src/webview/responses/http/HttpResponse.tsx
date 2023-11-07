@@ -6,6 +6,14 @@ import HttpResponseHeaders from "./HttpResponseHeaders";
 
 export type HttpResponseProps = {
   responseData: WorkbenchHttpResponseData;
+};
+
+function getHttpResponseColor(status: number) {
+  if(status >= 400) {
+    return "darkred";
+  }
+
+  return undefined;
 }
 
 export default function HttpResponse({ responseData }: HttpResponseProps) {
@@ -17,6 +25,17 @@ export default function HttpResponse({ responseData }: HttpResponseProps) {
       }}>
         <VSCodePanelTab>BODY</VSCodePanelTab>
         <VSCodePanelTab>HEADERS</VSCodePanelTab>
+
+        {(responseData.result) && (
+          <VSCodePanelTab style={{
+            justifyTracks: "flex-end",
+            pointerEvents: "none",
+            textTransform: "none",
+            color: getHttpResponseColor(responseData.result.status)
+          }}>
+            Status: {responseData.result.status} {responseData.result.statusText}
+          </VSCodePanelTab>
+        )}
 
         <VSCodePanelView style={{
           height: "100%",
@@ -31,6 +50,7 @@ export default function HttpResponse({ responseData }: HttpResponseProps) {
           <HttpResponseHeaders responseData={responseData}/>
         </VSCodePanelView>
         
+        <VSCodePanelView/>
       </VSCodePanels>
     </React.Fragment>
   );
