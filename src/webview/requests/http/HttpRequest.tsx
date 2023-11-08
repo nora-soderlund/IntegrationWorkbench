@@ -48,6 +48,8 @@ export default function HttpRequest({ requestData }: HttpRequestProps) {
         
         <VSCodePanelTab>AUTHORIZATION</VSCodePanelTab>
 
+        <VSCodePanelTab>SCRIPTS</VSCodePanelTab>
+
         <VSCodePanelView style={{
           height: "100%",
           flexDirection: "column"
@@ -71,6 +73,11 @@ export default function HttpRequest({ requestData }: HttpRequestProps) {
           flexDirection: "column"
         }}>
           <HttpRequestAuthorization requestData={requestData}/>
+        </VSCodePanelView>
+
+        <VSCodePanelView style={{
+          flexDirection: "column"
+        }}>
         </VSCodePanelView>
       </VSCodePanels>
     </div>

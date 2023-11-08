@@ -1,7 +1,7 @@
 import React, { Component, useRef } from "react";
-import { HttpRequestProps } from "./HttpRequest";
+import { HttpRequestProps } from "../HttpRequest";
 import { VSCodeButton, VSCodeDropdown, VSCodeOption, VSCodeRadio, VSCodeRadioGroup, VSCodeTextField } from '@vscode/webview-ui-toolkit/react';
-import { isHttpRequestApplicationJsonBodyData, isHttpRequestRawBodyData } from "../../../interfaces/workbenches/requests/utils/WorkbenchRequestDataTypeValidations";
+import { isHttpRequestApplicationJsonBodyData, isHttpRequestRawBodyData } from "../../../../interfaces/workbenches/requests/utils/WorkbenchRequestDataTypeValidations";
 import HttpRequestApplicationJsonBody from "./HttpRequestApplicationJsonBody";
 import HttpRequestRawBody from "./HttpRequestRawBody";
 
