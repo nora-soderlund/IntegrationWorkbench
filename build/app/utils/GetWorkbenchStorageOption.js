@@ -56,7 +56,7 @@ function getWorkbenchStorageOption(context, name) {
             const rootPath = (0, GetRootPath_1.default)();
             if (!rootPath) {
                 const result = yield vscode_1.window.showSaveDialog({
-                    defaultUri: vscode_1.Uri.file(`/.workbench/${name.toLocaleLowerCase()}/`),
+                    defaultUri: vscode_1.Uri.file(path_1.default.join(`/.workbench/workbenches/${name.toLocaleLowerCase()}/`)),
                     saveLabel: "Select"
                 });
                 if (!result) {
@@ -74,7 +74,7 @@ function getWorkbenchStorageOption(context, name) {
         else {
             throw new Error("Invalid workbench storage option was given: " + workbenchStorage);
         }
-        const workbenchesPath = path_1.default.join(workbenchStoragePath.fsPath, ".workbench/");
+        const workbenchesPath = path_1.default.join(workbenchStoragePath.fsPath, ".workbench/", "workbenches/");
         try {
             if (!(0, fs_1.existsSync)(workbenchesPath)) {
                 (0, fs_1.mkdirSync)(workbenchesPath, {

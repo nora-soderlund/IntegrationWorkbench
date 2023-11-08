@@ -20,13 +20,13 @@ function scanForWorkbenches(context, refresh = true) {
         if (!rootPath) {
             continue;
         }
-        if (!(0, fs_1.existsSync)(path_1.default.join(rootPath, ".workbench"))) {
+        if (!(0, fs_1.existsSync)(path_1.default.join(rootPath, ".workbench", "workbenches"))) {
             continue;
         }
-        const files = (0, fs_1.readdirSync)(path_1.default.join(rootPath, ".workbench"));
+        const files = (0, fs_1.readdirSync)(path_1.default.join(rootPath, ".workbench", "workbenches"));
         for (let file of files) {
-            if ((0, fs_1.existsSync)(path_1.default.join(rootPath, ".workbench", file, "workbench.json"))) {
-                folders.push(path_1.default.join(rootPath, ".workbench", file));
+            if ((0, fs_1.existsSync)(path_1.default.join(rootPath, ".workbench", "workbenches", file, "workbench.json"))) {
+                folders.push(path_1.default.join(rootPath, ".workbench", "workbenches", file));
             }
         }
     }

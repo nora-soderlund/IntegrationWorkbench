@@ -19,15 +19,15 @@ export function scanForWorkbenches(context: ExtensionContext, refresh: boolean =
       continue;
     }
 
-    if(!existsSync(path.join(rootPath, ".workbench"))) {
+    if(!existsSync(path.join(rootPath, ".workbench", "workbenches"))) {
       continue;
     }
 
-    const files = readdirSync(path.join(rootPath, ".workbench"));
+    const files = readdirSync(path.join(rootPath, ".workbench", "workbenches"));
 
     for(let file of files) {
-      if(existsSync(path.join(rootPath, ".workbench", file, "workbench.json"))) {
-        folders.push(path.join(rootPath, ".workbench", file));
+      if(existsSync(path.join(rootPath, ".workbench", "workbenches", file, "workbench.json"))) {
+        folders.push(path.join(rootPath, ".workbench", "workbenches", file));
       }
     }
   }

@@ -54,7 +54,7 @@ export default async function getWorkbenchStorageOption(context: ExtensionContex
 
     if(!rootPath) {
       const result = await window.showSaveDialog({
-        defaultUri: Uri.file(`/.workbench/${name.toLocaleLowerCase()}/`),
+        defaultUri: Uri.file(path.join(`/.workbench/workbenches/${name.toLocaleLowerCase()}/`)),
         saveLabel: "Select"
       });
 
@@ -75,7 +75,7 @@ export default async function getWorkbenchStorageOption(context: ExtensionContex
     throw new Error("Invalid workbench storage option was given: " + workbenchStorage);
   }
 
-  const workbenchesPath = path.join(workbenchStoragePath.fsPath, ".workbench/");
+  const workbenchesPath = path.join(workbenchStoragePath.fsPath, ".workbench/", "workbenches/");
 
   try {
     if(!existsSync(workbenchesPath)) {
