@@ -1,8 +1,8 @@
 import React, { Component, useRef } from "react";
-import { HttpRequestProps } from "./HttpRequest";
+import { HttpRequestProps } from "../HttpRequest";
 import { VSCodeButton, VSCodeDropdown, VSCodeOption, VSCodeRadio, VSCodeRadioGroup, VSCodeTextField } from '@vscode/webview-ui-toolkit/react';
-import HttpRequestBodySwitch from "./HttpRequestBodySwitch";
-import { WorkbenchHttpBasicAuthorization, WorkbenchHttpBearerAuthorization, WorkbenchHttpNoneAuthorization, WorkbenchHttpRequestApplicationJsonBodyData, WorkbenchHttpRequestNoneBodyData, WorkbenchHttpRequestRawBodyData } from "../../../interfaces/workbenches/requests/WorkbenchHttpRequestData";
+import HttpRequestBodySwitch from "../body/HttpRequestBodySwitch";
+import { WorkbenchHttpBasicAuthorization, WorkbenchHttpBearerAuthorization, WorkbenchHttpNoneAuthorization, WorkbenchHttpRequestApplicationJsonBodyData, WorkbenchHttpRequestNoneBodyData, WorkbenchHttpRequestRawBodyData } from "../../../../interfaces/workbenches/requests/WorkbenchHttpRequestData";
 import HttpRequestAuthorizationSwitch from "./HttpRequestAuthorizationSwitch";
 
 export default function HttpRequestAuthorization({ requestData }: HttpRequestProps) {

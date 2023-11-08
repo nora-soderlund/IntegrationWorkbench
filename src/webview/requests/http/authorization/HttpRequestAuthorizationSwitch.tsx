@@ -1,5 +1,5 @@
 import React from "react";
-import { HttpRequestProps } from "./HttpRequest";
+import { HttpRequestProps } from "../HttpRequest";
 import HttpRequesBasicAuthorization from "./HttpRequestBasicAuthorization";
 import HttpRequesBearerAuthorization from "./HttpRequestBearerAuthorization";
 

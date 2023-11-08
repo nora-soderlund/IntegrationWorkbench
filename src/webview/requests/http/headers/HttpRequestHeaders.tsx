@@ -1,8 +1,8 @@
 import React, { Component, useRef } from "react";
-import { HttpRequestProps } from "./HttpRequest";
+import { HttpRequestProps } from "../HttpRequest";
 import { VSCodeButton, VSCodeDataGrid, VSCodeDataGridCell, VSCodeDataGridRow, VSCodeDropdown, VSCodeLink, VSCodeOption, VSCodeRadio, VSCodeRadioGroup, VSCodeTextField } from '@vscode/webview-ui-toolkit/react';
-import HttpRequestBodySwitch from "./HttpRequestBodySwitch";
-import { WorkbenchHttpRequestApplicationJsonBodyData, WorkbenchHttpRequestNoneBodyData, WorkbenchHttpRequestRawBodyData } from "../../../interfaces/workbenches/requests/WorkbenchHttpRequestData";
+import HttpRequestBodySwitch from "../body/HttpRequestBodySwitch";
+import { WorkbenchHttpRequestApplicationJsonBodyData, WorkbenchHttpRequestNoneBodyData, WorkbenchHttpRequestRawBodyData } from "../../../../interfaces/workbenches/requests/WorkbenchHttpRequestData";
 
 export default function HttpRequestHeaders({ requestData }: HttpRequestProps) {
   return (

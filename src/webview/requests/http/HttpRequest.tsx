@@ -3,10 +3,10 @@ import { WorkbenchHttpRequestData } from "../../../interfaces/workbenches/reques
 import HttpRequestHeader from "./HttpRequestHeader";
 import React from "react";
 import { VSCodeBadge, VSCodePanelTab, VSCodePanelView, VSCodePanels, VSCodeTag } from "@vscode/webview-ui-toolkit/react";
-import HttpRequestBody from "./HttpRequestBody";
-import HttpRequestHeaders from "./HttpRequestHeaders";
+import HttpRequestBody from "./body/HttpRequestBody";
+import HttpRequestHeaders from "./headers/HttpRequestHeaders";
 import HttpRequestParameters from "./HttpRequestParameters";
-import HttpRequestAuthorization from "./HttpRequestAuthorization";
+import HttpRequestAuthorization from "./authorization/HttpRequestAuthorization";
 
 export type HttpRequestProps = {
   requestData: WorkbenchHttpRequestData;
