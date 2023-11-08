@@ -20,6 +20,7 @@ class DeleteRequestCommand {
         context.subscriptions.push(vscode_1.commands.registerCommand('integrationWorkbench.deleteRequest', this.handle.bind(this)));
     }
     handle(reference) {
+        var _a;
         return __awaiter(this, void 0, void 0, function* () {
             let request;
             if (reference instanceof WorkbenchRequestTreeItem_1.default) {
@@ -28,7 +29,7 @@ class DeleteRequestCommand {
             else {
                 throw new Error("Unknown entry point for deleting request.");
             }
-            reference.request.parent.removeRequest(reference.request);
+            (_a = reference.request.parent) === null || _a === void 0 ? void 0 : _a.removeRequest(reference.request);
         });
     }
 }

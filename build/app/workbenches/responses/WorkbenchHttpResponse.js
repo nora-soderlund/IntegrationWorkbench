@@ -8,16 +8,21 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 const vscode_1 = require("vscode");
 const WorkbenchRequestDataTypeValidations_1 = require("../../../src/interfaces/workbenches/requests/utils/WorkbenchRequestDataTypeValidations");
+const WorkbenchHttpRequest_1 = __importDefault(require("../requests/WorkbenchHttpRequest"));
 class WorkbenchHttpResponse {
-    constructor(id, request, requestedAt) {
+    constructor(id, requestData, requestedAt) {
         this.id = id;
-        this.request = request;
         this.requestedAt = requestedAt;
         this.status = "loading";
-        if (!request.data.url) {
+        this.request = WorkbenchHttpRequest_1.default.fromData(null, requestData);
+        const parsedUrl = this.request.getParsedUrl();
+        if (!parsedUrl) {
             vscode_1.window.showErrorMessage("No URL was provided in the request.");
             return;
         }
@@ -41,28 +46,19 @@ class WorkbenchHttpResponse {
             });
         }
         console.log(headers.get("Authorization"));
-        fetch(this.getParsedUrl(request.data.url), {
-            method: request.data.method,
+        fetch(parsedUrl, {
+            method: this.request.data.method,
             headers,
             body
         })
             .then(this.handleResponse.bind(this))
             .catch(this.handleResponseError.bind(this));
     }
-    getParsedUrl(url) {
-        return url.replace(/\{(.+?)\}/g, (_match, key) => {
-            const parameter = this.request.data.parameters.find((parameter) => parameter.name === key);
-            if (parameter) {
-                return parameter.value;
-            }
-            return '{' + key + '}';
-        });
-    }
     getData() {
         return {
             id: this.id,
             status: this.status,
-            request: this.request,
+            request: this.request.getData(),
             requestedAt: this.requestedAt.toISOString(),
             error: this.error,
             result: (this.response && this.result) && {

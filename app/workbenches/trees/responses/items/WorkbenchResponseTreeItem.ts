@@ -45,7 +45,7 @@ export default class WorkbenchResponseTreeItem extends TreeItem {
 
   getIconPath() {
     if(this.response.status === "done") {
-      if (isHttpRequestData(this.response.request)) {
+      if (isHttpRequestData(this.response.request.data)) {
         const iconPath = path.join(__filename, '..', '..', '..', '..', '..', '..', '..', 'resources', 'icons', 'methods', `${this.response.request.data.method}.png`);
 
         if (existsSync(iconPath)) {

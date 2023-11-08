@@ -48,31 +48,36 @@ class WorkbenchHttpRequest extends WorkbenchRequest_1.default {
         vscode_1.commands.executeCommand("integrationWorkbench.addResponse", new WorkbenchHttpResponse_1.default((0, crypto_1.randomUUID)(), this.getData(), new Date()));
     }
     setMethod(method) {
-        var _a;
+        var _a, _b;
         this.data.method = method;
         (_a = this.treeDataViewItem) === null || _a === void 0 ? void 0 : _a.setIconPath();
         vscode_1.commands.executeCommand("integrationWorkbench.refreshWorkbenches");
-        this.parent.save();
+        (_b = this.parent) === null || _b === void 0 ? void 0 : _b.save();
     }
     setUrl(url) {
+        var _a;
         this.data.url = url;
-        this.parent.save();
+        (_a = this.parent) === null || _a === void 0 ? void 0 : _a.save();
     }
     setAuthorization(authorizationData) {
+        var _a;
         this.data.authorization = authorizationData;
-        this.parent.save();
+        (_a = this.parent) === null || _a === void 0 ? void 0 : _a.save();
     }
     setBody(bodyData) {
+        var _a;
         this.data.body = bodyData;
-        this.parent.save();
+        (_a = this.parent) === null || _a === void 0 ? void 0 : _a.save();
     }
     setHeaders(headers) {
+        var _a;
         this.data.headers = headers;
-        this.parent.save();
+        (_a = this.parent) === null || _a === void 0 ? void 0 : _a.save();
     }
     setParameters(parameters) {
+        var _a;
         this.data.parameters = parameters;
-        this.parent.save();
+        (_a = this.parent) === null || _a === void 0 ? void 0 : _a.save();
     }
 }
 exports.default = WorkbenchHttpRequest;

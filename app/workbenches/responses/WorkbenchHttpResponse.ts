@@ -5,6 +5,7 @@ import WorkbenchRequest from "../requests/WorkbenchRequest";
 import { isHttpRequestApplicationJsonBodyData } from "~interfaces/workbenches/requests/utils/WorkbenchRequestDataTypeValidations";
 import { WorkbenchResponseStatus } from "~interfaces/workbenches/responses/WorkbenchResponseStatus";
 import WorkbenchResponseTreeItem from "../trees/responses/items/WorkbenchResponseTreeItem";
+import WorkbenchHttpRequest from "../requests/WorkbenchHttpRequest";
 
 export default class WorkbenchHttpResponse {
   private response?: Response;
@@ -12,13 +13,18 @@ export default class WorkbenchHttpResponse {
   public result?: WorkbenchHttpResponseData["result"];
   public status: WorkbenchResponseStatus = "loading";
   public treeItem?: WorkbenchResponseTreeItem;
+  public request: WorkbenchHttpRequest;
 
   constructor(
     public readonly id: string,
-    public readonly request: WorkbenchRequestData,
+    requestData: WorkbenchRequestData,
     public readonly requestedAt: Date
   ) {
-    if(!request.data.url) {
+    this.request = WorkbenchHttpRequest.fromData(null, requestData);
+
+    const parsedUrl = this.request.getParsedUrl();
+
+    if(!parsedUrl) {
       window.showErrorMessage("No URL was provided in the request.");
 
       return;
@@ -53,25 +59,13 @@ export default class WorkbenchHttpResponse {
 
     console.log(headers.get("Authorization"));
 
-    fetch(this.getParsedUrl(request.data.url), {
-      method: request.data.method,
+    fetch(parsedUrl, {
+      method: this.request.data.method,
       headers,
       body
     })
     .then(this.handleResponse.bind(this))
     .catch(this.handleResponseError.bind(this));
-  }
-
-  getParsedUrl(url: string) {
-    return url.replace(/\{(.+?)\}/g, (_match, key) => {
-      const parameter = this.request.data.parameters.find((parameter) => parameter.name === key);
-
-      if(parameter) {
-        return parameter.value;
-      }
-
-      return '{' + key + '}';
-    });
   }
 
   getData(): WorkbenchHttpResponseData {
@@ -80,7 +74,7 @@ export default class WorkbenchHttpResponse {
 
       status: this.status,
 
-      request: this.request,
+      request: this.request.getData(),
       requestedAt: this.requestedAt.toISOString(),
 
       error: this.error,

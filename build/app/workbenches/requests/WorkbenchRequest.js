@@ -64,11 +64,12 @@ class WorkbenchRequest {
         }
     }
     setName(name) {
+        var _a;
         this.name = name;
         if (this.requestWebviewPanel) {
             this.requestWebviewPanel.webviewPanel.title = name;
         }
-        this.parent.save();
+        (_a = this.parent) === null || _a === void 0 ? void 0 : _a.save();
     }
     deleteWebviewPanel() {
         delete this.requestWebviewPanel;

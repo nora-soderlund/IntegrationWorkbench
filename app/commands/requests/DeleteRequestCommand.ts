@@ -21,6 +21,6 @@ export default class DeleteRequestCommand {
       throw new Error("Unknown entry point for deleting request.");
     }
 
-    reference.request.parent.removeRequest(reference.request);
+    reference.request.parent?.removeRequest(reference.request);
   }
 }

@@ -10,7 +10,7 @@ import { randomUUID } from "crypto";
 
 export default class WorkbenchHttpRequest extends WorkbenchRequest {
   constructor(
-    parent: Workbench | WorkbenchCollection,
+    parent: Workbench | WorkbenchCollection | null,
     id: string,
     name: string,
     public data: WorkbenchHttpRequestData["data"]
@@ -38,7 +38,7 @@ export default class WorkbenchHttpRequest extends WorkbenchRequest {
     };
   }
   
-  static fromData(parent: Workbench | WorkbenchCollection, data: WorkbenchHttpRequestData) {
+  static fromData(parent: Workbench | WorkbenchCollection | null, data: WorkbenchHttpRequestData) {
     return new WorkbenchHttpRequest(parent, data.id, data.name, data.data);
   }
 
@@ -75,36 +75,36 @@ export default class WorkbenchHttpRequest extends WorkbenchRequest {
 
     commands.executeCommand("integrationWorkbench.refreshWorkbenches");
 
-    this.parent.save();
+    this.parent?.save();
   }
   
   setUrl(url: string) {
     this.data.url = url;
 
-    this.parent.save();
+    this.parent?.save();
   }
 
   setAuthorization(authorizationData: WorkbenchHttpAuthorization) {
     this.data.authorization = authorizationData;
 
-    this.parent.save();
+    this.parent?.save();
   }
 
   setBody(bodyData: WorkbenchHttpRequestBodyData) {
     this.data.body = bodyData;
 
-    this.parent.save();
+    this.parent?.save();
   }
 
   setHeaders(headers: WorkbenchHttpRequestHeaderData[]) {
     this.data.headers = headers;
 
-    this.parent.save();
+    this.parent?.save();
   }
 
   setParameters(parameters: WorkbenchHttpRequestParameterData[]) {
     this.data.parameters = parameters;
 
-    this.parent.save();
+    this.parent?.save();
   }
 }

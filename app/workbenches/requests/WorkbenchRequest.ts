@@ -14,7 +14,7 @@ export default class WorkbenchRequest {
   private requestWebviewPanel?: RequestWebviewPanel;
   public treeDataViewItem?: WorkbenchRequestTreeItem;
 
-  constructor(public readonly parent: Workbench | WorkbenchCollection, id: string, name: string) {
+  constructor(public readonly parent: Workbench | WorkbenchCollection | null, id: string, name: string) {
     this.id = id;
     this.name = name;
   }
@@ -83,7 +83,7 @@ export default class WorkbenchRequest {
       this.requestWebviewPanel.webviewPanel.title = name;
     }
     
-    this.parent.save();
+    this.parent?.save();
   }
 
   deleteWebviewPanel() {
