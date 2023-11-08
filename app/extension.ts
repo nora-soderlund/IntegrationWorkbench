@@ -23,6 +23,7 @@ import DeleteRequestCommand from './commands/requests/DeleteRequestCommand';
 import DeleteCollectionCommand from './commands/collections/DeleteCollectionCommand';
 import DeleteWorkbenchCommand from './commands/workbenches/DeleteWorkbenchCommand';
 import { ResponseWebviewPanel } from './panels/ResponseWebviewPanel';
+import RunWorkbenchCommand from './commands/workbenches/RunWorkbenchCommand';
 
 // This method is called when your extension is activated
 // Your extension is activated the very first time the command is executed
@@ -206,6 +207,7 @@ export function activate(context: vscode.ExtensionContext) {
 
 	new CreateWorkbenchCommand(context);
 	new DeleteWorkbenchCommand(context);
+	new RunWorkbenchCommand(context);
 
 	context.subscriptions.push(vscode.commands.registerCommand('integrationWorkbench.refreshWorkbenches', () => {
 		workbenchesTreeDataProvider.refresh();
