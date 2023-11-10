@@ -4,10 +4,14 @@ import { readFileSync } from "fs";
 import path from "path";
 import WorkbenchRequest from "../workbenches/requests/WorkbenchRequest";
 import WorkbenchHttpRequest from "../workbenches/requests/WorkbenchHttpRequest";
+import Scripts from "../Scripts";
+import Script from "../scripts/Script";
 
 export class RequestWebviewPanel {
   public readonly webviewPanel: WebviewPanel;
   private readonly disposables: Disposable[] = [];
+
+  private currentScript?: Script;
 
   constructor(
     private readonly context: ExtensionContext,
@@ -198,11 +202,62 @@ export class RequestWebviewPanel {
 
             return;
           }
+
+          case "integrationWorkbench.getScriptLibraries": {
+            this.webviewPanel.webview.postMessage({
+              command: "integrationWorkbench.updateScriptLibraries",
+              arguments: [
+                Scripts.loadedScripts.filter((script) => script.declaration).map((script) => {
+                  return {
+                    fileName: `ts:${script.name}.d.ts`,
+                    content: script.declaration
+                  };
+                }).concat([
+                  {
+                    fileName: "ts:environment.d.ts",
+                    content: "declare const process: { env: { HELLO: string; }; };"
+                  }
+                ])
+              ]
+            });
+
+            return;
+          }
+
+          case "integrationWorkbench.getScript": {
+            this.webviewPanel.webview.postMessage({
+              command: "integrationWorkbench.updateScript",
+              arguments: [ this.currentScript?.getData() ]
+            });
+
+            return;
+          }
+
+          case "integrationWorkbench.changeScriptContent": {
+            const [ content ] = message.arguments;
+
+            if(this.currentScript) {
+              this.currentScript.setContent(content);
+
+              this.setCurrentScript(this.currentScript);
+            }
+
+            return;
+          }
         }
       },
       undefined,
       this.disposables
     );
+  }
+
+  setCurrentScript(script: Script) {
+    this.currentScript = script;
+
+    this.webviewPanel.webview.postMessage({
+      command: "integrationWorkbench.updateScript",
+      arguments: [ this.currentScript.getData() ]
+    });
   }
 
   reveal() {

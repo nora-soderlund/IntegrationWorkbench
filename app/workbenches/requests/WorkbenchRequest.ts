@@ -11,7 +11,7 @@ export default class WorkbenchRequest {
   id: string;
   name: string;
 
-  private requestWebviewPanel?: RequestWebviewPanel;
+  public requestWebviewPanel?: RequestWebviewPanel;
   public treeDataViewItem?: WorkbenchRequestTreeItem;
 
   constructor(public readonly parent: Workbench | WorkbenchCollection | null, id: string, name: string) {

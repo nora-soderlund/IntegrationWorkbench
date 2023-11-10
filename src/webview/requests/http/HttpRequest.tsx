@@ -7,6 +7,7 @@ import HttpRequestBody from "./body/HttpRequestBody";
 import HttpRequestHeaders from "./headers/HttpRequestHeaders";
 import HttpRequestParameters from "./HttpRequestParameters";
 import HttpRequestAuthorization from "./authorization/HttpRequestAuthorization";
+import Scripts from "../../scripts/Script";
 
 export type HttpRequestProps = {
   requestData: WorkbenchHttpRequestData;
@@ -48,8 +49,6 @@ export default function HttpRequest({ requestData }: HttpRequestProps) {
         
         <VSCodePanelTab>AUTHORIZATION</VSCodePanelTab>
 
-        <VSCodePanelTab>SCRIPTS</VSCodePanelTab>
-
         <VSCodePanelView style={{
           height: "100%",
           flexDirection: "column"
@@ -73,11 +72,6 @@ export default function HttpRequest({ requestData }: HttpRequestProps) {
           flexDirection: "column"
         }}>
           <HttpRequestAuthorization requestData={requestData}/>
-        </VSCodePanelView>
-
-        <VSCodePanelView style={{
-          flexDirection: "column"
-        }}>
         </VSCodePanelView>
       </VSCodePanels>
     </div>

@@ -19,13 +19,14 @@ class Scripts {
             if (!rootPath) {
                 continue;
             }
-            if (!(0, fs_1.existsSync)(path_1.default.join(rootPath, ".workbench", "scripts"))) {
+            const folderPath = path_1.default.join(rootPath, ".workbench", "scripts");
+            if (!(0, fs_1.existsSync)(folderPath)) {
                 continue;
             }
-            const files = (0, fs_1.readdirSync)(path_1.default.join(rootPath, ".workbench", "scripts"));
+            const files = (0, fs_1.readdirSync)(folderPath);
             for (let file of files) {
-                if (file.endsWith(".js")) {
-                    this.loadedScripts.push(new Script_1.default(file));
+                if (file.endsWith(".ts")) {
+                    this.loadedScripts.push(new Script_1.default(path_1.default.join(folderPath, file)));
                 }
             }
         }

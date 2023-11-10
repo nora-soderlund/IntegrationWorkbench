@@ -2,6 +2,7 @@ import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import Request from './webview/requests/Request';
 import Response from './webview/responses/Response';
+import Script from './webview/scripts/Script';
 
 const rootElement = document.getElementById('root') as HTMLElement;
 
@@ -14,6 +15,12 @@ switch(window.type) {
 
   case "response": {
     ReactDOM.render(<Response/>, rootElement);
+
+    break;
+  }
+
+  case "script": {
+    ReactDOM.render(<Script/>, rootElement);
 
     break;
   }

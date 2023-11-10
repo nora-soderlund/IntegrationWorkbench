@@ -44,12 +44,9 @@ class CreateScriptCommand {
             if (!name) {
                 return;
             }
-            const script = new Script_1.default(path_1.default.join(storageOption.path, name + ".js"));
-            script.save(`
-      function getCurrentDate() {
-        return new Date().toISOString();
-      }
-    `);
+            const filePath = path_1.default.join(storageOption.path, name + ".ts");
+            (0, fs_1.writeFileSync)(filePath, `function ${name}() {\n  // Your code goes here...\n}\n`);
+            const script = new Script_1.default(filePath);
             Scripts_1.default.loadedScripts.push(script);
             vscode_1.commands.executeCommand("integrationWorkbench.refreshScripts");
         });

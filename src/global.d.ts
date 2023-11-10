@@ -5,7 +5,7 @@ import { WebviewApi } from "vscode-webview";
 
 declare global {
   interface Window {
-    type: "request" | "response";
+    type: "request" | "response" | "script";
     vscode: WebviewApi<unknown>;
   }
 }

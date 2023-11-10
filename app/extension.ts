@@ -2,7 +2,7 @@
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode';
 import WorkbenchTreeDataProvider from './workbenches/trees/workbenches/WorkbenchTreeDataProvider';
-import { scanForWorkbenches } from './Workbenches';
+import { getAllRequestsWithWebviews, scanForWorkbenches, workbenches } from './Workbenches';
 import CreateCollectionCommand from './commands/collections/CreateCollectionCommand';
 import CreateRequestCommand from './commands/requests/CreateRequestCommand';
 import OpenRequestCommand from './commands/requests/OpenRequestCommand';
@@ -27,6 +27,8 @@ import RunWorkbenchCommand from './commands/workbenches/RunWorkbenchCommand';
 import ScriptsTreeDataProvider from './workbenches/trees/scripts/ScriptsTreeDataProvider';
 import Scripts from './Scripts';
 import CreateScriptCommand from './commands/scripts/CreateScriptCommand';
+import ScriptTreeItem from './workbenches/trees/scripts/items/ScriptTreeItem';
+import OpenScriptCommand from './commands/scripts/OpenScriptCommand';
 
 // This method is called when your extension is activated
 // Your extension is activated the very first time the command is executed
@@ -219,6 +221,7 @@ export function activate(context: vscode.ExtensionContext) {
 	new RunWorkbenchCommand(context);
 
 	new CreateScriptCommand(context);
+	new OpenScriptCommand(context);
 
 	context.subscriptions.push(vscode.commands.registerCommand('integrationWorkbench.refreshWorkbenches', () => {
 		workbenchesTreeDataProvider.refresh();

@@ -8,7 +8,7 @@ import path from "path";
 import { workbenches } from "../../Workbenches";
 import { randomUUID } from "crypto";
 import getScriptStorageOption from "../../utils/GetScriptStorageOption";
-import { existsSync } from "fs";
+import { existsSync, writeFileSync } from "fs";
 import Script from "../../scripts/Script";
 import Scripts from "../../Scripts";
 
@@ -45,15 +45,13 @@ export default class CreateScriptCommand {
     if(!name) {
       return;
     }
+
+    const filePath = path.join(storageOption.path, name + ".ts");
+
+    writeFileSync(filePath, `function ${name}() {\n  // Your code goes here...\n}\n`);
   
-    const script = new Script(path.join(storageOption.path, name + ".js"));
-  
-    script.save(`
-      function getCurrentDate() {
-        return new Date().toISOString();
-      }
-    `);
-  
+    const script = new Script(filePath);
+    
     Scripts.loadedScripts.push(script);
 
     commands.executeCommand("integrationWorkbench.refreshScripts");

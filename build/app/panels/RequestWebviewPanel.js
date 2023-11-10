@@ -9,6 +9,7 @@ const GetWebviewUri_1 = require("../utils/GetWebviewUri");
 const fs_1 = require("fs");
 const path_1 = __importDefault(require("path"));
 const WorkbenchHttpRequest_1 = __importDefault(require("../workbenches/requests/WorkbenchHttpRequest"));
+const Scripts_1 = __importDefault(require("../Scripts"));
 class RequestWebviewPanel {
     constructor(context, request) {
         this.context = context;
@@ -60,6 +61,7 @@ class RequestWebviewPanel {
       </html>
     `;
         this.webviewPanel.webview.onDidReceiveMessage((message) => {
+            var _a;
             const command = message.command;
             console.debug("Received event from request webview:", command);
             switch (command) {
@@ -154,8 +156,49 @@ class RequestWebviewPanel {
                     }
                     return;
                 }
+                case "integrationWorkbench.getScriptLibraries": {
+                    this.webviewPanel.webview.postMessage({
+                        command: "integrationWorkbench.updateScriptLibraries",
+                        arguments: [
+                            Scripts_1.default.loadedScripts.filter((script) => script.declaration).map((script) => {
+                                return {
+                                    fileName: `ts:${script.name}.d.ts`,
+                                    content: script.declaration
+                                };
+                            }).concat([
+                                {
+                                    fileName: "ts:environment.d.ts",
+                                    content: "declare const process: { env: { HELLO: string; }; };"
+                                }
+                            ])
+                        ]
+                    });
+                    return;
+                }
+                case "integrationWorkbench.getScript": {
+                    this.webviewPanel.webview.postMessage({
+                        command: "integrationWorkbench.updateScript",
+                        arguments: [(_a = this.currentScript) === null || _a === void 0 ? void 0 : _a.getData()]
+                    });
+                    return;
+                }
+                case "integrationWorkbench.changeScriptContent": {
+                    const [content] = message.arguments;
+                    if (this.currentScript) {
+                        this.currentScript.setContent(content);
+                        this.setCurrentScript(this.currentScript);
+                    }
+                    return;
+                }
             }
         }, undefined, this.disposables);
+    }
+    setCurrentScript(script) {
+        this.currentScript = script;
+        this.webviewPanel.webview.postMessage({
+            command: "integrationWorkbench.updateScript",
+            arguments: [this.currentScript.getData()]
+        });
     }
     reveal() {
         const columnToShowIn = vscode_1.window.activeTextEditor ? vscode_1.window.activeTextEditor.viewColumn : undefined;

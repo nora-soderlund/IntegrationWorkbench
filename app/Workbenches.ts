@@ -3,8 +3,25 @@ import { Workbench } from "./workbenches/Workbench";
 import { existsSync, readFileSync, readdirSync } from "fs";
 import path from "path";
 import getRootPath from "./utils/GetRootPath";
+import WorkbenchRequest from "./workbenches/requests/WorkbenchRequest";
 
 export const workbenches: Workbench[] = [];
+
+export function getAllRequestsWithWebviews() {
+  const requestsWithWebviews: WorkbenchRequest[] = [];
+
+  workbenches.forEach((workbench) => {
+    const requests = workbench.collections.flatMap((collection) => collection.requests).concat(workbench.requests);
+
+    requests.forEach((request) => {
+      if(request.requestWebviewPanel) {
+        requestsWithWebviews.push(request);
+      }
+    });
+  });
+
+  return requestsWithWebviews;
+}
 
 export function scanForWorkbenches(context: ExtensionContext, refresh: boolean = true) {
   const folders: string[] = [];

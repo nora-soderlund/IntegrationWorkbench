@@ -11,14 +11,16 @@ export default class ScriptTreeItem extends TreeItem {
   ) {
     super(script.name, TreeItemCollapsibleState.None);
 
+    script.treeDataViewItem = this;
+
     this.tooltip = `${script.name} script`;
 
     this.update();
 
     this.command = {
       title: "Edit script",
-      command: "integrationWorkbench.editScript",
-      arguments: [this]
+      command: "integrationWorkbench.openScript",
+      arguments: [this.script]
     };
   }
 
@@ -26,10 +28,13 @@ export default class ScriptTreeItem extends TreeItem {
     this.contextValue = "script";
 
     this.iconPath = this.getIconPath();
-    this.resourceUri = Uri.parse('_.js');
   }
 
   getIconPath() {
-    return ThemeIcon.File;
+    const iconPath = path.join(__filename, '..', '..', '..', '..', '..', '..', '..', 'resources', 'icons', 'typescript.svg');
+
+    if (existsSync(iconPath)) {
+      return Uri.file(iconPath);
+    }
   }
 }

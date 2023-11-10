@@ -19,17 +19,19 @@ export default class Scripts {
       if(!rootPath) {
         continue;
       }
+
+      const folderPath = path.join(rootPath, ".workbench", "scripts");
   
-      if(!existsSync(path.join(rootPath, ".workbench", "scripts"))) {
+      if(!existsSync(folderPath)) {
         continue;
       }
   
-      const files = readdirSync(path.join(rootPath, ".workbench", "scripts"));
+      const files = readdirSync(folderPath);
   
       for(let file of files) {
-        if(file.endsWith(".js")) {
+        if(file.endsWith(".ts")) {
           this.loadedScripts.push(
-            new Script(file)
+            new Script(path.join(folderPath, file))
           );
         }
       }
