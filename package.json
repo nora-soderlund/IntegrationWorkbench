@@ -156,6 +156,11 @@
         "command": "integrationWorkbench.createScript",
         "title": "Create a Script",
         "icon": "$(new-file)"
+      },
+      {
+        "command": "integrationWorkbench.editScriptName",
+        "title": "Edit",
+        "icon": "$(pencil)"
       }
     ],
     "viewsContainers": {
@@ -292,6 +297,11 @@
           "command": "integrationWorkbench.deleteResponse",
           "when": "view == requests && (viewItem == response-done || viewItem == response-failed)",
           "group": "inline"
+        },
+
+        {
+          "command": "integrationWorkbench.editScriptName",
+          "when": "view == scripts && (viewItem == script)"
         }
       ],
       "editor/title": [

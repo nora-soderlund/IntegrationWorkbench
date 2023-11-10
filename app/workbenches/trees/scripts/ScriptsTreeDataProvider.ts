@@ -30,8 +30,8 @@ export default class ScriptsTreeDataProvider implements TreeDataProvider<ScriptT
 
     if (!element) {
       return Promise.resolve(
-        Scripts.scanForScripts(this.context, false).map((script) =>
-          new ScriptTreeItem(script)
+        Scripts.loadedScripts.map((script) =>
+          new ScriptTreeItem(this, script)
         )
       );
     }

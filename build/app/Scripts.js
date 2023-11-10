@@ -25,7 +25,7 @@ class Scripts {
             }
             const files = (0, fs_1.readdirSync)(folderPath);
             for (let file of files) {
-                if (file.endsWith(".ts")) {
+                if (file.endsWith(".ts") && !file.endsWith(".d.ts")) {
                     this.loadedScripts.push(new Script_1.default(path_1.default.join(folderPath, file)));
                 }
             }

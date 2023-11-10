@@ -29,6 +29,7 @@ import Scripts from './Scripts';
 import CreateScriptCommand from './commands/scripts/CreateScriptCommand';
 import ScriptTreeItem from './workbenches/trees/scripts/items/ScriptTreeItem';
 import OpenScriptCommand from './commands/scripts/OpenScriptCommand';
+import EditScriptNameCommand from './commands/scripts/EditScriptNameCommand';
 
 // This method is called when your extension is activated
 // Your extension is activated the very first time the command is executed
@@ -222,6 +223,7 @@ export function activate(context: vscode.ExtensionContext) {
 
 	new CreateScriptCommand(context);
 	new OpenScriptCommand(context);
+	new EditScriptNameCommand(context);
 
 	context.subscriptions.push(vscode.commands.registerCommand('integrationWorkbench.refreshWorkbenches', () => {
 		workbenchesTreeDataProvider.refresh();

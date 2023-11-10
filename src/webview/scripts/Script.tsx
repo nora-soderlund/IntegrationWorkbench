@@ -1,7 +1,7 @@
 import { Editor, useMonaco } from "@monaco-editor/react";
 import React, { useEffect, useState } from "react";
 import { ScriptDeclarationData } from "../../interfaces/scripts/ScriptDeclarationData";
-import { VSCodeDropdown, VSCodeLink, VSCodeTag } from "@vscode/webview-ui-toolkit/react";
+import { VSCodeDropdown, VSCodeLink, VSCodePanelTab, VSCodePanelView, VSCodePanels, VSCodeTag } from "@vscode/webview-ui-toolkit/react";
 import { ScriptData } from "../../interfaces/scripts/ScriptData";
 
 export default function Scripts() {
@@ -67,35 +67,37 @@ export default function Scripts() {
 
   return (
     <React.Fragment>
-      <div style={{
-        height: "100%",
-
-        display: "flex",
-        flexDirection: "column",
-        gap: "1em"
+      <VSCodePanels style={{
+        flex: 1,
+        padding: "6px 20px"
       }}>
-        <div>
-          {scriptData.name}
-        </div>
+        <VSCodePanelTab>
+          SCRIPT
+        </VSCodePanelTab>
 
-        <div style={{
-          flex: 1,
-          border: "1px solid var(--vscode-editorWidget-border)",
-          boxSizing: "border-box"
+        <VSCodePanelView style={{
+          height: "100%",
+          flexDirection: "column"
         }}>
-          <Editor language="typescript" value={scriptData.content} theme="vs-dark" options={{
-            scrollBeyondLastLine: false,
-            minimap: {
-              enabled: false
-            }
-          }} onChange={(value) => (
-            window.vscode.postMessage({
-              command: "integrationWorkbench.changeScriptContent",
-              arguments: [ value ]
-            })
-          )}/>
-        </div>
-      </div>
+          <div style={{
+            flex: 1,
+            border: "1px solid var(--vscode-editorWidget-border)",
+            boxSizing: "border-box"
+          }}>
+            <Editor language="typescript" value={scriptData.content} theme="vs-dark" options={{
+              scrollBeyondLastLine: false,
+              minimap: {
+                enabled: false
+              }
+            }} onChange={(value) => (
+              window.vscode.postMessage({
+                command: "integrationWorkbench.changeScriptContent",
+                arguments: [ value ]
+              })
+            )}/>
+          </div>
+        </VSCodePanelView>
+      </VSCodePanels>
     </React.Fragment>
   );
 };

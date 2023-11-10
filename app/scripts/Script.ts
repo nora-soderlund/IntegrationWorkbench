@@ -8,8 +8,8 @@ import { ScriptWebviewPanel } from "../panels/ScriptWebviewPanel";
 import ScriptTreeItem from "../workbenches/trees/scripts/items/ScriptTreeItem";
 
 export default class Script {
-  public readonly name: string;
-  public readonly nameWithoutExtension: string;
+  public name: string;
+  public nameWithoutExtension: string;
   private readonly directory: string;
   public content: string;
   public declaration?: string;
@@ -17,26 +17,38 @@ export default class Script {
   public scriptWebviewPanel?: ScriptWebviewPanel;
   public treeDataViewItem?: ScriptTreeItem;
 
-  private readonly declarationFilePath: string;
-
-  constructor(
-    private readonly filePath: string
-  ) {
+  constructor(filePath: string) {
     const parsedPath = path.parse(filePath);
 
     this.nameWithoutExtension = parsedPath.name;
     this.name = parsedPath.base;
     this.directory = parsedPath.dir;
 
-    this.declarationFilePath = path.join(this.directory, this.nameWithoutExtension + ".d.ts");
-    
     this.content = readFileSync(filePath, {
       encoding: "utf-8"
     });
 
-    if(existsSync(this.declarationFilePath)) {
+    if(existsSync(path.join(this.directory, this.nameWithoutExtension + ".d.ts"))) {
       this.declaration = this.getDeclaration();
     }
+  }
+
+  setName(name: string) {
+    rmSync(path.join(this.directory, this.name));
+
+    this.name = name + ".ts";
+    this.nameWithoutExtension = name;
+
+    this.save();
+
+    this.declaration = this.getDeclaration();
+
+    if(this.scriptWebviewPanel) {
+      this.scriptWebviewPanel.webviewPanel.title = this.name;
+    }
+
+    this.treeDataViewItem?.update();
+    this.treeDataViewItem?.treeDataProvider.refresh();
   }
 
   save() {
@@ -52,7 +64,7 @@ export default class Script {
     }
 
     try {
-      writeFileSync(this.filePath, this.content);
+      writeFileSync(path.join(this.directory, this.name), this.content);
     }
     catch (error) {
       window.showErrorMessage(`Failed to save workbench '${this.name}':\n\n` + error);
@@ -62,10 +74,12 @@ export default class Script {
   setContent(content: string) {
     this.content = content;
 
-    if(existsSync(this.declarationFilePath)) {
+    const declarationFilePath = path.join(this.directory, this.nameWithoutExtension + ".d.ts");
+
+    if(existsSync(declarationFilePath)) {
       delete this.declaration;
       
-      rmSync(this.declarationFilePath);
+      rmSync(declarationFilePath);
     }
     
     this.save();
@@ -78,7 +92,7 @@ export default class Script {
     };
 
     const program = ts.createProgram({
-      rootNames: [ this.filePath ],
+      rootNames: [ this.name ],
       options: compilerOptions,
     });
 
@@ -104,7 +118,7 @@ export default class Script {
     if(!this.declaration) {
       this.declaration = this.getDeclaration();
       
-      writeFileSync(this.declarationFilePath, this.declaration); 
+      writeFileSync(path.join(this.directory, this.nameWithoutExtension + ".d.ts"), this.declaration); 
     }
 
     return {

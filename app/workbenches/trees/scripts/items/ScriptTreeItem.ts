@@ -4,9 +4,11 @@ import { existsSync } from "fs";
 import { isHttpRequestData } from "../../../../../src/interfaces/workbenches/requests/utils/WorkbenchRequestDataTypeValidations";
 import WorkbenchResponse from "../../../responses/WorkbenchHttpResponse";
 import Script from "../../../../scripts/Script";
+import ScriptsTreeDataProvider from "../ScriptsTreeDataProvider";
 
 export default class ScriptTreeItem extends TreeItem {
   constructor(
+    public readonly treeDataProvider: ScriptsTreeDataProvider,
     public readonly script: Script
   ) {
     super(script.name, TreeItemCollapsibleState.None);
@@ -25,6 +27,7 @@ export default class ScriptTreeItem extends TreeItem {
   }
 
   update() {
+    this.label = this.script.name;
     this.contextValue = "script";
 
     this.iconPath = this.getIconPath();

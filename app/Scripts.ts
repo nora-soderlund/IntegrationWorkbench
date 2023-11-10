@@ -29,7 +29,7 @@ export default class Scripts {
       const files = readdirSync(folderPath);
   
       for(let file of files) {
-        if(file.endsWith(".ts")) {
+        if(file.endsWith(".ts") && !file.endsWith(".d.ts")) {
           this.loadedScripts.push(
             new Script(path.join(folderPath, file))
           );

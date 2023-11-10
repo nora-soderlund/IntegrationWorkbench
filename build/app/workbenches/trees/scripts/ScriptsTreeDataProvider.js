@@ -24,7 +24,7 @@ class ScriptsTreeDataProvider {
             delete this.selectAfterRefresh;
         }
         if (!element) {
-            return Promise.resolve(Scripts_1.default.scanForScripts(this.context, false).map((script) => new ScriptTreeItem_1.default(script)));
+            return Promise.resolve(Scripts_1.default.loadedScripts.map((script) => new ScriptTreeItem_1.default(this, script)));
         }
         return Promise.resolve([]);
     }
