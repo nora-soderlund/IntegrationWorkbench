@@ -151,6 +151,11 @@
       {
         "command": "integrationWorkbench.dev.removeWorkbenches",
         "title": "(Dev) Remove workbenches"
+      },
+      {
+        "command": "integrationWorkbench.createScript",
+        "title": "Create a Script",
+        "icon": "$(new-file)"
       }
     ],
     "viewsContainers": {
@@ -218,6 +223,11 @@
         {
           "command": "integrationWorkbench.createWorkbench",
           "when": "view == workbenches",
+          "group": "navigation"
+        },
+        {
+          "command": "integrationWorkbench.createScript",
+          "when": "view == scripts",
           "group": "navigation"
         }
       ],

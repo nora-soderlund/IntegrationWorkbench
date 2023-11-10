@@ -24,6 +24,9 @@ import DeleteCollectionCommand from './commands/collections/DeleteCollectionComm
 import DeleteWorkbenchCommand from './commands/workbenches/DeleteWorkbenchCommand';
 import { ResponseWebviewPanel } from './panels/ResponseWebviewPanel';
 import RunWorkbenchCommand from './commands/workbenches/RunWorkbenchCommand';
+import ScriptsTreeDataProvider from './workbenches/trees/scripts/ScriptsTreeDataProvider';
+import Scripts from './Scripts';
+import CreateScriptCommand from './commands/scripts/CreateScriptCommand';
 
 // This method is called when your extension is activated
 // Your extension is activated the very first time the command is executed
@@ -42,6 +45,12 @@ export function activate(context: vscode.ExtensionContext) {
 	
 	const workbenchesResponsesTreeView = vscode.window.createTreeView('requests', {
 		treeDataProvider: workbenchesResponsesTreeDataProvider
+	});
+
+	const scriptsTreeDataProvider = new ScriptsTreeDataProvider(context);
+	
+	const scriptsTreeView = vscode.window.createTreeView('scripts', {
+		treeDataProvider: scriptsTreeDataProvider
 	});
 
 	const workbenchResponseWebviewPanel = new ResponseWebviewPanel(context);
@@ -209,8 +218,14 @@ export function activate(context: vscode.ExtensionContext) {
 	new DeleteWorkbenchCommand(context);
 	new RunWorkbenchCommand(context);
 
+	new CreateScriptCommand(context);
+
 	context.subscriptions.push(vscode.commands.registerCommand('integrationWorkbench.refreshWorkbenches', () => {
 		workbenchesTreeDataProvider.refresh();
+	}));
+
+	context.subscriptions.push(vscode.commands.registerCommand('integrationWorkbench.refreshScripts', () => {
+		scriptsTreeDataProvider.refresh();
 	}));
 
 	context.subscriptions.push(vscode.commands.registerCommand('integrationWorkbench.addResponse', (workbenchResponse: WorkbenchResponse) => {
@@ -227,6 +242,7 @@ export function activate(context: vscode.ExtensionContext) {
 	}));
 
 	scanForWorkbenches(context);
+	Scripts.scanForScripts(context);
 
 	//vscode.window.registerTreeDataProvider('workbenches', new WorkbenchTreeDataProvider(rootPath));
 }

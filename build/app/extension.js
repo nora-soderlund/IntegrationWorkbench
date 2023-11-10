@@ -49,6 +49,9 @@ const DeleteCollectionCommand_1 = __importDefault(require("./commands/collection
 const DeleteWorkbenchCommand_1 = __importDefault(require("./commands/workbenches/DeleteWorkbenchCommand"));
 const ResponseWebviewPanel_1 = require("./panels/ResponseWebviewPanel");
 const RunWorkbenchCommand_1 = __importDefault(require("./commands/workbenches/RunWorkbenchCommand"));
+const ScriptsTreeDataProvider_1 = __importDefault(require("./workbenches/trees/scripts/ScriptsTreeDataProvider"));
+const Scripts_1 = __importDefault(require("./Scripts"));
+const CreateScriptCommand_1 = __importDefault(require("./commands/scripts/CreateScriptCommand"));
 // This method is called when your extension is activated
 // Your extension is activated the very first time the command is executed
 function activate(context) {
@@ -62,6 +65,10 @@ function activate(context) {
     const workbenchesResponsesTreeDataProvider = new WorkbenchesRequestsTreeDataProvider_1.default(context);
     const workbenchesResponsesTreeView = vscode.window.createTreeView('requests', {
         treeDataProvider: workbenchesResponsesTreeDataProvider
+    });
+    const scriptsTreeDataProvider = new ScriptsTreeDataProvider_1.default(context);
+    const scriptsTreeView = vscode.window.createTreeView('scripts', {
+        treeDataProvider: scriptsTreeDataProvider
     });
     const workbenchResponseWebviewPanel = new ResponseWebviewPanel_1.ResponseWebviewPanel(context);
     context.subscriptions.push(vscode.commands.registerCommand('integrationWorkbench.showResponse', (workbenchResponseTreeItem) => {
@@ -214,8 +221,12 @@ function activate(context) {
     new CreateWorkbenchCommand_1.default(context);
     new DeleteWorkbenchCommand_1.default(context);
     new RunWorkbenchCommand_1.default(context);
+    new CreateScriptCommand_1.default(context);
     context.subscriptions.push(vscode.commands.registerCommand('integrationWorkbench.refreshWorkbenches', () => {
         workbenchesTreeDataProvider.refresh();
+    }));
+    context.subscriptions.push(vscode.commands.registerCommand('integrationWorkbench.refreshScripts', () => {
+        scriptsTreeDataProvider.refresh();
     }));
     context.subscriptions.push(vscode.commands.registerCommand('integrationWorkbench.addResponse', (workbenchResponse) => {
         const workbenchResponseTreeItem = new WorkbenchResponseTreeItem_1.default(workbenchResponse);
@@ -227,6 +238,7 @@ function activate(context) {
         vscode.commands.executeCommand(`workbench.action.openWalkthrough`, `nora-soderlund.integrationWorkbench#workbenches.openWorkbenches`, false);
     }));
     (0, Workbenches_1.scanForWorkbenches)(context);
+    Scripts_1.default.scanForScripts(context);
     //vscode.window.registerTreeDataProvider('workbenches', new WorkbenchTreeDataProvider(rootPath));
 }
 exports.activate = activate;
