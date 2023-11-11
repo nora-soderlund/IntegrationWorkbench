@@ -33,8 +33,22 @@ export default function HttpRequestParameters({ requestData }: HttpRequestProps)
     <div>
       <VSCodeDataGrid className="data-grid-unfocusable data-grid-unhoverable">
         <VSCodeDataGridRow rowType="header">
-          <VSCodeDataGridCell cellType="columnheader" gridColumn="1">
+          <VSCodeDataGridCell cellType="columnheader" gridColumn="1" style={{
+            alignItems: "center",
+            display: "flex",
+            gap: "0.5em",
+            flexDirection: "row"
+          }}>
             Preview
+
+            <VSCodeButton appearance="icon" aria-label="Delete" onClick={() => {
+              window.vscode.postMessage({
+                command: "integrationWorkbench.getHttpRequestPreviewUrl",
+                arguments: [ requestData.data.parameters ]
+              });
+            }}>
+              <span className="codicon codicon-refresh"/>
+            </VSCodeButton>
           </VSCodeDataGridCell>
         </VSCodeDataGridRow>
 
@@ -110,7 +124,11 @@ export default function HttpRequestParameters({ requestData }: HttpRequestProps)
                 }}/>
               </VSCodeDataGridCell>
 
-              <VSCodeDataGridCell gridColumn="2">
+              <VSCodeDataGridCell gridColumn="2" style={{
+                display: "flex",
+                flexDirection: "column",
+                gap: "0.5em"
+              }}>
                 {(header.type === "raw")?(
                   <VSCodeTextField type="text" placeholder="Enter a value..." value={header.value} onChange={(event) => {
                     header.value = (event.target as HTMLInputElement).value;

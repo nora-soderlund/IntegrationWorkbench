@@ -60,6 +60,10 @@ export default function HttpRequestParameterScript({ value, onChange }: HttpRequ
     }}>
       <Editor language="typescript" value={value} theme="vs-dark" options={{
         scrollBeyondLastLine: false,
+        lineNumbers: "off",
+        glyphMargin: false,
+        lineDecorationsWidth: 0,
+        lineNumbersMinChars: 0,
         minimap: {
           enabled: false
         }
