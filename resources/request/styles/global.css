@@ -72,3 +72,11 @@ vscode-data-grid-cell vscode-text-field {
 .data-grid-buttons-hoverable:hover vscode-button[appearance="icon"] {
   display: inline-block;
 }
+
+.data-grid-variables-header-row {
+  grid-template-columns: 3fr 2fr 1fr !important;
+}
+
+.data-grid-variables-row {
+  grid-template-columns: 2fr 3fr 1fr !important;
+}

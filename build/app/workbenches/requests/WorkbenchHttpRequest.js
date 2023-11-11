@@ -7,6 +7,7 @@ const vscode_1 = require("vscode");
 const WorkbenchRequest_1 = __importDefault(require("./WorkbenchRequest"));
 const WorkbenchHttpResponse_1 = __importDefault(require("../responses/WorkbenchHttpResponse"));
 const crypto_1 = require("crypto");
+const Scripts_1 = __importDefault(require("../../Scripts"));
 class WorkbenchHttpRequest extends WorkbenchRequest_1.default {
     constructor(parent, id, name, data) {
         super(parent, id, name);
@@ -35,7 +36,20 @@ class WorkbenchHttpRequest extends WorkbenchRequest_1.default {
         const parsedUrl = (_a = this.data.url) === null || _a === void 0 ? void 0 : _a.replace(/\{(.+?)\}/g, (_match, key) => {
             const parameter = this.data.parameters.find((parameter) => parameter.name === key);
             if (parameter) {
-                return parameter.value;
+                switch (parameter.type) {
+                    case "raw":
+                        return parameter.value;
+                    case "typescript": {
+                        // TODO: add ability to view the entire script that's being evaluated for debugging purposes?
+                        const script = Scripts_1.default.loadedScripts.map((script) => script.javascript).join('').concat(parameter.value);
+                        try {
+                            return eval(script);
+                        }
+                        catch (error) {
+                            throw new Error("Failed to evaluate script: " + error);
+                        }
+                    }
+                }
             }
             return '{' + key + '}';
         });

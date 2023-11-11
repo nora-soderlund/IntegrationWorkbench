@@ -7,6 +7,7 @@ import path from "path";
 import { existsSync } from "fs";
 import WorkbenchHttpResponse from "../responses/WorkbenchHttpResponse";
 import { randomUUID } from "crypto";
+import Scripts from "../../Scripts";
 
 export default class WorkbenchHttpRequest extends WorkbenchRequest {
   constructor(
@@ -47,7 +48,22 @@ export default class WorkbenchHttpRequest extends WorkbenchRequest {
       const parameter = this.data.parameters.find((parameter) => parameter.name === key);
 
       if(parameter) {
-        return parameter.value;
+        switch(parameter.type) {
+          case "raw":
+            return parameter.value;
+
+          case "typescript": {
+            // TODO: add ability to view the entire script that's being evaluated for debugging purposes?
+            const script = Scripts.loadedScripts.map((script) => script.javascript).join('').concat(parameter.value);
+
+            try {
+              return eval(script);
+            }
+            catch(error) {
+              throw new Error("Failed to evaluate script: " + error);
+            }
+          }
+        }
       }
 
       return '{' + key + '}';

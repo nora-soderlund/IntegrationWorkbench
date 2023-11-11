@@ -1,6 +1,6 @@
 import React, { Component, useEffect, useRef, useState } from "react";
 import { HttpRequestProps } from "./HttpRequest";
-import { VSCodeButton, VSCodeDataGrid, VSCodeDataGridCell, VSCodeDataGridRow, VSCodeDropdown, VSCodeLink, VSCodeOption, VSCodeRadio, VSCodeRadioGroup, VSCodeTag, VSCodeTextField } from '@vscode/webview-ui-toolkit/react';
+import { VSCodeButton, VSCodeCheckbox, VSCodeDataGrid, VSCodeDataGridCell, VSCodeDataGridRow, VSCodeDropdown, VSCodeLink, VSCodeOption, VSCodeRadio, VSCodeRadioGroup, VSCodeTag, VSCodeTextField } from '@vscode/webview-ui-toolkit/react';
 import HttpRequestBodySwitch from "./body/HttpRequestBodySwitch";
 import { WorkbenchHttpRequestApplicationJsonBodyData, WorkbenchHttpRequestNoneBodyData, WorkbenchHttpRequestRawBodyData } from "../../../interfaces/workbenches/requests/WorkbenchHttpRequestData";
 import HttpRequestParameterScript from "./parameters/HttpRequestParameterScript";
@@ -33,13 +33,30 @@ export default function HttpRequestParameters({ requestData }: HttpRequestProps)
     <div>
       <VSCodeDataGrid className="data-grid-unfocusable data-grid-unhoverable">
         <VSCodeDataGridRow rowType="header">
-          <VSCodeDataGridCell cellType="columnheader" gridColumn="1" style={{
-            alignItems: "center",
-            display: "flex",
-            gap: "0.5em",
-            flexDirection: "row"
-          }}>
+          <VSCodeDataGridCell cellType="columnheader" gridColumn="1">
             Preview
+          </VSCodeDataGridCell>
+
+          <VSCodeDataGridCell cellType="columnheader" gridColumn="2"></VSCodeDataGridCell>
+          <VSCodeDataGridCell cellType="columnheader" gridColumn="3"></VSCodeDataGridCell>
+        </VSCodeDataGridRow>
+
+        <VSCodeDataGridRow className="data-grid-variables-header-row">
+          <VSCodeDataGridCell gridColumn="1">
+            {(previewUrl)?(
+              previewUrl
+            ):(
+              <i>No preview url available...</i>
+            )}
+          </VSCodeDataGridCell>
+
+          <VSCodeDataGridCell gridColumn="2" style={{
+            display: "flex",
+            flexDirection: "row",
+            gap: "0.5em",
+            justifyContent: "flex-end"
+          }}>
+            <VSCodeCheckbox checked={false}>Auto-refresh</VSCodeCheckbox>
 
             <VSCodeButton appearance="icon" aria-label="Delete" onClick={() => {
               window.vscode.postMessage({
@@ -50,16 +67,8 @@ export default function HttpRequestParameters({ requestData }: HttpRequestProps)
               <span className="codicon codicon-refresh"/>
             </VSCodeButton>
           </VSCodeDataGridCell>
-        </VSCodeDataGridRow>
 
-        <VSCodeDataGridRow>
-          <VSCodeDataGridCell gridColumn="1">
-            {(previewUrl)?(
-              previewUrl
-            ):(
-              <i>No preview url available...</i>
-            )}
-          </VSCodeDataGridCell>
+          <VSCodeDataGridCell cellType="columnheader" gridColumn="3"></VSCodeDataGridCell>
         </VSCodeDataGridRow>
       </VSCodeDataGrid>
 
@@ -72,7 +81,8 @@ export default function HttpRequestParameters({ requestData }: HttpRequestProps)
                 ...requestData.data.parameters,
                 {
                   name: "",
-                  value: ""
+                  value: "",
+                  type: "raw"
                 }
               ]
             ]
@@ -80,7 +90,7 @@ export default function HttpRequestParameters({ requestData }: HttpRequestProps)
         )}>click here</VSCodeLink> to add one.</p>
       ):(
         <VSCodeDataGrid className="data-grid-unfocusable data-grid-unhoverable">
-          <VSCodeDataGridRow rowType="header" style={{
+          <VSCodeDataGridRow rowType="header" className="data-grid-variables-row" style={{
             alignItems: "center"
           }}>
             <VSCodeDataGridCell cellType="columnheader" gridColumn="1">
@@ -100,7 +110,8 @@ export default function HttpRequestParameters({ requestData }: HttpRequestProps)
                       ...requestData.data.parameters,
                       {
                         name: "",
-                        value: ""
+                        value: "",
+                        type: "raw"
                       }
                     ]
                   ]
@@ -112,7 +123,7 @@ export default function HttpRequestParameters({ requestData }: HttpRequestProps)
           </VSCodeDataGridRow>
 
           {requestData.data.parameters.map((header, index) => (
-            <VSCodeDataGridRow key={index} className="data-grid-buttons-hoverable">
+            <VSCodeDataGridRow key={index} className="data-grid-buttons-hoverable data-grid-variables-row">
               <VSCodeDataGridCell gridColumn="1">
                 <VSCodeTextField type="text" placeholder="Enter a header..." value={header.name} onChange={(event) => {
                   header.name = (event.target as HTMLInputElement).value;

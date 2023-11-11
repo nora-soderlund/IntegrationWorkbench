@@ -111,10 +111,6 @@ class RequestWebviewPanel {
                     const [parameters] = message.arguments;
                     if (this.request instanceof WorkbenchHttpRequest_1.default) {
                         this.request.setParameters(parameters);
-                        this.webviewPanel.webview.postMessage({
-                            command: "integrationWorkbench.updateHttpRequestPreviewUrl",
-                            arguments: [this.request.getParsedUrl()]
-                        });
                     }
                     this.webviewPanel.webview.postMessage({
                         command: "integrationWorkbench.updateRequest",

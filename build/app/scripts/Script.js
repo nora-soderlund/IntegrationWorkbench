@@ -26,8 +26,8 @@ class Script {
         this.content = (0, fs_1.readFileSync)(filePath, {
             encoding: "utf-8"
         });
-        if ((0, fs_1.existsSync)(path_1.default.join(this.directory, this.nameWithoutExtension + ".d.ts"))) {
-            this.declaration = (0, fs_1.readFileSync)(path_1.default.join(this.directory, this.nameWithoutExtension + ".d.ts"), {
+        if ((0, fs_1.existsSync)(path_1.default.join(this.directory, 'build', this.nameWithoutExtension + ".d.ts"))) {
+            this.declaration = (0, fs_1.readFileSync)(path_1.default.join(this.directory, 'build', this.nameWithoutExtension + ".d.ts"), {
                 encoding: "utf-8"
             });
         }
@@ -35,10 +35,11 @@ class Script {
     setName(name) {
         var _a, _b;
         (0, fs_1.rmSync)(path_1.default.join(this.directory, this.name));
+        this.deleteBuild();
         this.name = name + ".ts";
         this.nameWithoutExtension = name;
         this.save();
-        this.getDeclaration().then((declaration) => this.declaration = declaration);
+        this.createBuild();
         if (this.scriptWebviewPanel) {
             this.scriptWebviewPanel.webviewPanel.title = this.name;
         }
@@ -65,18 +66,39 @@ class Script {
     }
     setContent(content) {
         this.content = content;
-        const declarationFilePath = path_1.default.join(this.directory, this.nameWithoutExtension + ".d.ts");
-        if ((0, fs_1.existsSync)(declarationFilePath)) {
-            delete this.declaration;
-            (0, fs_1.rmSync)(declarationFilePath);
-        }
+        this.deleteBuild();
         this.save();
     }
-    deleteDeclaration() {
+    deleteBuild() {
         delete this.declaration;
-        (0, fs_1.rmSync)(path_1.default.join(this.directory, this.nameWithoutExtension + ".d.ts"));
+        const declarationFilePath = path_1.default.join(this.directory, 'build', this.nameWithoutExtension + ".d.ts");
+        if ((0, fs_1.existsSync)(declarationFilePath)) {
+            (0, fs_1.rmSync)(declarationFilePath);
+        }
+        const javascriptFilePath = path_1.default.join(this.directory, 'build', this.nameWithoutExtension + ".js");
+        if ((0, fs_1.existsSync)(javascriptFilePath)) {
+            (0, fs_1.rmSync)(javascriptFilePath);
+        }
     }
-    getDeclaration() {
+    createBuild() {
+        return __awaiter(this, void 0, void 0, function* () {
+            this.createBuildDirectory();
+            const { declaration, javascript } = yield this.build();
+            (0, fs_1.writeFileSync)(path_1.default.join(this.directory, 'build', this.nameWithoutExtension + ".d.ts"), declaration);
+            (0, fs_1.writeFileSync)(path_1.default.join(this.directory, 'build', this.nameWithoutExtension + ".js"), javascript);
+            this.declaration = declaration;
+            this.javascript = javascript;
+        });
+    }
+    createBuildDirectory() {
+        const buildDirectory = path_1.default.join(this.directory, 'build');
+        if (!(0, fs_1.existsSync)(buildDirectory)) {
+            (0, fs_1.mkdirSync)(buildDirectory, {
+                recursive: true
+            });
+        }
+    }
+    build() {
         const compilerOptions = {
             declaration: true,
             allowJs: true,
@@ -87,9 +109,19 @@ class Script {
             options: compilerOptions,
         });
         return new Promise((resolve, reject) => {
+            let declaration, javascript;
             const result = program.emit(undefined, (fileName, data) => {
                 if (fileName.endsWith('.d.ts')) {
-                    resolve(data);
+                    declaration = data;
+                }
+                else if (fileName.endsWith('.js')) {
+                    javascript = data;
+                }
+                if (declaration && javascript) {
+                    resolve({
+                        declaration,
+                        javascript
+                    });
                 }
             });
             const diagnostics = typescript_1.default.getPreEmitDiagnostics(program).concat(result.diagnostics);
@@ -102,7 +134,7 @@ class Script {
                 reject();
             }
             else {
-                console.log('Declaration file generated successfully.');
+                console.log('Build files generated successfully.');
             }
         });
     }
@@ -114,9 +146,11 @@ class Script {
     }
     getDeclarationData() {
         return __awaiter(this, void 0, void 0, function* () {
-            if (!this.declaration) {
-                this.declaration = yield this.getDeclaration();
-                (0, fs_1.writeFileSync)(path_1.default.join(this.directory, this.nameWithoutExtension + ".d.ts"), this.declaration);
+            if (!this.declaration || !this.javascript) {
+                yield this.createBuild();
+            }
+            if (!this.declaration || !this.javascript) {
+                return null;
             }
             return {
                 name: `ts:${this.nameWithoutExtension}.d.ts`,

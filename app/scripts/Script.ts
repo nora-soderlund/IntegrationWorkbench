@@ -12,6 +12,8 @@ export default class Script {
   public nameWithoutExtension: string;
   private readonly directory: string;
   public content: string;
+  
+  public javascript?: string;
   public declaration?: string;
 
   public scriptWebviewPanel?: ScriptWebviewPanel;
@@ -28,8 +30,8 @@ export default class Script {
       encoding: "utf-8"
     });
 
-    if(existsSync(path.join(this.directory, this.nameWithoutExtension + ".d.ts"))) {
-      this.declaration = readFileSync(path.join(this.directory, this.nameWithoutExtension + ".d.ts"), {
+    if(existsSync(path.join(this.directory, 'build', this.nameWithoutExtension + ".d.ts"))) {
+      this.declaration = readFileSync(path.join(this.directory, 'build', this.nameWithoutExtension + ".d.ts"), {
         encoding: "utf-8"
       });
     }
@@ -37,13 +39,14 @@ export default class Script {
 
   setName(name: string) {
     rmSync(path.join(this.directory, this.name));
+    this.deleteBuild();
 
     this.name = name + ".ts";
     this.nameWithoutExtension = name;
 
     this.save();
 
-    this.getDeclaration().then((declaration) => this.declaration = declaration);
+    this.createBuild();
 
     if(this.scriptWebviewPanel) {
       this.scriptWebviewPanel.webviewPanel.title = this.name;
@@ -76,24 +79,50 @@ export default class Script {
   setContent(content: string) {
     this.content = content;
 
-    const declarationFilePath = path.join(this.directory, this.nameWithoutExtension + ".d.ts");
-
-    if(existsSync(declarationFilePath)) {
-      delete this.declaration;
-      
-      rmSync(declarationFilePath);
-    }
+    this.deleteBuild();
     
     this.save();
   }
 
-  deleteDeclaration() {
+  deleteBuild() {
     delete this.declaration;
 
-    rmSync(path.join(this.directory, this.nameWithoutExtension + ".d.ts"));
+    const declarationFilePath = path.join(this.directory, 'build', this.nameWithoutExtension + ".d.ts");
+    
+    if(existsSync(declarationFilePath)) {
+      rmSync(declarationFilePath);
+    }
+
+    const javascriptFilePath = path.join(this.directory, 'build', this.nameWithoutExtension + ".js");
+    
+    if(existsSync(javascriptFilePath)) {
+      rmSync(javascriptFilePath);
+    }
   }
 
-  getDeclaration() {
+  async createBuild() {
+    this.createBuildDirectory();
+
+    const { declaration, javascript } = await this.build();
+
+    writeFileSync(path.join(this.directory, 'build', this.nameWithoutExtension + ".d.ts"), declaration);
+    writeFileSync(path.join(this.directory, 'build', this.nameWithoutExtension + ".js"), javascript);
+
+    this.declaration = declaration;
+    this.javascript = javascript;
+  }
+
+  createBuildDirectory() {
+    const buildDirectory = path.join(this.directory, 'build');
+
+    if (!existsSync(buildDirectory)) {
+      mkdirSync(buildDirectory, {
+        recursive: true
+      });
+    }
+  }
+
+  build() {
     const compilerOptions = {
       declaration: true,
       allowJs: true,
@@ -112,10 +141,25 @@ export default class Script {
       options: compilerOptions,
     });
 
-    return new Promise<string>((resolve, reject) => {
+    return new Promise<{
+      declaration: string;
+      javascript: string;
+    }>((resolve, reject) => {
+      let declaration: string, javascript: string;
+
       const result = program.emit(undefined, (fileName, data) => {
         if (fileName.endsWith('.d.ts')) {
-          resolve(data);
+          declaration = data;
+        }
+        else if (fileName.endsWith('.js')) {
+          javascript = data;
+        }
+
+        if(declaration && javascript) {
+          resolve({
+            declaration,
+            javascript
+          });
         }
       });
 
@@ -131,7 +175,7 @@ export default class Script {
         reject();
       }
       else {
-        console.log('Declaration file generated successfully.');
+        console.log('Build files generated successfully.');
       }
     });
   }
@@ -144,10 +188,12 @@ export default class Script {
   }
 
   async getDeclarationData(): Promise<ScriptDeclarationData | null> {
-    if(!this.declaration) {
-      this.declaration = await this.getDeclaration();
+    if(!this.declaration || !this.javascript) {
+      await this.createBuild();
+    }
 
-      writeFileSync(path.join(this.directory, this.nameWithoutExtension + ".d.ts"), this.declaration);
+    if(!this.declaration || !this.javascript) {
+      return null;
     }
 
     return {

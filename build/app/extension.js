@@ -243,7 +243,7 @@ function activate(context) {
     }));
     context.subscriptions.push(vscode.commands.registerCommand('integrationWorkbench.deleteScriptDeclarations', () => {
         Scripts_1.default.loadedScripts.forEach((script) => {
-            script.deleteDeclaration();
+            script.deleteBuild();
         });
     }));
     (0, Workbenches_1.scanForWorkbenches)(context);
