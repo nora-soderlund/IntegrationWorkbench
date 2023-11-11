@@ -22,50 +22,50 @@ export default class WorkbenchHttpResponse {
   ) {
     this.request = WorkbenchHttpRequest.fromData(null, requestData);
 
-    const parsedUrl = this.request.getParsedUrl();
+    this.request.getParsedUrl().then((parsedUrl) => {
+      if(!parsedUrl) {
+        window.showErrorMessage("No URL was provided in the request.");
 
-    if(!parsedUrl) {
-      window.showErrorMessage("No URL was provided in the request.");
-
-      return;
-    }
-
-    const headers = new Headers();
-    let body: string | undefined;
-
-    switch(this.request.data.authorization.type) {
-      case "basic": {
-        headers.set("Authorization", `Basic ${btoa(`${this.request.data.authorization.username}:${this.request.data.authorization.password}`)}`);
-
-        break;
+        return;
       }
 
-      case "bearer": {
-        headers.set("Authorization", `Bearer ${this.request.data.authorization.token}`);
+      const headers = new Headers();
+      let body: string | undefined;
 
-        break;
+      switch(this.request.data.authorization.type) {
+        case "basic": {
+          headers.set("Authorization", `Basic ${btoa(`${this.request.data.authorization.username}:${this.request.data.authorization.password}`)}`);
+
+          break;
+        }
+
+        case "bearer": {
+          headers.set("Authorization", `Bearer ${this.request.data.authorization.token}`);
+
+          break;
+        }
       }
-    }
 
-    if(isHttpRequestApplicationJsonBodyData(this.request.data.body)) {
-      headers.set("Content-Type", "application/json");
+      if(isHttpRequestApplicationJsonBodyData(this.request.data.body)) {
+        headers.set("Content-Type", "application/json");
 
-      body = this.request.data.body.body;
+        body = this.request.data.body.body;
 
-      this.request.data.headers.forEach((header) => {
-        headers.set(header.name, header.value);
-      });
-    }
+        this.request.data.headers.forEach((header) => {
+          headers.set(header.name, header.value);
+        });
+      }
 
-    console.log(headers.get("Authorization"));
+      console.log(headers.get("Authorization"));
 
-    fetch(parsedUrl, {
-      method: this.request.data.method,
-      headers,
-      body
-    })
-    .then(this.handleResponse.bind(this))
-    .catch(this.handleResponseError.bind(this));
+      fetch(parsedUrl, {
+        method: this.request.data.method,
+        headers,
+        body
+      })
+      .then(this.handleResponse.bind(this))
+      .catch(this.handleResponseError.bind(this));
+    });
   }
 
   getData(): WorkbenchHttpResponseData {

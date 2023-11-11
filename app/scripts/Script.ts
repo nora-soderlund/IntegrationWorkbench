@@ -123,9 +123,10 @@ export default class Script {
   }
 
   build() {
-    const compilerOptions = {
+    const compilerOptions: ts.CompilerOptions = {
       declaration: true,
       allowJs: true,
+      module: ts.ModuleKind.ESNext
     };
 
     ts.createSourceFile(

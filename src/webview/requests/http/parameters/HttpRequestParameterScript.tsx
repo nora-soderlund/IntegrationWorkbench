@@ -5,6 +5,7 @@ import { VSCodeDropdown, VSCodeLink, VSCodePanelTab, VSCodePanelView, VSCodePane
 import { ScriptData } from "../../../../interfaces/scripts/ScriptData";
 import { WorkbenchHttpRequestParameterData } from "../../../../interfaces/workbenches/requests/WorkbenchHttpRequestData";
 import { WorkbenchRequestData } from "../../../../interfaces/workbenches/requests/WorkbenchRequestData";
+import { languages } from "monaco-editor";
 
 export type HttpRequestParameterScriptProps = {
   value: string;
@@ -43,6 +44,12 @@ export default function HttpRequestParameterScript({ value, onChange }: HttpRequ
     if(!monaco || !scriptDeclarations) {
       return;
     }
+
+    /*monaco.languages.typescript.typescriptDefaults.setCompilerOptions({
+      ...monaco.languages.typescript.typescriptDefaults.getCompilerOptions(),
+
+      module: languages.typescript.ModuleKind.ESNext
+    });*/
 
     scriptDeclarations.forEach((scriptLibrary) => {
       monaco.languages.typescript.typescriptDefaults.addExtraLib(

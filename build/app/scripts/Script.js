@@ -102,6 +102,7 @@ class Script {
         const compilerOptions = {
             declaration: true,
             allowJs: true,
+            module: typescript_1.default.ModuleKind.ESNext
         };
         typescript_1.default.createSourceFile(path_1.default.join(this.directory, this.name), this.content, typescript_1.default.ScriptTarget.Latest, true, typescript_1.default.ScriptKind.TS);
         const program = typescript_1.default.createProgram({

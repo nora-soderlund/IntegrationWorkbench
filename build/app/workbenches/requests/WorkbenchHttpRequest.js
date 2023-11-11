@@ -1,4 +1,13 @@
 "use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -33,31 +42,43 @@ class WorkbenchHttpRequest extends WorkbenchRequest_1.default {
         return new WorkbenchHttpRequest(parent, data.id, data.name, data.data);
     }
     getParsedUrl() {
-        var _a;
-        const parsedUrl = (_a = this.data.url) === null || _a === void 0 ? void 0 : _a.replace(/\{(.+?)\}/g, (_match, key) => {
-            const parameter = this.data.parameters.find((parameter) => parameter.name === key);
-            if (parameter) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (!this.data.url) {
+                return null;
+            }
+            const keys = [];
+            this.data.url.replace(/\{(.+?)\}/g, (_match, key) => {
+                keys.push(key);
+                return _match;
+            });
+            const uniqueKeys = [...new Set(keys)];
+            let parsedUrl = this.data.url;
+            for (let key of uniqueKeys) {
+                const parameter = this.data.parameters.find((parameter) => parameter.name === key);
+                if (!parameter) {
+                    continue;
+                }
                 switch (parameter.type) {
-                    case "raw":
-                        return parameter.value;
+                    case "raw": {
+                        parsedUrl = parsedUrl === null || parsedUrl === void 0 ? void 0 : parsedUrl.replace('{' + key + '}', parameter.value);
+                        break;
+                    }
                     case "typescript": {
                         // TODO: add ability to view the entire script that's being evaluated for debugging purposes?
                         const script = Scripts_1.default.loadedScripts.map((script) => script.javascript).join('').concat(parameter.value);
+                        let value;
                         try {
-                            return eval(script);
+                            value = yield eval(script);
                         }
                         catch (error) {
                             throw new Error("Failed to evaluate script: " + error);
                         }
+                        parsedUrl = parsedUrl === null || parsedUrl === void 0 ? void 0 : parsedUrl.replace('{' + key + '}', value);
                     }
                 }
             }
-            return '{' + key + '}';
+            return parsedUrl;
         });
-        if (!parsedUrl) {
-            return undefined;
-        }
-        return parsedUrl;
     }
     send() {
         vscode_1.commands.executeCommand("integrationWorkbench.addResponse", new WorkbenchHttpResponse_1.default((0, crypto_1.randomUUID)(), this.getData(), new Date()));
