@@ -21,6 +21,7 @@ class WorkbenchRequest {
             data: {
                 method: "",
                 parameters: [],
+                parametersAutoRefresh: false,
                 authorization: {
                     type: "none"
                 },

@@ -68,8 +68,8 @@ export default function HttpRequestBody({ requestData }: HttpRequestProps) {
         <VSCodeRadio value="none">None</VSCodeRadio>
         <VSCodeRadio value="raw">Raw</VSCodeRadio>
         <VSCodeRadio value="application/json">application/json</VSCodeRadio>
-        <VSCodeRadio value="multipart/form-data">multipart/form-data</VSCodeRadio>
-        <VSCodeRadio value="application/x-www-form-urlencoded">application/x-www-form-urlencoded</VSCodeRadio>
+        <VSCodeRadio value="multipart/form-data" disabled={true}>multipart/form-data</VSCodeRadio>
+        <VSCodeRadio value="application/x-www-form-urlencoded" disabled={true}>application/x-www-form-urlencoded</VSCodeRadio>
       </VSCodeRadioGroup>
 
       <HttpRequestBodySwitch requestData={requestData}/>

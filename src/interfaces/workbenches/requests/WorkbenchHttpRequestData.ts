@@ -62,7 +62,9 @@ export type WorkbenchHttpRequestData = {
     authorization: WorkbenchHttpAuthorization;
 
     headers: WorkbenchHttpRequestHeaderData[];
+
     parameters: WorkbenchHttpRequestParameterData[];
+    parametersAutoRefresh: boolean;
 
     body: WorkbenchHttpRequestBodyData;
   };

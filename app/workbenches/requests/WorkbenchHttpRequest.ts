@@ -32,6 +32,7 @@ export default class WorkbenchHttpRequest extends WorkbenchRequest {
         url: this.data.url,
         headers: [ ...this.data.headers ],
         parameters: [ ...this.data.parameters ],
+        parametersAutoRefresh: this.data.parametersAutoRefresh,
         body: {
           ...this.data.body
         }

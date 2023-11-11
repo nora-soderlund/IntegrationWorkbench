@@ -70,7 +70,7 @@ class RequestWebviewPanel {
       </html>
     `;
         this.webviewPanel.webview.onDidReceiveMessage((message) => __awaiter(this, void 0, void 0, function* () {
-            var _a;
+            var _a, _b;
             const command = message.command;
             console.debug("Received event from request webview:", command);
             switch (command) {
@@ -111,6 +111,12 @@ class RequestWebviewPanel {
                     const [parameters] = message.arguments;
                     if (this.request instanceof WorkbenchHttpRequest_1.default) {
                         this.request.setParameters(parameters);
+                        if (this.request.data.parametersAutoRefresh) {
+                            this.webviewPanel.webview.postMessage({
+                                command: "integrationWorkbench.updateHttpRequestPreviewUrl",
+                                arguments: [this.request.getParsedUrl()]
+                            });
+                        }
                     }
                     this.webviewPanel.webview.postMessage({
                         command: "integrationWorkbench.updateRequest",
@@ -210,6 +216,18 @@ class RequestWebviewPanel {
                             ])
                         ]
                     });
+                    return;
+                }
+                case "integrationWorkbench.setHttpRequestParameterAutoRefresh": {
+                    if (this.request instanceof WorkbenchHttpRequest_1.default) {
+                        const [enabled] = message.arguments;
+                        this.request.data.parametersAutoRefresh = enabled;
+                        (_b = this.request.parent) === null || _b === void 0 ? void 0 : _b.save();
+                        this.webviewPanel.webview.postMessage({
+                            command: "integrationWorkbench.updateRequest",
+                            arguments: [this.request.getData()]
+                        });
+                    }
                     return;
                 }
             }

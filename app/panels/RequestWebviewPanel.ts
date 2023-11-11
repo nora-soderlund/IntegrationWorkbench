@@ -131,6 +131,13 @@ export class RequestWebviewPanel {
 
             if(this.request instanceof WorkbenchHttpRequest) {
               this.request.setParameters(parameters);
+
+              if(this.request.data.parametersAutoRefresh) {
+                this.webviewPanel.webview.postMessage({
+                  command: "integrationWorkbench.updateHttpRequestPreviewUrl",
+                  arguments: [ this.request.getParsedUrl() ]
+                });
+              }
             }
 
             this.webviewPanel.webview.postMessage({
@@ -257,6 +264,23 @@ export class RequestWebviewPanel {
                 ])
               ]
             });
+
+            return;
+          }
+
+          case "integrationWorkbench.setHttpRequestParameterAutoRefresh": {
+            if(this.request instanceof WorkbenchHttpRequest) {
+              const [ enabled ] = message.arguments;
+
+              this.request.data.parametersAutoRefresh = enabled;
+
+              this.request.parent?.save();
+
+              this.webviewPanel.webview.postMessage({
+                command: "integrationWorkbench.updateRequest",
+                arguments: [ this.request.getData() ]
+              });
+            }
 
             return;
           }

@@ -24,6 +24,7 @@ class WorkbenchHttpRequest extends WorkbenchRequest_1.default {
                 url: this.data.url,
                 headers: [...this.data.headers],
                 parameters: [...this.data.parameters],
+                parametersAutoRefresh: this.data.parametersAutoRefresh,
                 body: Object.assign({}, this.data.body)
             }
         };
