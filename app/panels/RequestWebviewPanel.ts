@@ -6,6 +6,7 @@ import WorkbenchRequest from "../workbenches/requests/WorkbenchRequest";
 import WorkbenchHttpRequest from "../workbenches/requests/WorkbenchHttpRequest";
 import Scripts from "../Scripts";
 import Script from "../scripts/Script";
+import { ScriptDeclarationData } from "~interfaces/scripts/ScriptDeclarationData";
 
 export class RequestWebviewPanel {
   public readonly webviewPanel: WebviewPanel;
@@ -74,7 +75,7 @@ export class RequestWebviewPanel {
     `;
 
     this.webviewPanel.webview.onDidReceiveMessage(
-      (message: any) => {
+      async (message: any) => {
         const command = message.command;
 
         console.debug("Received event from request webview:", command);
@@ -241,6 +242,26 @@ export class RequestWebviewPanel {
 
               this.setCurrentScript(this.currentScript);
             }
+
+            return;
+          }
+
+          case "integrationWorkbench.getScriptDeclarations": {
+            console.log("TEST");
+            const scriptDeclarations = await Promise.allSettled(Scripts.loadedScripts.map(async (script) => await script.getDeclarationData()));
+            console.log("TEST2", scriptDeclarations);
+
+            this.webviewPanel.webview.postMessage({
+              command: "integrationWorkbench.updateScriptDeclarations",
+              arguments: [
+                scriptDeclarations.filter((scriptDeclaration) => scriptDeclaration.status === "fulfilled").map((scriptDeclaration) => (scriptDeclaration as PromiseFulfilledResult<ScriptDeclarationData>).value).concat([
+                  {
+                    name: "ts:environment.d.ts",
+                    declaration: "declare const process: { env: { HELLO: string; }; };"
+                  }
+                ])
+              ]
+            });
 
             return;
           }

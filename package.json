@@ -161,6 +161,11 @@
         "command": "integrationWorkbench.editScriptName",
         "title": "Edit",
         "icon": "$(pencil)"
+      },
+      {
+        "command": "integrationWorkbench.deleteScriptDeclarations",
+        "title": "Delete all script declarations",
+        "icon": "$(trashcan)"
       }
     ],
     "viewsContainers": {

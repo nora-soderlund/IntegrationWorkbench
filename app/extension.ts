@@ -246,6 +246,12 @@ export function activate(context: vscode.ExtensionContext) {
 		vscode.commands.executeCommand(`workbench.action.openWalkthrough`, `nora-soderlund.integrationWorkbench#workbenches.openWorkbenches`, false);
 	}));
 
+	context.subscriptions.push(vscode.commands.registerCommand('integrationWorkbench.deleteScriptDeclarations', () => {
+		Scripts.loadedScripts.forEach((script) => {
+			script.deleteDeclaration();
+		});
+	}));
+
 	scanForWorkbenches(context);
 	Scripts.scanForScripts(context);
 

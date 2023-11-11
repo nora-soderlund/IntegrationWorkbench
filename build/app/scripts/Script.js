@@ -1,4 +1,13 @@
 "use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -18,7 +27,9 @@ class Script {
             encoding: "utf-8"
         });
         if ((0, fs_1.existsSync)(path_1.default.join(this.directory, this.nameWithoutExtension + ".d.ts"))) {
-            this.declaration = this.getDeclaration();
+            this.declaration = (0, fs_1.readFileSync)(path_1.default.join(this.directory, this.nameWithoutExtension + ".d.ts"), {
+                encoding: "utf-8"
+            });
         }
     }
     setName(name) {
@@ -27,7 +38,7 @@ class Script {
         this.name = name + ".ts";
         this.nameWithoutExtension = name;
         this.save();
-        this.declaration = this.getDeclaration();
+        this.getDeclaration().then((declaration) => this.declaration = declaration);
         if (this.scriptWebviewPanel) {
             this.scriptWebviewPanel.webviewPanel.title = this.name;
         }
@@ -61,22 +72,39 @@ class Script {
         }
         this.save();
     }
+    deleteDeclaration() {
+        delete this.declaration;
+        (0, fs_1.rmSync)(path_1.default.join(this.directory, this.nameWithoutExtension + ".d.ts"));
+    }
     getDeclaration() {
         const compilerOptions = {
             declaration: true,
             allowJs: true,
         };
+        typescript_1.default.createSourceFile(path_1.default.join(this.directory, this.name), this.content, typescript_1.default.ScriptTarget.Latest, true, typescript_1.default.ScriptKind.TS);
         const program = typescript_1.default.createProgram({
-            rootNames: [this.name],
+            rootNames: [path_1.default.join(this.directory, this.name)],
             options: compilerOptions,
         });
-        let declaration = "";
-        program.emit(undefined, (fileName, data) => {
-            if (fileName.endsWith('.d.ts')) {
-                declaration = data;
+        return new Promise((resolve, reject) => {
+            const result = program.emit(undefined, (fileName, data) => {
+                if (fileName.endsWith('.d.ts')) {
+                    resolve(data);
+                }
+            });
+            const diagnostics = typescript_1.default.getPreEmitDiagnostics(program).concat(result.diagnostics);
+            if (diagnostics.length > 0) {
+                console.error(typescript_1.default.formatDiagnosticsWithColorAndContext(diagnostics, {
+                    getCanonicalFileName: fileName => fileName,
+                    getCurrentDirectory: () => process.cwd(),
+                    getNewLine: () => typescript_1.default.sys.newLine,
+                }));
+                reject();
+            }
+            else {
+                console.log('Declaration file generated successfully.');
             }
         });
-        return declaration;
     }
     getData() {
         return {
@@ -85,14 +113,16 @@ class Script {
         };
     }
     getDeclarationData() {
-        if (!this.declaration) {
-            this.declaration = this.getDeclaration();
-            (0, fs_1.writeFileSync)(path_1.default.join(this.directory, this.nameWithoutExtension + ".d.ts"), this.declaration);
-        }
-        return {
-            name: `ts:${this.nameWithoutExtension}.d.ts`,
-            declaration: this.declaration
-        };
+        return __awaiter(this, void 0, void 0, function* () {
+            if (!this.declaration) {
+                this.declaration = yield this.getDeclaration();
+                (0, fs_1.writeFileSync)(path_1.default.join(this.directory, this.nameWithoutExtension + ".d.ts"), this.declaration);
+            }
+            return {
+                name: `ts:${this.nameWithoutExtension}.d.ts`,
+                declaration: this.declaration
+            };
+        });
     }
     showWebviewPanel(context) {
         var _a;

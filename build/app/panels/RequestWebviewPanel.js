@@ -1,4 +1,13 @@
 "use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -60,7 +69,7 @@ class RequestWebviewPanel {
         </body>
       </html>
     `;
-        this.webviewPanel.webview.onDidReceiveMessage((message) => {
+        this.webviewPanel.webview.onDidReceiveMessage((message) => __awaiter(this, void 0, void 0, function* () {
             var _a;
             const command = message.command;
             console.debug("Received event from request webview:", command);
@@ -190,8 +199,25 @@ class RequestWebviewPanel {
                     }
                     return;
                 }
+                case "integrationWorkbench.getScriptDeclarations": {
+                    console.log("TEST");
+                    const scriptDeclarations = yield Promise.allSettled(Scripts_1.default.loadedScripts.map((script) => __awaiter(this, void 0, void 0, function* () { return yield script.getDeclarationData(); })));
+                    console.log("TEST2", scriptDeclarations);
+                    this.webviewPanel.webview.postMessage({
+                        command: "integrationWorkbench.updateScriptDeclarations",
+                        arguments: [
+                            scriptDeclarations.filter((scriptDeclaration) => scriptDeclaration.status === "fulfilled").map((scriptDeclaration) => scriptDeclaration.value).concat([
+                                {
+                                    name: "ts:environment.d.ts",
+                                    declaration: "declare const process: { env: { HELLO: string; }; };"
+                                }
+                            ])
+                        ]
+                    });
+                    return;
+                }
             }
-        }, undefined, this.disposables);
+        }), undefined, this.disposables);
     }
     setCurrentScript(script) {
         this.currentScript = script;

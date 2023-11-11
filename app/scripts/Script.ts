@@ -29,7 +29,9 @@ export default class Script {
     });
 
     if(existsSync(path.join(this.directory, this.nameWithoutExtension + ".d.ts"))) {
-      this.declaration = this.getDeclaration();
+      this.declaration = readFileSync(path.join(this.directory, this.nameWithoutExtension + ".d.ts"), {
+        encoding: "utf-8"
+      });
     }
   }
 
@@ -41,7 +43,7 @@ export default class Script {
 
     this.save();
 
-    this.declaration = this.getDeclaration();
+    this.getDeclaration().then((declaration) => this.declaration = declaration);
 
     if(this.scriptWebviewPanel) {
       this.scriptWebviewPanel.webviewPanel.title = this.name;
@@ -85,26 +87,53 @@ export default class Script {
     this.save();
   }
 
+  deleteDeclaration() {
+    delete this.declaration;
+
+    rmSync(path.join(this.directory, this.nameWithoutExtension + ".d.ts"));
+  }
+
   getDeclaration() {
     const compilerOptions = {
       declaration: true,
       allowJs: true,
     };
 
+    ts.createSourceFile(
+      path.join(this.directory, this.name),
+      this.content,
+      ts.ScriptTarget.Latest,
+      true,
+      ts.ScriptKind.TS
+    );
+
     const program = ts.createProgram({
-      rootNames: [ this.name ],
+      rootNames: [ path.join(this.directory, this.name) ],
       options: compilerOptions,
     });
 
-    let declaration: string = "";
+    return new Promise<string>((resolve, reject) => {
+      const result = program.emit(undefined, (fileName, data) => {
+        if (fileName.endsWith('.d.ts')) {
+          resolve(data);
+        }
+      });
 
-    program.emit(undefined, (fileName, data) => {
-      if (fileName.endsWith('.d.ts')) {
-        declaration = data;
+      const diagnostics = ts.getPreEmitDiagnostics(program).concat(result.diagnostics);
+
+      if (diagnostics.length > 0) {
+        console.error(ts.formatDiagnosticsWithColorAndContext(diagnostics, {
+          getCanonicalFileName: fileName => fileName,
+          getCurrentDirectory: () => process.cwd(),
+          getNewLine: () => ts.sys.newLine,
+        }));
+
+        reject();
+      }
+      else {
+        console.log('Declaration file generated successfully.');
       }
     });
-
-    return declaration;
   }
 
   getData(): ScriptData {
@@ -114,11 +143,11 @@ export default class Script {
     };
   }
 
-  getDeclarationData(): ScriptDeclarationData {
+  async getDeclarationData(): Promise<ScriptDeclarationData | null> {
     if(!this.declaration) {
-      this.declaration = this.getDeclaration();
-      
-      writeFileSync(path.join(this.directory, this.nameWithoutExtension + ".d.ts"), this.declaration); 
+      this.declaration = await this.getDeclaration();
+
+      writeFileSync(path.join(this.directory, this.nameWithoutExtension + ".d.ts"), this.declaration);
     }
 
     return {

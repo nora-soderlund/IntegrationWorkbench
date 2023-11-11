@@ -24,6 +24,7 @@ export type WorkbenchHttpRequestHeaderData = {
 
 export type WorkbenchHttpRequestParameterData = {
   name: string;
+  type: "raw" | "typescript";
   value: string;
 };
 

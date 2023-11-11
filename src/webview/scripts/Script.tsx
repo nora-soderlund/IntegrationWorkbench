@@ -34,12 +34,12 @@ export default function Scripts() {
     });
 
     window.vscode.postMessage({
-      command: "integrationWorkbench.getScriptDeclarations",
+      command: "integrationWorkbench.getScript",
       arguments: []
     });
 
     window.vscode.postMessage({
-      command: "integrationWorkbench.getScript",
+      command: "integrationWorkbench.getScriptDeclarations",
       arguments: []
     });
   }, []);
@@ -56,14 +56,6 @@ export default function Scripts() {
       );
     });
   }, [ monaco, scriptDeclarations ]);
-
-  if(!scriptData) {
-    return (
-      <React.Fragment>
-        <p>No script selected! Select a script in the sidebar or <VSCodeLink>create a script</VSCodeLink>.</p>
-      </React.Fragment>
-    );
-  }
 
   return (
     <React.Fragment>
@@ -84,11 +76,12 @@ export default function Scripts() {
             border: "1px solid var(--vscode-editorWidget-border)",
             boxSizing: "border-box"
           }}>
-            <Editor language="typescript" value={scriptData.content} theme="vs-dark" options={{
+            <Editor language="typescript" value={scriptData?.content ?? ""} theme="vs-dark" options={{
               scrollBeyondLastLine: false,
               minimap: {
                 enabled: false
-              }
+              },
+              readOnly: scriptData === null
             }} onChange={(value) => (
               window.vscode.postMessage({
                 command: "integrationWorkbench.changeScriptContent",

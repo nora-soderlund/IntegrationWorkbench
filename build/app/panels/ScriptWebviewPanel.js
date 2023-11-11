@@ -1,4 +1,13 @@
 "use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -59,15 +68,16 @@ class ScriptWebviewPanel {
         </body>
       </html>
     `;
-        this.webviewPanel.webview.onDidReceiveMessage((message) => {
+        this.webviewPanel.webview.onDidReceiveMessage((message) => __awaiter(this, void 0, void 0, function* () {
             const command = message.command;
             console.debug("Received event from script webview:", command);
             switch (command) {
                 case "integrationWorkbench.getScriptDeclarations": {
+                    const scriptDeclarations = yield Promise.allSettled(Scripts_1.default.loadedScripts.map((script) => __awaiter(this, void 0, void 0, function* () { return yield script.getDeclarationData(); })));
                     this.webviewPanel.webview.postMessage({
                         command: "integrationWorkbench.updateScriptDeclarations",
                         arguments: [
-                            Scripts_1.default.loadedScripts.map((script) => script.getDeclarationData()).concat([
+                            scriptDeclarations.filter((scriptDeclaration) => scriptDeclaration.status === "fulfilled").map((scriptDeclaration) => scriptDeclaration.value).concat([
                                 {
                                     name: "ts:environment.d.ts",
                                     declaration: "declare const process: { env: { HELLO: string; }; };"
@@ -90,7 +100,7 @@ class ScriptWebviewPanel {
                     return;
                 }
             }
-        }, undefined, this.disposables);
+        }), undefined, this.disposables);
     }
     reveal() {
         const columnToShowIn = vscode_1.window.activeTextEditor ? vscode_1.window.activeTextEditor.viewColumn : undefined;

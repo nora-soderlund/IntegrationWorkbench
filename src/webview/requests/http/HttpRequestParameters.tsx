@@ -1,8 +1,9 @@
 import React, { Component, useEffect, useRef, useState } from "react";
 import { HttpRequestProps } from "./HttpRequest";
-import { VSCodeButton, VSCodeDataGrid, VSCodeDataGridCell, VSCodeDataGridRow, VSCodeDropdown, VSCodeLink, VSCodeOption, VSCodeRadio, VSCodeRadioGroup, VSCodeTextField } from '@vscode/webview-ui-toolkit/react';
+import { VSCodeButton, VSCodeDataGrid, VSCodeDataGridCell, VSCodeDataGridRow, VSCodeDropdown, VSCodeLink, VSCodeOption, VSCodeRadio, VSCodeRadioGroup, VSCodeTag, VSCodeTextField } from '@vscode/webview-ui-toolkit/react';
 import HttpRequestBodySwitch from "./body/HttpRequestBodySwitch";
 import { WorkbenchHttpRequestApplicationJsonBodyData, WorkbenchHttpRequestNoneBodyData, WorkbenchHttpRequestRawBodyData } from "../../../interfaces/workbenches/requests/WorkbenchHttpRequestData";
+import HttpRequestParameterScript from "./parameters/HttpRequestParameterScript";
 
 export default function HttpRequestParameters({ requestData }: HttpRequestProps) {
   const [ previewUrl, setPreviewUrl ] = useState<string | undefined>(requestData.data.url);
@@ -110,14 +111,50 @@ export default function HttpRequestParameters({ requestData }: HttpRequestProps)
               </VSCodeDataGridCell>
 
               <VSCodeDataGridCell gridColumn="2">
-                <VSCodeTextField type="text" placeholder="Enter a value..." value={header.value} onChange={(event) => {
-                  header.value = (event.target as HTMLInputElement).value;
+                {(header.type === "raw")?(
+                  <VSCodeTextField type="text" placeholder="Enter a value..." value={header.value} onChange={(event) => {
+                    header.value = (event.target as HTMLInputElement).value;
+
+                    window.vscode.postMessage({
+                      command: "integrationWorkbench.changeHttpRequestParameters",
+                      arguments: [ requestData.data.parameters ]
+                    });
+                  }}/>
+                ):(
+                  <HttpRequestParameterScript value={header.value} onChange={(value) => {
+                    header.value = value ?? "";
+
+                    window.vscode.postMessage({
+                      command: "integrationWorkbench.changeHttpRequestParameters",
+                      arguments: [ requestData.data.parameters ]
+                    });
+                  }}/>
+                )}
+
+                <VSCodeLink onClick={() => {
+                  console.log("click!!");
+                  
+                  switch(header.type) {
+                    case "raw": {
+                      header.type = "typescript";
+
+                      break;
+                    }
+
+                    case "typescript": {
+                      header.type = "raw";
+
+                      break;
+                    }
+                  }
 
                   window.vscode.postMessage({
                     command: "integrationWorkbench.changeHttpRequestParameters",
                     arguments: [ requestData.data.parameters ]
                   });
-                }}/>
+                }}>
+                  Change to {(header.type === "raw")?("script"):("raw")}
+                </VSCodeLink>
               </VSCodeDataGridCell>
 
               <VSCodeDataGridCell gridColumn="3">

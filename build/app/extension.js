@@ -241,6 +241,11 @@ function activate(context) {
     context.subscriptions.push(vscode.commands.registerCommand('integrationWorkbench.openWalkthrough', () => {
         vscode.commands.executeCommand(`workbench.action.openWalkthrough`, `nora-soderlund.integrationWorkbench#workbenches.openWorkbenches`, false);
     }));
+    context.subscriptions.push(vscode.commands.registerCommand('integrationWorkbench.deleteScriptDeclarations', () => {
+        Scripts_1.default.loadedScripts.forEach((script) => {
+            script.deleteDeclaration();
+        });
+    }));
     (0, Workbenches_1.scanForWorkbenches)(context);
     Scripts_1.default.scanForScripts(context);
     //vscode.window.registerTreeDataProvider('workbenches', new WorkbenchTreeDataProvider(rootPath));
