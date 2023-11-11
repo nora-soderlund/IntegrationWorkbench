@@ -3,6 +3,7 @@ import { VSCodePanelTab, VSCodePanelView, VSCodePanels } from "@vscode/webview-u
 import { WorkbenchHttpResponseData } from "../../../interfaces/workbenches/responses/WorkbenchHttpResponseData";
 import HttpResponseBodySwitch from "./HttpResponseBodySwitch";
 import HttpResponseHeaders from "./HttpResponseHeaders";
+import HttpFailedResponse from "./HttpFailedResponse";
 
 export type HttpResponseProps = {
   responseData: WorkbenchHttpResponseData;
@@ -17,6 +18,12 @@ function getHttpResponseColor(status: number) {
 }
 
 export default function HttpResponse({ responseData }: HttpResponseProps) {
+  if(responseData.status === "failed") {
+    return (
+      <HttpFailedResponse responseData={responseData}/>
+    );
+  }
+
   return (
     <React.Fragment>
       <VSCodePanels style={{
