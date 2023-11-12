@@ -1,5 +1,4 @@
 import { ExtensionContext, commands, window } from "vscode";
-import getWorkbenchStorageOption from "../../utils/GetWorkbenchStorageOption";
 import getUniqueFolderPath from "../../utils/GetUniqueFolderPath";
 import getCamelizedString from "../../utils/GetCamelizedString";
 import getRootPath from "../../utils/GetRootPath";
@@ -7,6 +6,7 @@ import { Workbench } from "../../workbenches/Workbench";
 import path from "path";
 import { workbenches } from "../../Workbenches";
 import { randomUUID } from "crypto";
+import { existsSync, mkdirSync } from "fs";
 
 export default class CreateWorkbenchCommand {
   constructor(private readonly context: ExtensionContext) {
@@ -33,14 +33,31 @@ export default class CreateWorkbenchCommand {
     if(!name) {
       return;
     }
-  
-    const storageOption = await getWorkbenchStorageOption(this.context, name);
-  
-    if(!storageOption) {
+
+    const rootPath = getRootPath();
+
+    if(!rootPath) {
+      window.showErrorMessage("You must be in a workspace to create a workbench!");
+
       return;
     }
   
-    const uniqueWorkbenchPath = getUniqueFolderPath(storageOption.path, getCamelizedString(name));
+    const workbenchesPath = path.join(rootPath, ".workbench/", "workbenches/");
+
+    try {
+      if(!existsSync(workbenchesPath)) {
+        mkdirSync(workbenchesPath, {
+          recursive: true
+        });
+      }
+    }
+    catch(error) {
+      window.showErrorMessage("Failed to create workbenches folder: " + error);
+
+      return;
+    }
+  
+    const uniqueWorkbenchPath = getUniqueFolderPath(workbenchesPath, getCamelizedString(name));
   
     if(!uniqueWorkbenchPath) {
       window.showErrorMessage("There is too many workbenches with the same name in this storage option, please choose a different name.");
@@ -48,15 +65,9 @@ export default class CreateWorkbenchCommand {
       return null;
     }
   
-    const rootPath = getRootPath();
-  
     const workbench = new Workbench({
       id: randomUUID(),
       name,
-      storage: {
-        location: storageOption.location,
-        base: (rootPath)?(path.basename(rootPath)):(undefined)
-      },
       requests: [],
       collections: []
     }, uniqueWorkbenchPath);

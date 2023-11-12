@@ -24,41 +24,27 @@ export function getAllRequestsWithWebviews() {
 }
 
 export function scanForWorkbenches(context: ExtensionContext, refresh: boolean = true) {
-  const folders: string[] = [];
+  workbenches.length = 0;
 
-  const rootPaths = [
-    context.globalStorageUri.fsPath,
-    getRootPath()
-  ];
+  const rootPath = getRootPath();
 
-  for(let rootPath of rootPaths) {
-    if(!rootPath) {
-      continue;
-    }
-
-    if(!existsSync(path.join(rootPath, ".workbench", "workbenches"))) {
-      continue;
-    }
-
+  if(rootPath && existsSync(path.join(rootPath, ".workbench", "workbenches"))) {
     const files = readdirSync(path.join(rootPath, ".workbench", "workbenches"));
 
     for(let file of files) {
       if(existsSync(path.join(rootPath, ".workbench", "workbenches", file, "workbench.json"))) {
-        folders.push(path.join(rootPath, ".workbench", "workbenches", file));
+        const folder = path.join(rootPath, ".workbench", "workbenches", file);
+
+        const content = readFileSync(path.join(folder, "workbench.json"), {
+          encoding: "utf-8"
+        });
+
+        const input = JSON.parse(content);
+
+        workbenches.push(new Workbench(input, folder));
       }
     }
   }
-
-  workbenches.length = 0;
-  workbenches.push(...folders.map((folder) => {
-    const content = readFileSync(path.join(folder, "workbench.json"), {
-      encoding: "utf-8"
-    });
-
-    const input = JSON.parse(content);
-
-    return new Workbench(input, folder);
-  }));
 
   if(refresh) {
     commands.executeCommand(`integrationWorkbench.refreshWorkbenches`);

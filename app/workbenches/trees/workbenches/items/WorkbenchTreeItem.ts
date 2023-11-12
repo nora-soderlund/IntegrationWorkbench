@@ -1,5 +1,6 @@
-import { TreeItem, TreeItemCollapsibleState } from "vscode";
+import { TreeItem, TreeItemCollapsibleState, Uri } from "vscode";
 import { Workbench } from "../../../Workbench";
+import path from "path";
 
 export default class WorkbenchTreeItem extends TreeItem {
     constructor(
@@ -8,7 +9,8 @@ export default class WorkbenchTreeItem extends TreeItem {
       super(workbench.name, TreeItemCollapsibleState.Expanded);
       
       this.tooltip = `${workbench.name} workbench`;
-      this.description = workbench.storage.base;
+
+      this.description = path.basename(path.dirname(path.dirname(path.dirname(workbench.path))));
 
       this.contextValue = "workbench";
     }

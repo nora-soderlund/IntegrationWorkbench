@@ -20,26 +20,6 @@
           "default": false,
           "description": "Allow requests to be created in the root level of a workbench, outside of any collections."
         },
-        "integrationWorkbench.defaultWorkbenchStorage": {
-          "type": "string",
-          "enum": [
-            "prompt",
-            "repository",
-            "user"
-          ],
-          "enumItemLabels": [
-            "Prompt every time",
-            "Repository",
-            "User storage"
-          ],
-          "enumDescriptions": [
-            "Prompts a selection each time a new workbench is created.",
-            "Defaults to workbench files being stored in the repository, useful for sharing workbenches across a team.",
-            "Defaults to workbench files being stored in the VS Code user storage, useful for syncing workbenches across several devices."
-          ],
-          "default": "prompt",
-          "description": "Where new workbenches should be saved to."
-        },
         "integrationWorkbench.retainResponsesAmount": {
           "type": "number",
           "default": 50,

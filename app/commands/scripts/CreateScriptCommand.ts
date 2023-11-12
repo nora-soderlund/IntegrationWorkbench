@@ -1,16 +1,9 @@
 import { ExtensionContext, commands, window } from "vscode";
-import getWorkbenchStorageOption from "../../utils/GetWorkbenchStorageOption";
-import getUniqueFolderPath from "../../utils/GetUniqueFolderPath";
-import getCamelizedString from "../../utils/GetCamelizedString";
-import getRootPath from "../../utils/GetRootPath";
-import { Workbench } from "../../workbenches/Workbench";
 import path from "path";
-import { workbenches } from "../../Workbenches";
-import { randomUUID } from "crypto";
-import getScriptStorageOption from "../../utils/GetScriptStorageOption";
-import { existsSync, writeFileSync } from "fs";
+import { existsSync, mkdirSync, writeFileSync } from "fs";
 import Script from "../../scripts/Script";
 import Scripts from "../../Scripts";
+import getRootPath from "../../utils/GetRootPath";
 
 export default class CreateScriptCommand {
   constructor(private readonly context: ExtensionContext) {
@@ -20,9 +13,34 @@ export default class CreateScriptCommand {
   }
   
   async handle() {
-    const storageOption = await getScriptStorageOption(this.context);
+    const rootPath = getRootPath();
+
+    if(!rootPath) {
+      window.showErrorMessage("You must be in a workspace to create a script!");
+
+      return;
+    }
   
-    if(!storageOption) {
+    const scriptsPath = path.join(rootPath, ".workbench/", "scripts/");
+
+    try {
+      if(!existsSync(scriptsPath)) {
+        mkdirSync(scriptsPath, {
+          recursive: true
+        });
+      }
+
+      const scriptGitignoreFile = path.join(rootPath, ".workbench/", "scripts/", ".gitignore");
+
+      if(!existsSync(scriptGitignoreFile)) {
+        writeFileSync(scriptGitignoreFile, "# This is an automatically created file, do not make permanent changes here.\nbuild/", {
+          encoding: "utf-8"
+        });
+      }
+    }
+    catch(error) {
+      window.showErrorMessage("Failed to create workbenches folder: " + error);
+
       return;
     }
 
@@ -34,7 +52,11 @@ export default class CreateScriptCommand {
           return "You must enter a name for this script!";
         }
 
-        if(existsSync(path.join(storageOption.path, value))) {
+        if(/[^A-Za-z0-9_-]/.test(value)) {
+          return "You must only enter a generic file name.";
+        }
+
+        if(existsSync(path.join(scriptsPath, value + ".ts"))) {
           return "There already exists a script with this name in this folder!";
         }
   
@@ -46,7 +68,7 @@ export default class CreateScriptCommand {
       return;
     }
 
-    const filePath = path.join(storageOption.path, name + ".ts");
+    const filePath = path.join(scriptsPath, name + ".ts");
 
     writeFileSync(filePath, `function ${name}() {\n  // Your code goes here...\n}\n`);
   

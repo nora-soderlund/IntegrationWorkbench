@@ -13,7 +13,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const vscode_1 = require("vscode");
-const GetWorkbenchStorageOption_1 = __importDefault(require("../../utils/GetWorkbenchStorageOption"));
 const GetUniqueFolderPath_1 = __importDefault(require("../../utils/GetUniqueFolderPath"));
 const GetCamelizedString_1 = __importDefault(require("../../utils/GetCamelizedString"));
 const GetRootPath_1 = __importDefault(require("../../utils/GetRootPath"));
@@ -21,6 +20,7 @@ const Workbench_1 = require("../../workbenches/Workbench");
 const path_1 = __importDefault(require("path"));
 const Workbenches_1 = require("../../Workbenches");
 const crypto_1 = require("crypto");
+const fs_1 = require("fs");
 class CreateWorkbenchCommand {
     constructor(context) {
         this.context = context;
@@ -41,23 +41,31 @@ class CreateWorkbenchCommand {
             if (!name) {
                 return;
             }
-            const storageOption = yield (0, GetWorkbenchStorageOption_1.default)(this.context, name);
-            if (!storageOption) {
+            const rootPath = (0, GetRootPath_1.default)();
+            if (!rootPath) {
+                vscode_1.window.showErrorMessage("You must be in a workspace to create a workbench!");
                 return;
             }
-            const uniqueWorkbenchPath = (0, GetUniqueFolderPath_1.default)(storageOption.path, (0, GetCamelizedString_1.default)(name));
+            const workbenchesPath = path_1.default.join(rootPath, ".workbench/", "workbenches/");
+            try {
+                if (!(0, fs_1.existsSync)(workbenchesPath)) {
+                    (0, fs_1.mkdirSync)(workbenchesPath, {
+                        recursive: true
+                    });
+                }
+            }
+            catch (error) {
+                vscode_1.window.showErrorMessage("Failed to create workbenches folder: " + error);
+                return;
+            }
+            const uniqueWorkbenchPath = (0, GetUniqueFolderPath_1.default)(workbenchesPath, (0, GetCamelizedString_1.default)(name));
             if (!uniqueWorkbenchPath) {
                 vscode_1.window.showErrorMessage("There is too many workbenches with the same name in this storage option, please choose a different name.");
                 return null;
             }
-            const rootPath = (0, GetRootPath_1.default)();
             const workbench = new Workbench_1.Workbench({
                 id: (0, crypto_1.randomUUID)(),
                 name,
-                storage: {
-                    location: storageOption.location,
-                    base: (rootPath) ? (path_1.default.basename(rootPath)) : (undefined)
-                },
                 requests: [],
                 collections: []
             }, uniqueWorkbenchPath);

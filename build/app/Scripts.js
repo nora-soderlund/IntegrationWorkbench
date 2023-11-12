@@ -11,17 +11,11 @@ const Script_1 = __importDefault(require("./scripts/Script"));
 class Scripts {
     static scanForScripts(context, sendRefreshScriptsCommand = true) {
         this.loadedScripts = [];
-        const rootPaths = [
-            context.globalStorageUri.fsPath,
-            (0, GetRootPath_1.default)()
-        ];
-        for (let rootPath of rootPaths) {
-            if (!rootPath) {
-                continue;
-            }
+        const rootPath = (0, GetRootPath_1.default)();
+        if (rootPath) {
             const folderPath = path_1.default.join(rootPath, ".workbench", "scripts");
             if (!(0, fs_1.existsSync)(folderPath)) {
-                continue;
+                return;
             }
             const files = (0, fs_1.readdirSync)(folderPath);
             for (let file of files) {

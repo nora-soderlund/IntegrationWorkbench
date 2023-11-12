@@ -31,7 +31,7 @@ export default class CreateRequestCommand {
         return;
       }
 
-      let workbenchItem: Workbench | WorkbenchCollection | undefined;
+      let workbenchItem: Workbench | WorkbenchCollection | undefined;
 
       if(reference instanceof WorkbenchTreeItem) {
         workbenchItem = reference.workbench;

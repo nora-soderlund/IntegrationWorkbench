@@ -3,27 +3,21 @@ import { existsSync, readdirSync } from "fs";
 import path from "path";
 import getRootPath from "./utils/GetRootPath";
 import Script from "./scripts/Script";
+import { ScriptStorageType } from "~interfaces/scripts/ScriptStorageType";
 
 export default class Scripts {
   static loadedScripts: Script[] = [];
 
   static scanForScripts(context: ExtensionContext, sendRefreshScriptsCommand: boolean = true) {
     this.loadedScripts = [];
+    
+    const rootPath = getRootPath();
 
-    const rootPaths = [
-      context.globalStorageUri.fsPath,
-      getRootPath()
-    ];
-  
-    for(let rootPath of rootPaths) {
-      if(!rootPath) {
-        continue;
-      }
-
+    if(rootPath) {
       const folderPath = path.join(rootPath, ".workbench", "scripts");
   
       if(!existsSync(folderPath)) {
-        continue;
+        return;
       }
   
       const files = readdirSync(folderPath);

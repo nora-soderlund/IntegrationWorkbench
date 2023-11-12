@@ -4,6 +4,8 @@ import { randomUUID } from "crypto";
 import WorkbenchRequestTreeItem from "../../workbenches/trees/workbenches/items/WorkbenchRequestTreeItem";
 import WorkbenchRequest from "../../workbenches/requests/WorkbenchRequest";
 import ScriptTreeItem from "../../workbenches/trees/scripts/items/ScriptTreeItem";
+import { existsSync } from "fs";
+import path from "path";
 
 export default class EditScriptNameCommand {
   constructor(private readonly context: ExtensionContext) {
@@ -23,6 +25,10 @@ export default class EditScriptNameCommand {
 
         if(/[^A-Za-z0-9_-]/.test(value)) {
           return "You must only enter a generic file name.";
+        }
+
+        if(value !== reference.script.nameWithoutExtension && existsSync(path.join(reference.script.directory, value + ".ts"))) {
+          return "Another script with this name already exists.";
         }
 
         return null;

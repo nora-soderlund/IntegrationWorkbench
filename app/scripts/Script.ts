@@ -6,11 +6,12 @@ import { ScriptData } from "~interfaces/scripts/ScriptData";
 import { ScriptDeclarationData } from "~interfaces/scripts/ScriptDeclarationData";
 import { ScriptWebviewPanel } from "../panels/ScriptWebviewPanel";
 import ScriptTreeItem from "../workbenches/trees/scripts/items/ScriptTreeItem";
+import { ScriptStorageType } from "~interfaces/scripts/ScriptStorageType";
 
 export default class Script {
   public name: string;
   public nameWithoutExtension: string;
-  private readonly directory: string;
+  public readonly directory: string;
   public content: string;
   
   public javascript?: string;
