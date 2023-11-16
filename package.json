@@ -53,12 +53,19 @@
       {
         "command": "integrationWorkbench.editWorkbenchName",
         "title": "Edit workbench name",
-        "shortTitle": "Edit",
+        "shortTitle": "Edit name",
+        "icon": "$(pencil)"
+      },
+      {
+        "command": "integrationWorkbench.editWorkbenchDescription",
+        "title": "Edit workbench description",
+        "shortTitle": "Edit description",
         "icon": "$(pencil)"
       },
       {
         "command": "integrationWorkbench.deleteWorkbench",
-        "title": "Delete",
+        "title": "Delete workbench",
+        "shortTitle": "Delete",
         "icon": "$(trashcan)"
       },
       {
@@ -68,12 +75,14 @@
       },
       {
         "command": "integrationWorkbench.editCollectionName",
-        "title": "Edit",
+        "title": "Edit collection name",
+        "shortTitle": "Edit name",
         "icon": "$(pencil)"
       },
       {
         "command": "integrationWorkbench.editCollectionDescription",
-        "title": "Edit description",
+        "title": "Edit collection description",
+        "shortTitle": "Edit description",
         "icon": "$(pencil)"
       },
       {
@@ -88,7 +97,8 @@
       },
       {
         "command": "integrationWorkbench.deleteCollection",
-        "title": "Delete",
+        "title": "Delete collection",
+        "shortTitle": "Delete",
         "icon": "$(trashcan)"
       },
       {
@@ -98,12 +108,14 @@
       },
       {
         "command": "integrationWorkbench.editRequestName",
-        "title": "Edit",
+        "title": "Edit request name",
+        "shortTitle": "Edit name",
         "icon": "$(pencil)"
       },
       {
         "command": "integrationWorkbench.deleteRequest",
-        "title": "Delete",
+        "title": "Delete request",
+        "shortTitle": "Delete",
         "icon": "$(trashcan)"
       },
       {
@@ -145,7 +157,8 @@
       },
       {
         "command": "integrationWorkbench.editScriptName",
-        "title": "Edit",
+        "title": "Edit script name",
+        "shortTitle": "Edit name",
         "icon": "$(pencil)"
       },
       {
@@ -229,59 +242,77 @@
       ],
       "view/item/context": [
         {
-          "command": "integrationWorkbench.deleteWorkbench",
-          "when": "view == workbenches && (viewItem == workbench)"
+          "command": "integrationWorkbench.runWorkbench",
+          "when": "view == workbenches && (viewItem == workbench)",
+          "group": "workbench@1"
         },
+        {
+          "command": "integrationWorkbench.editWorkbenchName",
+          "when": "view == workbenches && (viewItem == workbench)",
+          "group": "workbench@2"
+        },
+        {
+          "command": "integrationWorkbench.editWorkbenchDescription",
+          "when": "view == workbenches && (viewItem == workbench)",
+          "group": "workbench@3"
+        },
+        {
+          "command": "integrationWorkbench.deleteWorkbench",
+          "when": "view == workbenches && (viewItem == workbench)",
+          "group": "workbench@4"
+        },
+
         {
           "command": "integrationWorkbench.createCollection",
           "when": "view == workbenches && viewItem == workbench",
           "group": "inline"
         },
         {
-          "command": "integrationWorkbench.editWorkbenchName",
-          "when": "view == workbenches && (viewItem == workbench)"
-        },
-        {
-          "command": "integrationWorkbench.runWorkbench",
-          "when": "view == workbenches && (viewItem == workbench)"
-        },
-        {
           "command": "integrationWorkbench.runCollection",
-          "when": "view == workbenches && (viewItem == collection)"
+          "when": "view == workbenches && (viewItem == collection)",
+          "group": "collection@1"
         },
         {
           "command": "integrationWorkbench.editCollectionName",
-          "when": "view == workbenches && (viewItem == collection)"
+          "when": "view == workbenches && (viewItem == collection)",
+          "group": "collection@2"
         },
         {
           "command": "integrationWorkbench.editCollectionDescription",
-          "when": "view == workbenches && (viewItem == collection)"
+          "when": "view == workbenches && (viewItem == collection)",
+          "group": "collection@3"
         },
         {
           "command": "integrationWorkbench.deleteCollection",
-          "when": "view == workbenches && (viewItem == collection)"
+          "when": "view == workbenches && (viewItem == collection)",
+          "group": "collection@4"
         },
+        
         {
           "command": "integrationWorkbench.createRequest",
           "when": "view == workbenches && ((config.integrationWorkbench.allowRequestsInWorkbench && viewItem == workbench) || viewItem == collection)",
           "group": "inline"
         },
-        {
-          "command": "integrationWorkbench.editRequestName",
-          "when": "view == workbenches && (viewItem == request)"
-        },
+
         {
           "command": "integrationWorkbench.runRequest",
           "when": "view == workbenches && (viewItem == request) && config.integrationWorkbench.showRunRequestButton",
           "group": "inline"
         },
         {
-          "command": "integrationWorkbench.deleteRequest",
-          "when": "view == workbenches && (viewItem == request)"
+          "command": "integrationWorkbench.runRequest",
+          "when": "view == workbenches && (viewItem == request) && !config.integrationWorkbench.showRunRequestButton",
+          "group": "request@1"
         },
         {
-          "command": "integrationWorkbench.runRequest",
-          "when": "view == workbenches && (viewItem == request) && !config.integrationWorkbench.showRunRequestButton"
+          "command": "integrationWorkbench.editRequestName",
+          "when": "view == workbenches && (viewItem == request)",
+          "group": "request@2"
+        },
+        {
+          "command": "integrationWorkbench.deleteRequest",
+          "when": "view == workbenches && (viewItem == request)",
+          "group": "request@3"
         },
         {
           "command": "integrationWorkbench.cancelResponse",
@@ -296,7 +327,8 @@
 
         {
           "command": "integrationWorkbench.editScriptName",
-          "when": "view == scripts && (viewItem == script)"
+          "when": "view == scripts && (viewItem == script)",
+          "group": "script@1"
         }
       ],
       "editor/title": [

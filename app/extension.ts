@@ -31,6 +31,7 @@ import ScriptTreeItem from './workbenches/trees/scripts/items/ScriptTreeItem';
 import OpenScriptCommand from './commands/scripts/OpenScriptCommand';
 import EditScriptNameCommand from './commands/scripts/EditScriptNameCommand';
 import EditWorkbenchNameCommand from './commands/workbenches/EditWorkbenchNameCommand';
+import EditWorkbenchDescriptionCommand from './commands/workbenches/EditWorkbenchDescriptionCommand';
 
 // This method is called when your extension is activated
 // Your extension is activated the very first time the command is executed
@@ -222,6 +223,7 @@ export function activate(context: vscode.ExtensionContext) {
 	new DeleteWorkbenchCommand(context);
 	new RunWorkbenchCommand(context);
 	new EditWorkbenchNameCommand(context);
+	new EditWorkbenchDescriptionCommand(context);
 
 	new CreateScriptCommand(context);
 	new OpenScriptCommand(context);

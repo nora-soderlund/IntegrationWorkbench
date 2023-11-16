@@ -29,6 +29,7 @@ export class Workbench {
     return {
       id: this.id,
       name: this.name,
+      description: this.description,
       requests: this.requests.map((request) => request.getData()),
       collections: this.collections.map((collection) => collection.getData())
     };
