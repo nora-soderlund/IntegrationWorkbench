@@ -70,10 +70,14 @@ export default class CreateScriptCommand {
 
     const filePath = path.join(scriptsPath, name + ".ts");
 
-    writeFileSync(filePath, `function ${name}() {\n  // Your code goes here...\n}\n`);
-  
-    const script = new Script(filePath);
-    
+    const script = new Script(rootPath, {
+      name,
+      description: "",
+      type: "typescript"
+    });
+
+    script.setContent(`function ${name}() {\n  // Your code goes here...\n}\n`);
+
     Scripts.loadedScripts.push(script);
 
     commands.executeCommand("integrationWorkbench.refreshScripts");

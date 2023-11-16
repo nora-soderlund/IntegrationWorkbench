@@ -24,7 +24,7 @@ class EditScriptNameCommand {
         return __awaiter(this, void 0, void 0, function* () {
             vscode_1.window.showInputBox({
                 prompt: "Enter a request name",
-                value: reference.script.nameWithoutExtension,
+                value: reference.script.data.name,
                 validateInput(value) {
                     if (!value.length) {
                         return "You must enter a script name or cancel.";
@@ -32,7 +32,7 @@ class EditScriptNameCommand {
                     if (/[^A-Za-z0-9_-]/.test(value)) {
                         return "You must only enter a generic file name.";
                     }
-                    if (value !== reference.script.nameWithoutExtension && (0, fs_1.existsSync)(path_1.default.join(reference.script.directory, value + ".ts"))) {
+                    if (value !== reference.script.data.name && (0, fs_1.existsSync)(path_1.default.join(path_1.default.dirname(reference.script.getTypeScriptPath()), value + ".ts"))) {
                         return "Another script with this name already exists.";
                     }
                     return null;

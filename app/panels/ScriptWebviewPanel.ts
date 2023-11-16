@@ -18,7 +18,7 @@ export class ScriptWebviewPanel {
   ) {
     this.webviewPanel = window.createWebviewPanel(
       "integrationWorkbench.script",
-      script.name,
+      script.data.name,
       ViewColumn.One,
       {
         enableScripts: true,
@@ -100,7 +100,7 @@ export class ScriptWebviewPanel {
           case "integrationWorkbench.getScript": {
             this.webviewPanel.webview.postMessage({
               command: "integrationWorkbench.updateScript",
-              arguments: [ this.script.getData() ]
+              arguments: [ this.script.getContentData() ]
             });
 
             return;

@@ -173,7 +173,7 @@ class RequestWebviewPanel {
                         arguments: [
                             Scripts_1.default.loadedScripts.filter((script) => script.declaration).map((script) => {
                                 return {
-                                    fileName: `ts:${script.name}.d.ts`,
+                                    fileName: `ts:${script.data.name}.d.ts`,
                                     content: script.declaration
                                 };
                             }).concat([
@@ -189,7 +189,7 @@ class RequestWebviewPanel {
                 case "integrationWorkbench.getScript": {
                     this.webviewPanel.webview.postMessage({
                         command: "integrationWorkbench.updateScript",
-                        arguments: [(_a = this.currentScript) === null || _a === void 0 ? void 0 : _a.getData()]
+                        arguments: [(_a = this.currentScript) === null || _a === void 0 ? void 0 : _a.getContentData()]
                     });
                     return;
                 }

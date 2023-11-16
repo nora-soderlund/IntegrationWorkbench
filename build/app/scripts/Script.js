@@ -18,38 +18,49 @@ const vscode_1 = require("vscode");
 const typescript_1 = __importDefault(require("typescript"));
 const ScriptWebviewPanel_1 = require("../panels/ScriptWebviewPanel");
 class Script {
-    constructor(filePath) {
-        const parsedPath = path_1.default.parse(filePath);
-        this.nameWithoutExtension = parsedPath.name;
-        this.name = parsedPath.base;
-        this.directory = parsedPath.dir;
-        this.content = (0, fs_1.readFileSync)(filePath, {
-            encoding: "utf-8"
-        });
-        if ((0, fs_1.existsSync)(path_1.default.join(this.directory, 'build', this.nameWithoutExtension + ".d.ts"))) {
-            this.declaration = (0, fs_1.readFileSync)(path_1.default.join(this.directory, 'build', this.nameWithoutExtension + ".d.ts"), {
-                encoding: "utf-8"
-            });
-        }
+    constructor(rootPath, data) {
+        this.rootPath = rootPath;
+        this.data = data;
+    }
+    getDataPath() {
+        return path_1.default.join(this.rootPath, ".workbench", "scripts", `${this.data.name}.json`);
+    }
+    getTypeScriptPath() {
+        return path_1.default.join(this.rootPath, ".workbench", "scripts", `${this.data.name}.ts`);
+    }
+    getJavaScriptPath() {
+        return path_1.default.join(this.rootPath, ".workbench", "scripts", 'build', `${this.data.name}.js`);
+    }
+    getDeclarationPath() {
+        return path_1.default.join(this.rootPath, ".workbench", "scripts", 'build', `${this.data.name}.d.ts`);
     }
     setName(name) {
-        var _a, _b;
-        (0, fs_1.rmSync)(path_1.default.join(this.directory, this.name));
+        this.delete();
         this.deleteBuild();
-        this.name = name + ".ts";
-        this.nameWithoutExtension = name;
+        this.data.name = name;
         this.save();
         this.createBuild();
         if (this.scriptWebviewPanel) {
-            this.scriptWebviewPanel.webviewPanel.title = this.name;
+            this.scriptWebviewPanel.webviewPanel.title = this.data.name;
         }
-        (_a = this.treeDataViewItem) === null || _a === void 0 ? void 0 : _a.update();
-        (_b = this.treeDataViewItem) === null || _b === void 0 ? void 0 : _b.treeDataProvider.refresh();
+        if (this.treeDataViewItem) {
+            this.treeDataViewItem.update();
+            this.treeDataViewItem.treeDataProvider.refresh();
+        }
+    }
+    delete() {
+        const scriptPath = this.getTypeScriptPath();
+        const declarationPath = this.getDeclarationPath();
+        (0, fs_1.rmSync)(scriptPath);
+        (0, fs_1.rmSync)(declarationPath);
     }
     save() {
+        var _a;
+        const dataPath = this.getDataPath();
         try {
-            if (!(0, fs_1.existsSync)(this.directory)) {
-                (0, fs_1.mkdirSync)(this.directory, {
+            const directoryPath = path_1.default.dirname(dataPath);
+            if (!(0, fs_1.existsSync)(directoryPath)) {
+                (0, fs_1.mkdirSync)(directoryPath, {
                     recursive: true
                 });
             }
@@ -58,40 +69,45 @@ class Script {
             vscode_1.window.showErrorMessage("VS Code may not have permissions to create files in the current workspace folder:\n\n" + error);
         }
         try {
-            (0, fs_1.writeFileSync)(path_1.default.join(this.directory, this.name), this.content);
+            const typeScriptPath = this.getTypeScriptPath();
+            (0, fs_1.writeFileSync)(dataPath, JSON.stringify(this.getData(), undefined, 2));
+            (0, fs_1.writeFileSync)(typeScriptPath, (_a = this.typescript) !== null && _a !== void 0 ? _a : "");
         }
         catch (error) {
-            vscode_1.window.showErrorMessage(`Failed to save workbench '${this.name}':\n\n` + error);
+            vscode_1.window.showErrorMessage(`Failed to save script '${this.data.name}':\n\n` + error);
         }
     }
     setContent(content) {
-        this.content = content;
+        this.typescript = content;
         this.deleteBuild();
         this.save();
     }
     deleteBuild() {
         delete this.declaration;
-        const declarationFilePath = path_1.default.join(this.directory, 'build', this.nameWithoutExtension + ".d.ts");
+        const declarationFilePath = this.getDeclarationPath();
         if ((0, fs_1.existsSync)(declarationFilePath)) {
             (0, fs_1.rmSync)(declarationFilePath);
         }
-        const javascriptFilePath = path_1.default.join(this.directory, 'build', this.nameWithoutExtension + ".js");
-        if ((0, fs_1.existsSync)(javascriptFilePath)) {
-            (0, fs_1.rmSync)(javascriptFilePath);
+        const scriptPath = this.getTypeScriptPath();
+        if ((0, fs_1.existsSync)(scriptPath)) {
+            (0, fs_1.rmSync)(scriptPath);
         }
     }
     createBuild() {
         return __awaiter(this, void 0, void 0, function* () {
             this.createBuildDirectory();
             const { declaration, javascript } = yield this.build();
-            (0, fs_1.writeFileSync)(path_1.default.join(this.directory, 'build', this.nameWithoutExtension + ".d.ts"), declaration);
-            (0, fs_1.writeFileSync)(path_1.default.join(this.directory, 'build', this.nameWithoutExtension + ".js"), javascript);
+            const buildPath = this.getJavaScriptPath();
+            const declarationPath = this.getDeclarationPath();
+            (0, fs_1.writeFileSync)(buildPath, javascript);
+            (0, fs_1.writeFileSync)(declarationPath, declaration);
             this.declaration = declaration;
             this.javascript = javascript;
         });
     }
     createBuildDirectory() {
-        const buildDirectory = path_1.default.join(this.directory, 'build');
+        const buildPath = this.getJavaScriptPath();
+        const buildDirectory = path_1.default.dirname(buildPath);
         if (!(0, fs_1.existsSync)(buildDirectory)) {
             (0, fs_1.mkdirSync)(buildDirectory, {
                 recursive: true
@@ -99,14 +115,16 @@ class Script {
         }
     }
     build() {
+        var _a;
         const compilerOptions = {
             declaration: true,
             allowJs: true,
             module: typescript_1.default.ModuleKind.ESNext
         };
-        typescript_1.default.createSourceFile(path_1.default.join(this.directory, this.name), this.content, typescript_1.default.ScriptTarget.Latest, true, typescript_1.default.ScriptKind.TS);
+        const typescriptPath = this.getTypeScriptPath();
+        typescript_1.default.createSourceFile(typescriptPath, (_a = this.typescript) !== null && _a !== void 0 ? _a : "", typescript_1.default.ScriptTarget.Latest, true, typescript_1.default.ScriptKind.TS);
         const program = typescript_1.default.createProgram({
-            rootNames: [path_1.default.join(this.directory, this.name)],
+            rootNames: [typescriptPath],
             options: compilerOptions,
         });
         return new Promise((resolve, reject) => {
@@ -141,9 +159,14 @@ class Script {
     }
     getData() {
         return {
-            name: this.name,
-            content: this.content
+            name: this.data.name,
+            description: this.data.description,
+            type: this.data.type
         };
+    }
+    getContentData() {
+        var _a;
+        return Object.assign(Object.assign({}, this.getData()), { typescript: (_a = this.typescript) !== null && _a !== void 0 ? _a : "" });
     }
     getDeclarationData() {
         return __awaiter(this, void 0, void 0, function* () {
@@ -154,7 +177,7 @@ class Script {
                 return null;
             }
             return {
-                name: `ts:${this.nameWithoutExtension}.d.ts`,
+                name: `ts:${this.data.name}.d.ts`,
                 declaration: this.declaration
             };
         });

@@ -1,18 +1,15 @@
 import { existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "fs";
 import path from "path";
-import { ExtensionContext, Uri, commands, window } from "vscode";
+import { ExtensionContext, Uri, window } from "vscode";
 import ts from "typescript";
 import { ScriptData } from "~interfaces/scripts/ScriptData";
+import { ScriptContentData } from "~interfaces/scripts/ScriptContentData";
 import { ScriptDeclarationData } from "~interfaces/scripts/ScriptDeclarationData";
 import { ScriptWebviewPanel } from "../panels/ScriptWebviewPanel";
 import ScriptTreeItem from "../workbenches/trees/scripts/items/ScriptTreeItem";
-import { ScriptStorageType } from "~interfaces/scripts/ScriptStorageType";
 
 export default class Script {
-  public name: string;
-  public nameWithoutExtension: string;
-  public readonly directory: string;
-  public content: string;
+  public typescript?: string;
   
   public javascript?: string;
   public declaration?: string;
@@ -20,47 +17,61 @@ export default class Script {
   public scriptWebviewPanel?: ScriptWebviewPanel;
   public treeDataViewItem?: ScriptTreeItem;
 
-  constructor(filePath: string) {
-    const parsedPath = path.parse(filePath);
+  constructor(public rootPath: string, public data: ScriptData) {
+  }
 
-    this.nameWithoutExtension = parsedPath.name;
-    this.name = parsedPath.base;
-    this.directory = parsedPath.dir;
+  getDataPath() {
+    return path.join(this.rootPath, ".workbench", "scripts", `${this.data.name}.json`);
+  }
 
-    this.content = readFileSync(filePath, {
-      encoding: "utf-8"
-    });
+  getTypeScriptPath() {
+    return path.join(this.rootPath, ".workbench", "scripts", `${this.data.name}.ts`);
+  }
 
-    if(existsSync(path.join(this.directory, 'build', this.nameWithoutExtension + ".d.ts"))) {
-      this.declaration = readFileSync(path.join(this.directory, 'build', this.nameWithoutExtension + ".d.ts"), {
-        encoding: "utf-8"
-      });
-    }
+  getJavaScriptPath() {
+    return path.join(this.rootPath, ".workbench", "scripts", 'build', `${this.data.name}.js`);
+  }
+
+  getDeclarationPath() {
+    return path.join(this.rootPath, ".workbench", "scripts", 'build', `${this.data.name}.d.ts`);
   }
 
   setName(name: string) {
-    rmSync(path.join(this.directory, this.name));
+    this.delete();
     this.deleteBuild();
 
-    this.name = name + ".ts";
-    this.nameWithoutExtension = name;
+    this.data.name = name;
 
     this.save();
 
     this.createBuild();
 
     if(this.scriptWebviewPanel) {
-      this.scriptWebviewPanel.webviewPanel.title = this.name;
+      this.scriptWebviewPanel.webviewPanel.title = this.data.name;
     }
 
-    this.treeDataViewItem?.update();
-    this.treeDataViewItem?.treeDataProvider.refresh();
+    if(this.treeDataViewItem) {
+      this.treeDataViewItem.update();
+      this.treeDataViewItem.treeDataProvider.refresh(); 
+    }
+  }
+
+  delete() {
+    const scriptPath = this.getTypeScriptPath();
+    const declarationPath = this.getDeclarationPath();
+
+    rmSync(scriptPath);
+    rmSync(declarationPath);
   }
 
   save() {
+    const dataPath = this.getDataPath();
+
     try {
-      if (!existsSync(this.directory)) {
-        mkdirSync(this.directory, {
+      const directoryPath = path.dirname(dataPath);
+
+      if (!existsSync(directoryPath)) {
+        mkdirSync(directoryPath, {
           recursive: true
         });
       }
@@ -70,15 +81,18 @@ export default class Script {
     }
 
     try {
-      writeFileSync(path.join(this.directory, this.name), this.content);
+      const typeScriptPath = this.getTypeScriptPath();
+
+      writeFileSync(dataPath, JSON.stringify(this.getData(), undefined, 2));
+      writeFileSync(typeScriptPath, this.typescript ?? "");
     }
     catch (error) {
-      window.showErrorMessage(`Failed to save workbench '${this.name}':\n\n` + error);
+      window.showErrorMessage(`Failed to save script '${this.data.name}':\n\n` + error);
     }
   }
 
   setContent(content: string) {
-    this.content = content;
+    this.typescript = content;
 
     this.deleteBuild();
     
@@ -88,16 +102,16 @@ export default class Script {
   deleteBuild() {
     delete this.declaration;
 
-    const declarationFilePath = path.join(this.directory, 'build', this.nameWithoutExtension + ".d.ts");
+    const declarationFilePath = this.getDeclarationPath();
     
     if(existsSync(declarationFilePath)) {
       rmSync(declarationFilePath);
     }
 
-    const javascriptFilePath = path.join(this.directory, 'build', this.nameWithoutExtension + ".js");
+    const scriptPath = this.getTypeScriptPath();
     
-    if(existsSync(javascriptFilePath)) {
-      rmSync(javascriptFilePath);
+    if(existsSync(scriptPath)) {
+      rmSync(scriptPath);
     }
   }
 
@@ -106,15 +120,20 @@ export default class Script {
 
     const { declaration, javascript } = await this.build();
 
-    writeFileSync(path.join(this.directory, 'build', this.nameWithoutExtension + ".d.ts"), declaration);
-    writeFileSync(path.join(this.directory, 'build', this.nameWithoutExtension + ".js"), javascript);
+    const buildPath = this.getJavaScriptPath();
+    const declarationPath = this.getDeclarationPath();
+
+    writeFileSync(buildPath, javascript);
+    writeFileSync(declarationPath, declaration);
 
     this.declaration = declaration;
     this.javascript = javascript;
   }
 
   createBuildDirectory() {
-    const buildDirectory = path.join(this.directory, 'build');
+    const buildPath = this.getJavaScriptPath();
+
+    const buildDirectory = path.dirname(buildPath);
 
     if (!existsSync(buildDirectory)) {
       mkdirSync(buildDirectory, {
@@ -130,16 +149,18 @@ export default class Script {
       module: ts.ModuleKind.ESNext
     };
 
+    const typescriptPath = this.getTypeScriptPath();
+
     ts.createSourceFile(
-      path.join(this.directory, this.name),
-      this.content,
+      typescriptPath,
+      this.typescript ?? "",
       ts.ScriptTarget.Latest,
       true,
       ts.ScriptKind.TS
     );
 
     const program = ts.createProgram({
-      rootNames: [ path.join(this.directory, this.name) ],
+      rootNames: [ typescriptPath ],
       options: compilerOptions,
     });
 
@@ -184,8 +205,16 @@ export default class Script {
 
   getData(): ScriptData {
     return {
-      name: this.name,
-      content: this.content
+      name: this.data.name,
+      description: this.data.description,
+      type: this.data.type
+    };
+  }
+
+  getContentData(): ScriptContentData {
+    return {
+      ...this.getData(),
+      typescript: this.typescript ?? ""
     };
   }
 
@@ -199,7 +228,7 @@ export default class Script {
     }
 
     return {
-      name: `ts:${this.nameWithoutExtension}.d.ts`,
+      name: `ts:${this.data.name}.d.ts`,
       declaration: this.declaration
     };
   }

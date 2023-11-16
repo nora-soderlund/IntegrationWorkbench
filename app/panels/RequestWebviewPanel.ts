@@ -212,7 +212,7 @@ export class RequestWebviewPanel {
               arguments: [
                 Scripts.loadedScripts.filter((script) => script.declaration).map((script) => {
                   return {
-                    fileName: `ts:${script.name}.d.ts`,
+                    fileName: `ts:${script.data.name}.d.ts`,
                     content: script.declaration
                   };
                 }).concat([
@@ -230,7 +230,7 @@ export class RequestWebviewPanel {
           case "integrationWorkbench.getScript": {
             this.webviewPanel.webview.postMessage({
               command: "integrationWorkbench.updateScript",
-              arguments: [ this.currentScript?.getData() ]
+              arguments: [ this.currentScript?.getContentData() ]
             });
 
             return;

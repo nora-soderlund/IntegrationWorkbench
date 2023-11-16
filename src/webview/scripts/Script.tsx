@@ -3,11 +3,12 @@ import React, { useEffect, useState } from "react";
 import { ScriptDeclarationData } from "../../interfaces/scripts/ScriptDeclarationData";
 import { VSCodeDropdown, VSCodeLink, VSCodePanelTab, VSCodePanelView, VSCodePanels, VSCodeTag } from "@vscode/webview-ui-toolkit/react";
 import { ScriptData } from "../../interfaces/scripts/ScriptData";
+import { ScriptContentData } from "../../interfaces/scripts/ScriptContentData";
 
 export default function Scripts() {
   const monaco = useMonaco();
 
-  const [ scriptData, setScriptData ] = useState<ScriptData | null>(null);
+  const [ scriptData, setScriptData ] = useState<ScriptContentData | null>(null);
   const [ scriptDeclarations, setScriptDeclarations ] = useState<ScriptDeclarationData[] | null>(null);
 
   useEffect(() => {
@@ -76,7 +77,7 @@ export default function Scripts() {
             border: "1px solid var(--vscode-editorWidget-border)",
             boxSizing: "border-box"
           }}>
-            <Editor language="typescript" value={scriptData?.content ?? ""} theme="vs-dark" options={{
+            <Editor language="typescript" value={scriptData?.typescript ?? ""} theme="vs-dark" options={{
               scrollBeyondLastLine: false,
               minimap: {
                 enabled: false

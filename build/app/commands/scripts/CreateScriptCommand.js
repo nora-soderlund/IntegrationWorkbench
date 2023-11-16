@@ -67,8 +67,12 @@ class CreateScriptCommand {
                 return;
             }
             const filePath = path_1.default.join(scriptsPath, name + ".ts");
-            (0, fs_1.writeFileSync)(filePath, `function ${name}() {\n  // Your code goes here...\n}\n`);
-            const script = new Script_1.default(filePath);
+            const script = new Script_1.default(rootPath, {
+                name,
+                description: "",
+                type: "typescript"
+            });
+            script.setContent(`function ${name}() {\n  // Your code goes here...\n}\n`);
             Scripts_1.default.loadedScripts.push(script);
             vscode_1.commands.executeCommand("integrationWorkbench.refreshScripts");
         });

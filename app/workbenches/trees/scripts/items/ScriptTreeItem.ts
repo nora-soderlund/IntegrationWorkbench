@@ -11,11 +11,12 @@ export default class ScriptTreeItem extends TreeItem {
     public readonly treeDataProvider: ScriptsTreeDataProvider,
     public readonly script: Script
   ) {
-    super(script.name, TreeItemCollapsibleState.None);
+    super(script.data.name, TreeItemCollapsibleState.None);
 
     script.treeDataViewItem = this;
 
-    this.tooltip = `${script.name} script`;
+    this.tooltip = `${script.data.name} script`;
+    this.description = script.data.description;
 
     this.update();
 
@@ -27,7 +28,7 @@ export default class ScriptTreeItem extends TreeItem {
   }
 
   update() {
-    this.label = this.script.name;
+    this.label = this.script.data.name;
     this.contextValue = "script";
 
     this.iconPath = this.getIconPath();

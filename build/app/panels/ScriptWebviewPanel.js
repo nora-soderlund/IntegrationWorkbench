@@ -23,7 +23,7 @@ class ScriptWebviewPanel {
         this.context = context;
         this.script = script;
         this.disposables = [];
-        this.webviewPanel = vscode_1.window.createWebviewPanel("integrationWorkbench.script", script.name, vscode_1.ViewColumn.One, {
+        this.webviewPanel = vscode_1.window.createWebviewPanel("integrationWorkbench.script", script.data.name, vscode_1.ViewColumn.One, {
             enableScripts: true,
             localResourceRoots: [
                 vscode_1.Uri.joinPath(context.extensionUri, 'build'),
@@ -90,7 +90,7 @@ class ScriptWebviewPanel {
                 case "integrationWorkbench.getScript": {
                     this.webviewPanel.webview.postMessage({
                         command: "integrationWorkbench.updateScript",
-                        arguments: [this.script.getData()]
+                        arguments: [this.script.getContentData()]
                     });
                     return;
                 }

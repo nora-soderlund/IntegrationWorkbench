@@ -19,8 +19,40 @@ class Scripts {
             }
             const files = (0, fs_1.readdirSync)(folderPath);
             for (let file of files) {
-                if (file.endsWith(".ts") && !file.endsWith(".d.ts")) {
-                    this.loadedScripts.push(new Script_1.default(path_1.default.join(folderPath, file)));
+                if (file.endsWith(".json")) {
+                    const dataPath = path_1.default.join(folderPath, file);
+                    const data = JSON.parse((0, fs_1.readFileSync)(dataPath, {
+                        encoding: "utf-8"
+                    }));
+                    const script = new Script_1.default(rootPath, {
+                        name: data.name,
+                        description: data.description,
+                        type: data.type
+                    });
+                    switch (data.type) {
+                        case "typescript": {
+                            const typescriptPath = path_1.default.join(folderPath, script.data.name + '.ts');
+                            if ((0, fs_1.existsSync)(typescriptPath)) {
+                                script.typescript = (0, fs_1.readFileSync)(typescriptPath, {
+                                    encoding: "utf-8"
+                                });
+                            }
+                            const javascriptPath = path_1.default.join(folderPath, 'build', script.data.name + '.js');
+                            if ((0, fs_1.existsSync)(javascriptPath)) {
+                                script.javascript = (0, fs_1.readFileSync)(javascriptPath, {
+                                    encoding: "utf-8"
+                                });
+                            }
+                            const declarationPath = path_1.default.join(folderPath, 'build', script.data.name + '.d.ts');
+                            if ((0, fs_1.existsSync)(declarationPath)) {
+                                script.declaration = (0, fs_1.readFileSync)(declarationPath, {
+                                    encoding: "utf-8"
+                                });
+                            }
+                            break;
+                        }
+                    }
+                    this.loadedScripts.push(script);
                 }
             }
         }

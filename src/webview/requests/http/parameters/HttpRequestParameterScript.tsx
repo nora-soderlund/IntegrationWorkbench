@@ -1,11 +1,6 @@
 import { Editor, useMonaco } from "@monaco-editor/react";
 import React, { useEffect, useState } from "react";
 import { ScriptDeclarationData } from "../../../../interfaces/scripts/ScriptDeclarationData";
-import { VSCodeDropdown, VSCodeLink, VSCodePanelTab, VSCodePanelView, VSCodePanels, VSCodeTag } from "@vscode/webview-ui-toolkit/react";
-import { ScriptData } from "../../../../interfaces/scripts/ScriptData";
-import { WorkbenchHttpRequestParameterData } from "../../../../interfaces/workbenches/requests/WorkbenchHttpRequestData";
-import { WorkbenchRequestData } from "../../../../interfaces/workbenches/requests/WorkbenchRequestData";
-import { languages } from "monaco-editor";
 
 export type HttpRequestParameterScriptProps = {
   value: string;

@@ -17,7 +17,7 @@ export default class EditScriptNameCommand {
   async handle(reference: ScriptTreeItem) {
     window.showInputBox({
       prompt: "Enter a request name",
-      value: reference.script.nameWithoutExtension,
+      value: reference.script.data.name,
       validateInput(value) {
         if(!value.length) {
           return "You must enter a script name or cancel.";
@@ -27,7 +27,7 @@ export default class EditScriptNameCommand {
           return "You must only enter a generic file name.";
         }
 
-        if(value !== reference.script.nameWithoutExtension && existsSync(path.join(reference.script.directory, value + ".ts"))) {
+        if(value !== reference.script.data.name && existsSync(path.join(path.dirname(reference.script.getTypeScriptPath()), value + ".ts"))) {
           return "Another script with this name already exists.";
         }
 
