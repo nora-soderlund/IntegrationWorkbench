@@ -76,7 +76,7 @@ export default class CreateScriptCommand {
       type: "typescript"
     });
 
-    script.setContent(`/**\n * @description My ${name} function.\n * @returns "Hello world!"\n */\nfunction ${name}(): string {\n  return "Hello world!";\n}\n`);
+    script.setContent(`function ${name}(): string {\n  // Your code goes here...\n\n  return "Hello world!";\n}\n`);
 
     Scripts.loadedScripts.push(script);
 

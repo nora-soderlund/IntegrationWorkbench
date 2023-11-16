@@ -1,15 +1,18 @@
 import { Editor, useMonaco } from "@monaco-editor/react";
 import React, { useEffect, useState } from "react";
 import { ScriptDeclarationData } from "../../interfaces/scripts/ScriptDeclarationData";
-import { VSCodeDropdown, VSCodeLink, VSCodePanelTab, VSCodePanelView, VSCodePanels, VSCodeTag } from "@vscode/webview-ui-toolkit/react";
+import { VSCodeBadge, VSCodeDataGrid, VSCodeDataGridCell, VSCodeDataGridRow, VSCodeDropdown, VSCodeLink, VSCodePanelTab, VSCodePanelView, VSCodePanels, VSCodeTag, VSCodeTextArea } from "@vscode/webview-ui-toolkit/react";
 import { ScriptData } from "../../interfaces/scripts/ScriptData";
 import { ScriptContentData } from "../../interfaces/scripts/ScriptContentData";
+import ScriptDependents from "./dependents/ScriptDependents";
+import { ScriptDependentData } from "../../interfaces/scripts/ScriptDependentData";
 
 export default function Scripts() {
   const monaco = useMonaco();
 
   const [ scriptData, setScriptData ] = useState<ScriptContentData | null>(null);
   const [ scriptDeclarations, setScriptDeclarations ] = useState<ScriptDeclarationData[] | null>(null);
+  const [ scriptDependentsData, setScriptDependentsData ] = useState<ScriptDependentData[]>([]);
 
   useEffect(() => {
     window.addEventListener('message', event => {
@@ -31,6 +34,14 @@ export default function Scripts() {
   
           break;
         }
+
+        case 'integrationWorkbench.updateScriptDependents': {
+          const [ scriptDependentsData ] = event.data.arguments;
+
+          setScriptDependentsData(scriptDependentsData);
+
+          break;
+        }
       }
     });
 
@@ -41,6 +52,11 @@ export default function Scripts() {
 
     window.vscode.postMessage({
       command: "integrationWorkbench.getScriptDeclarations",
+      arguments: []
+    });
+
+    window.vscode.postMessage({
+      command: "integrationWorkbench.getScriptDependents",
       arguments: []
     });
   }, []);
@@ -64,8 +80,14 @@ export default function Scripts() {
         flex: 1,
         padding: "6px 20px"
       }}>
+        <VSCodePanelTab>SCRIPT</VSCodePanelTab>
+        
         <VSCodePanelTab>
-          SCRIPT
+          DEPENDENTS
+
+          {(scriptDependentsData.length > 0) && (
+            <VSCodeBadge>{scriptDependentsData.length}</VSCodeBadge>  
+          )}
         </VSCodePanelTab>
 
         <VSCodePanelView style={{
@@ -90,6 +112,13 @@ export default function Scripts() {
               })
             )}/>
           </div>
+        </VSCodePanelView>
+
+        <VSCodePanelView style={{
+          height: "100%",
+          flexDirection: "column"
+        }}>
+          <ScriptDependents scriptDependentsData={scriptDependentsData}/>
         </VSCodePanelView>
       </VSCodePanels>
     </React.Fragment>

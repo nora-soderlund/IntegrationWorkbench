@@ -7,6 +7,8 @@ import WorkbenchHttpRequest from "../workbenches/requests/WorkbenchHttpRequest";
 import Scripts from "../Scripts";
 import Script from "../scripts/Script";
 import { ScriptDeclarationData } from "~interfaces/scripts/ScriptDeclarationData";
+import { ScriptDependentData } from "~interfaces/scripts/ScriptDependentData";
+import { workbenches } from "../Workbenches";
 
 export class ScriptWebviewPanel {
   public readonly webviewPanel: WebviewPanel;
@@ -92,6 +94,38 @@ export class ScriptWebviewPanel {
                   }
                 ])
               ]
+            });
+
+            return;
+          }
+
+          case "integrationWorkbench.getScriptDependents": {
+            const scriptDependentsData: ScriptDependentData[] = [];
+
+            workbenches.forEach((workbench) => {
+              const requests = workbench.collections.flatMap((collection) => collection.requests).concat(workbench.requests);
+
+              requests.forEach((request) => {
+                if(request instanceof WorkbenchHttpRequest) {
+                  request.data.parameters.forEach((parameter) => {
+                    if(parameter.value.includes(script.data.name)) {
+                      scriptDependentsData.push({
+                        request: {
+                          id: request.id,
+                          name: request.name
+                        },
+                        location: "Parameter",
+                        usage: parameter.value
+                      });
+                    }
+                  });
+                }
+              });
+            });
+
+            this.webviewPanel.webview.postMessage({
+              command: "integrationWorkbench.updateScriptDependents",
+              arguments: [ scriptDependentsData ]
             });
 
             return;

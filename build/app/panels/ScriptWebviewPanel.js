@@ -17,7 +17,9 @@ const vscode_1 = require("vscode");
 const GetWebviewUri_1 = require("../utils/GetWebviewUri");
 const fs_1 = require("fs");
 const path_1 = __importDefault(require("path"));
+const WorkbenchHttpRequest_1 = __importDefault(require("../workbenches/requests/WorkbenchHttpRequest"));
 const Scripts_1 = __importDefault(require("../Scripts"));
+const Workbenches_1 = require("../Workbenches");
 class ScriptWebviewPanel {
     constructor(context, script) {
         this.context = context;
@@ -84,6 +86,33 @@ class ScriptWebviewPanel {
                                 }
                             ])
                         ]
+                    });
+                    return;
+                }
+                case "integrationWorkbench.getScriptDependents": {
+                    const scriptDependentsData = [];
+                    Workbenches_1.workbenches.forEach((workbench) => {
+                        const requests = workbench.collections.flatMap((collection) => collection.requests).concat(workbench.requests);
+                        requests.forEach((request) => {
+                            if (request instanceof WorkbenchHttpRequest_1.default) {
+                                request.data.parameters.forEach((parameter) => {
+                                    if (parameter.value.includes(script.data.name)) {
+                                        scriptDependentsData.push({
+                                            request: {
+                                                id: request.id,
+                                                name: request.name
+                                            },
+                                            location: "Parameter",
+                                            usage: parameter.value
+                                        });
+                                    }
+                                });
+                            }
+                        });
+                    });
+                    this.webviewPanel.webview.postMessage({
+                        command: "integrationWorkbench.updateScriptDependents",
+                        arguments: [scriptDependentsData]
                     });
                     return;
                 }

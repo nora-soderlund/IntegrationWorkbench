@@ -72,7 +72,7 @@ class CreateScriptCommand {
                 description: "",
                 type: "typescript"
             });
-            script.setContent(`/**\n * @description My ${name} function.\n * @returns "Hello world!"\n */\nfunction ${name}(): string {\n  return "Hello world!";\n}\n`);
+            script.setContent(`function ${name}(): string {\n  // Your code goes here...\n\n  return "Hello world!";\n}\n`);
             Scripts_1.default.loadedScripts.push(script);
             vscode_1.commands.executeCommand("integrationWorkbench.refreshScripts");
         });
