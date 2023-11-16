@@ -165,6 +165,12 @@
         "command": "integrationWorkbench.deleteScriptDeclarations",
         "title": "Delete all script declarations",
         "icon": "$(trashcan)"
+      },
+      {
+        "command": "integrationWorkbench.deleteScript",
+        "title": "Delete script",
+        "shortTitle": "Delete",
+        "icon": "$(trashcan)"
       }
     ],
     "viewsContainers": {
@@ -329,6 +335,12 @@
           "command": "integrationWorkbench.editScriptName",
           "when": "view == scripts && (viewItem == script)",
           "group": "script@1"
+        },
+
+        {
+          "command": "integrationWorkbench.deleteScript",
+          "when": "view == scripts && (viewItem == script)",
+          "group": "script@2"
         }
       ],
       "editor/title": [

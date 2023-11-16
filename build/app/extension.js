@@ -56,6 +56,7 @@ const OpenScriptCommand_1 = __importDefault(require("./commands/scripts/OpenScri
 const EditScriptNameCommand_1 = __importDefault(require("./commands/scripts/EditScriptNameCommand"));
 const EditWorkbenchNameCommand_1 = __importDefault(require("./commands/workbenches/EditWorkbenchNameCommand"));
 const EditWorkbenchDescriptionCommand_1 = __importDefault(require("./commands/workbenches/EditWorkbenchDescriptionCommand"));
+const DeleteScriptCommand_1 = __importDefault(require("./commands/scripts/DeleteScriptCommand"));
 // This method is called when your extension is activated
 // Your extension is activated the very first time the command is executed
 function activate(context) {
@@ -230,6 +231,7 @@ function activate(context) {
     new CreateScriptCommand_1.default(context);
     new OpenScriptCommand_1.default(context);
     new EditScriptNameCommand_1.default(context);
+    new DeleteScriptCommand_1.default(context);
     context.subscriptions.push(vscode.commands.registerCommand('integrationWorkbench.refreshWorkbenches', () => {
         workbenchesTreeDataProvider.refresh();
     }));

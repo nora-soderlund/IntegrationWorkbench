@@ -57,11 +57,18 @@ export default class Script {
   }
 
   delete() {
+    const dataPath = this.getDataPath();
     const scriptPath = this.getTypeScriptPath();
+    const javascriptPath = this.getJavaScriptPath();
     const declarationPath = this.getDeclarationPath();
 
+    rmSync(dataPath);
     rmSync(scriptPath);
     rmSync(declarationPath);
+    rmSync(javascriptPath);
+
+    this.disposeWebviewPanel();
+    this.deleteWebviewPanel();
   }
 
   save() {

@@ -49,10 +49,16 @@ class Script {
         }
     }
     delete() {
+        const dataPath = this.getDataPath();
         const scriptPath = this.getTypeScriptPath();
+        const javascriptPath = this.getJavaScriptPath();
         const declarationPath = this.getDeclarationPath();
+        (0, fs_1.rmSync)(dataPath);
         (0, fs_1.rmSync)(scriptPath);
         (0, fs_1.rmSync)(declarationPath);
+        (0, fs_1.rmSync)(javascriptPath);
+        this.disposeWebviewPanel();
+        this.deleteWebviewPanel();
     }
     save() {
         var _a;
