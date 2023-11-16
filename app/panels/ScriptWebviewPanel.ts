@@ -18,7 +18,7 @@ export class ScriptWebviewPanel {
   ) {
     this.webviewPanel = window.createWebviewPanel(
       "integrationWorkbench.script",
-      script.data.name,
+      `${script.data.name}.ts`,
       ViewColumn.One,
       {
         enableScripts: true,

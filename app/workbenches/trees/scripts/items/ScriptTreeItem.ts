@@ -11,7 +11,7 @@ export default class ScriptTreeItem extends TreeItem {
     public readonly treeDataProvider: ScriptsTreeDataProvider,
     public readonly script: Script
   ) {
-    super(script.data.name, TreeItemCollapsibleState.None);
+    super(`${script.data.name}.ts`, TreeItemCollapsibleState.None);
 
     script.treeDataViewItem = this;
 
@@ -28,7 +28,7 @@ export default class ScriptTreeItem extends TreeItem {
   }
 
   update() {
-    this.label = this.script.data.name;
+    this.label = `${this.script.data.name}.ts`;
     this.contextValue = "script";
 
     this.iconPath = this.getIconPath();

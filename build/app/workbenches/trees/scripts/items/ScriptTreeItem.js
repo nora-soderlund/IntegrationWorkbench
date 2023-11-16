@@ -8,7 +8,7 @@ const path_1 = __importDefault(require("path"));
 const fs_1 = require("fs");
 class ScriptTreeItem extends vscode_1.TreeItem {
     constructor(treeDataProvider, script) {
-        super(script.data.name, vscode_1.TreeItemCollapsibleState.None);
+        super(`${script.data.name}.ts`, vscode_1.TreeItemCollapsibleState.None);
         this.treeDataProvider = treeDataProvider;
         this.script = script;
         script.treeDataViewItem = this;
@@ -22,7 +22,7 @@ class ScriptTreeItem extends vscode_1.TreeItem {
         };
     }
     update() {
-        this.label = this.script.data.name;
+        this.label = `${this.script.data.name}.ts`;
         this.contextValue = "script";
         this.iconPath = this.getIconPath();
     }
