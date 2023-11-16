@@ -41,43 +41,49 @@ class WorkbenchHttpRequest extends WorkbenchRequest_1.default {
     static fromData(parent, data) {
         return new WorkbenchHttpRequest(parent, data.id, data.name, data.data);
     }
-    getParsedUrl() {
+    getParsedUrl(abortController) {
         return __awaiter(this, void 0, void 0, function* () {
-            if (!this.data.url) {
-                return null;
-            }
-            const keys = [];
-            this.data.url.replace(/\{(.+?)\}/g, (_match, key) => {
-                keys.push(key);
-                return _match;
-            });
-            const uniqueKeys = [...new Set(keys)];
-            let parsedUrl = this.data.url;
-            for (let key of uniqueKeys) {
-                const parameter = this.data.parameters.find((parameter) => parameter.name === key);
-                if (!parameter) {
-                    continue;
+            return new Promise((resolve, reject) => __awaiter(this, void 0, void 0, function* () {
+                if (!this.data.url) {
+                    resolve(null);
+                    return;
                 }
-                switch (parameter.type) {
-                    case "raw": {
-                        parsedUrl = parsedUrl === null || parsedUrl === void 0 ? void 0 : parsedUrl.replace('{' + key + '}', parameter.value);
-                        break;
+                const abortListener = () => reject("Aborted.");
+                abortController.signal.addEventListener("abort", abortListener);
+                const keys = [];
+                this.data.url.replace(/\{(.+?)\}/g, (_match, key) => {
+                    keys.push(key);
+                    return _match;
+                });
+                const uniqueKeys = [...new Set(keys)];
+                let parsedUrl = this.data.url;
+                for (let key of uniqueKeys) {
+                    const parameter = this.data.parameters.find((parameter) => parameter.name === key);
+                    if (!parameter) {
+                        continue;
                     }
-                    case "typescript": {
-                        // TODO: add ability to view the entire script that's being evaluated for debugging purposes?
-                        const script = Scripts_1.default.loadedScripts.map((script) => script.javascript).join('').concat(parameter.value);
-                        let value;
-                        try {
-                            value = yield eval(script);
+                    switch (parameter.type) {
+                        case "raw": {
+                            parsedUrl = parsedUrl === null || parsedUrl === void 0 ? void 0 : parsedUrl.replace('{' + key + '}', parameter.value);
+                            break;
                         }
-                        catch (error) {
-                            throw new Error("Failed to evaluate script: " + error);
+                        case "typescript": {
+                            // TODO: add ability to view the entire script that's being evaluated for debugging purposes?
+                            const script = Scripts_1.default.loadedScripts.map((script) => script.javascript).join('').concat(parameter.value);
+                            let value;
+                            try {
+                                value = yield eval(script);
+                            }
+                            catch (error) {
+                                throw new Error("Failed to evaluate script: " + error);
+                            }
+                            parsedUrl = parsedUrl === null || parsedUrl === void 0 ? void 0 : parsedUrl.replace('{' + key + '}', value);
                         }
-                        parsedUrl = parsedUrl === null || parsedUrl === void 0 ? void 0 : parsedUrl.replace('{' + key + '}', value);
                     }
                 }
-            }
-            return parsedUrl;
+                abortController.signal.removeEventListener("abort", abortListener);
+                resolve(parsedUrl);
+            }));
         });
     }
     send() {

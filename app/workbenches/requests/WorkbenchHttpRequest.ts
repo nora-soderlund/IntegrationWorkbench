@@ -44,56 +44,65 @@ export default class WorkbenchHttpRequest extends WorkbenchRequest {
     return new WorkbenchHttpRequest(parent, data.id, data.name, data.data);
   }
 
-  async getParsedUrl() {
-    if(!this.data.url) {
-      return null;
-    }
+  async getParsedUrl(abortController: AbortController) {
+    return new Promise<string | null>(async (resolve, reject) => {
+      if(!this.data.url) {
+        resolve(null);
 
-    const keys: string[] = [];
+        return;
+      }
 
-    this.data.url.replace(/\{(.+?)\}/g, (_match, key) => {
-      keys.push(key);
+      const abortListener = () => reject("Aborted.");
+      abortController.signal.addEventListener("abort", abortListener);
 
-      return _match;
+      const keys: string[] = [];
+
+      this.data.url.replace(/\{(.+?)\}/g, (_match, key) => {
+        keys.push(key);
+
+        return _match;
+      });
+
+      const uniqueKeys = [...new Set(keys)];
+
+      let parsedUrl = this.data.url;
+
+      for(let key of uniqueKeys) {
+        const parameter = this.data.parameters.find((parameter) => parameter.name === key);
+
+        if(!parameter) {
+          continue;
+        }
+
+        switch(parameter.type) {
+          case "raw": {
+            parsedUrl = parsedUrl?.replace('{' + key + '}', parameter.value);
+
+            break;
+          }
+
+          case "typescript": {
+            // TODO: add ability to view the entire script that's being evaluated for debugging purposes?
+            const script = Scripts.loadedScripts.map((script) => script.javascript).join('').concat(parameter.value);
+
+            let value;
+
+            try {
+              value = await eval(script);
+            }
+            catch(error) {
+              throw new Error("Failed to evaluate script: " + error);
+            }
+
+            parsedUrl = parsedUrl?.replace('{' + key + '}', value);
+          }
+        }
+      }
+
+      abortController.signal.removeEventListener("abort", abortListener);
+
+      resolve(parsedUrl);
     });
-
-    const uniqueKeys = [...new Set(keys)];
-
-    let parsedUrl = this.data.url;
-
-    for(let key of uniqueKeys) {
-      const parameter = this.data.parameters.find((parameter) => parameter.name === key);
-
-      if(!parameter) {
-        continue;
-      }
-
-      switch(parameter.type) {
-        case "raw": {
-          parsedUrl = parsedUrl?.replace('{' + key + '}', parameter.value);
-
-          break;
-        }
-
-        case "typescript": {
-          // TODO: add ability to view the entire script that's being evaluated for debugging purposes?
-          const script = Scripts.loadedScripts.map((script) => script.javascript).join('').concat(parameter.value);
-
-          let value;
-
-          try {
-            value = await eval(script);
-          }
-          catch(error) {
-            throw new Error("Failed to evaluate script: " + error);
-          }
-
-          parsedUrl = parsedUrl?.replace('{' + key + '}', value);
-        }
-      }
-    }
-
-    return parsedUrl;
   }
 
   send(): void {

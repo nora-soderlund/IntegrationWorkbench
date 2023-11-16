@@ -135,7 +135,7 @@ export class RequestWebviewPanel {
               if(this.request.data.parametersAutoRefresh) {
                 this.webviewPanel.webview.postMessage({
                   command: "integrationWorkbench.updateHttpRequestPreviewUrl",
-                  arguments: [ await this.request.getParsedUrl() ]
+                  arguments: [ await this.request.getParsedUrl(new AbortController()) ]
                 });
               }
             }
@@ -199,7 +199,7 @@ export class RequestWebviewPanel {
             if(this.request instanceof WorkbenchHttpRequest) {
               this.webviewPanel.webview.postMessage({
                 command: "integrationWorkbench.updateHttpRequestPreviewUrl",
-                arguments: [ await this.request.getParsedUrl() ]
+                arguments: [ await this.request.getParsedUrl(new AbortController()) ]
               });
             }
 

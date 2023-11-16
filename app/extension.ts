@@ -33,6 +33,7 @@ import EditScriptNameCommand from './commands/scripts/EditScriptNameCommand';
 import EditWorkbenchNameCommand from './commands/workbenches/EditWorkbenchNameCommand';
 import EditWorkbenchDescriptionCommand from './commands/workbenches/EditWorkbenchDescriptionCommand';
 import DeleteScriptCommand from './commands/scripts/DeleteScriptCommand';
+import CancelResponseCommand from './commands/responses/CancelResponseCommand';
 
 // This method is called when your extension is activated
 // Your extension is activated the very first time the command is executed
@@ -219,6 +220,7 @@ export function activate(context: vscode.ExtensionContext) {
 	new DeleteRequestCommand(context);
 
 	new OpenResponseCommand(context);
+	new CancelResponseCommand(context);
 
 	new CreateWorkbenchCommand(context);
 	new DeleteWorkbenchCommand(context);

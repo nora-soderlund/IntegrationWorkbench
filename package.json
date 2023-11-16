@@ -322,7 +322,7 @@
         },
         {
           "command": "integrationWorkbench.cancelResponse",
-          "when": "view == requests && viewItem == response-started",
+          "when": "view == requests && viewItem == response-loading",
           "group": "inline"
         },
         {

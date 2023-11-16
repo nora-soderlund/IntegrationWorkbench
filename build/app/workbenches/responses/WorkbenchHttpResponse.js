@@ -20,8 +20,9 @@ class WorkbenchHttpResponse {
         this.id = id;
         this.requestedAt = requestedAt;
         this.status = "loading";
+        this.abortController = new AbortController();
         this.request = WorkbenchHttpRequest_1.default.fromData(null, requestData);
-        this.request.getParsedUrl().then((parsedUrl) => {
+        this.request.getParsedUrl(this.abortController).then((parsedUrl) => {
             if (!parsedUrl) {
                 vscode_1.window.showErrorMessage("No URL was provided in the request.");
                 return;
@@ -49,11 +50,13 @@ class WorkbenchHttpResponse {
             fetch(parsedUrl, {
                 method: this.request.data.method,
                 headers,
-                body
+                body,
+                signal: this.abortController.signal
             })
                 .then(this.handleResponse.bind(this))
                 .catch(this.handleResponseError.bind(this));
-        });
+        })
+            .catch(this.handleResponseError.bind(this));
     }
     getData() {
         return {

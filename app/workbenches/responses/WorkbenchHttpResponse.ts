@@ -15,6 +15,8 @@ export default class WorkbenchHttpResponse {
   public treeItem?: WorkbenchResponseTreeItem;
   public request: WorkbenchHttpRequest;
 
+  public readonly abortController: AbortController = new AbortController();
+
   constructor(
     public readonly id: string,
     requestData: WorkbenchRequestData,
@@ -22,7 +24,7 @@ export default class WorkbenchHttpResponse {
   ) {
     this.request = WorkbenchHttpRequest.fromData(null, requestData);
 
-    this.request.getParsedUrl().then((parsedUrl) => {
+    this.request.getParsedUrl(this.abortController).then((parsedUrl) => {
       if(!parsedUrl) {
         window.showErrorMessage("No URL was provided in the request.");
 
@@ -61,11 +63,13 @@ export default class WorkbenchHttpResponse {
       fetch(parsedUrl, {
         method: this.request.data.method,
         headers,
-        body
+        body,
+        signal: this.abortController.signal
       })
       .then(this.handleResponse.bind(this))
       .catch(this.handleResponseError.bind(this));
-    });
+    })
+    .catch(this.handleResponseError.bind(this));
   }
 
   getData(): WorkbenchHttpResponseData {
