@@ -1,7 +1,5 @@
-import React, { Component, useRef } from "react";
+import React from "react";
 import { HttpRequestProps } from "../HttpRequest";
-import { VSCodeButton, VSCodeDropdown, VSCodeOption, VSCodeRadio, VSCodeRadioGroup, VSCodeTextField } from '@vscode/webview-ui-toolkit/react';
-import HttpRequestBodySwitch from "./HttpRequestBodySwitch";
 import { WorkbenchHttpRequestApplicationJsonBodyData } from "../../../../interfaces/workbenches/requests/WorkbenchHttpRequestData";
 import { Editor } from "@monaco-editor/react";
 

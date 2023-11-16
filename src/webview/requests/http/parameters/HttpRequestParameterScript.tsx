@@ -46,6 +46,13 @@ export default function HttpRequestParameterScript({ value, onChange }: HttpRequ
       module: languages.typescript.ModuleKind.ESNext
     });*/
 
+    monaco.languages.typescript.typescriptDefaults.setCompilerOptions({
+      lib: ["ESNext"],
+      module: monaco.languages.typescript.ModuleKind.CommonJS,
+      target: monaco.languages.typescript.ScriptTarget.ESNext,
+      esModuleInterop: true
+    });
+
     scriptDeclarations.forEach((scriptLibrary) => {
       monaco.languages.typescript.typescriptDefaults.addExtraLib(
         scriptLibrary.declaration,
