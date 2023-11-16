@@ -8,12 +8,14 @@ import WorkbenchRequest from "./requests/WorkbenchRequest";
 export class Workbench {
   id: string;
   name: string;
+  description?: string;
   collections: WorkbenchCollection[];
   requests: WorkbenchRequest[];
 
-  constructor(data: WorkbenchData, public readonly path: string) {
+  constructor(data: WorkbenchData, public path: string) {
     this.id = data.id;
     this.name = data.name;
+    this.description = data.description;
 
     this.requests = data.requests.map((request) => WorkbenchRequest.fromData(this, request));
     this.collections = data.collections.map((collection) => new WorkbenchCollection(this, collection.id, collection.name, collection.description, collection.requests));

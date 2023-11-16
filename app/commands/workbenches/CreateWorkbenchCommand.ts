@@ -68,6 +68,7 @@ export default class CreateWorkbenchCommand {
     const workbench = new Workbench({
       id: randomUUID(),
       name,
+      description: path.basename(path.dirname(path.dirname(path.dirname(uniqueWorkbenchPath)))),
       requests: [],
       collections: []
     }, uniqueWorkbenchPath);

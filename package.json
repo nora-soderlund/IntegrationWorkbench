@@ -51,6 +51,12 @@
         "icon": "$(plus)"
       },
       {
+        "command": "integrationWorkbench.editWorkbenchName",
+        "title": "Edit workbench name",
+        "shortTitle": "Edit",
+        "icon": "$(pencil)"
+      },
+      {
         "command": "integrationWorkbench.deleteWorkbench",
         "title": "Delete",
         "icon": "$(trashcan)"
@@ -230,6 +236,10 @@
           "command": "integrationWorkbench.createCollection",
           "when": "view == workbenches && viewItem == workbench",
           "group": "inline"
+        },
+        {
+          "command": "integrationWorkbench.editWorkbenchName",
+          "when": "view == workbenches && (viewItem == workbench)"
         },
         {
           "command": "integrationWorkbench.runWorkbench",

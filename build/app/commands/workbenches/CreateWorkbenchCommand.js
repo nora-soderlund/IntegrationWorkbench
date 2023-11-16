@@ -66,6 +66,7 @@ class CreateWorkbenchCommand {
             const workbench = new Workbench_1.Workbench({
                 id: (0, crypto_1.randomUUID)(),
                 name,
+                description: path_1.default.basename(path_1.default.dirname(path_1.default.dirname(path_1.default.dirname(uniqueWorkbenchPath)))),
                 requests: [],
                 collections: []
             }, uniqueWorkbenchPath);

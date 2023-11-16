@@ -54,6 +54,7 @@ const Scripts_1 = __importDefault(require("./Scripts"));
 const CreateScriptCommand_1 = __importDefault(require("./commands/scripts/CreateScriptCommand"));
 const OpenScriptCommand_1 = __importDefault(require("./commands/scripts/OpenScriptCommand"));
 const EditScriptNameCommand_1 = __importDefault(require("./commands/scripts/EditScriptNameCommand"));
+const EditWorkbenchNameCommand_1 = __importDefault(require("./commands/workbenches/EditWorkbenchNameCommand"));
 // This method is called when your extension is activated
 // Your extension is activated the very first time the command is executed
 function activate(context) {
@@ -223,6 +224,7 @@ function activate(context) {
     new CreateWorkbenchCommand_1.default(context);
     new DeleteWorkbenchCommand_1.default(context);
     new RunWorkbenchCommand_1.default(context);
+    new EditWorkbenchNameCommand_1.default(context);
     new CreateScriptCommand_1.default(context);
     new OpenScriptCommand_1.default(context);
     new EditScriptNameCommand_1.default(context);

@@ -14,6 +14,7 @@ class Workbench {
         this.path = path;
         this.id = data.id;
         this.name = data.name;
+        this.description = data.description;
         this.requests = data.requests.map((request) => WorkbenchRequest_1.default.fromData(this, request));
         this.collections = data.collections.map((collection) => new WorkbenchCollection_1.WorkbenchCollection(this, collection.id, collection.name, collection.description, collection.requests));
     }

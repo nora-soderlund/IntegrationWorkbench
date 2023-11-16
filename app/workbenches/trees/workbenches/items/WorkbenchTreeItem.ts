@@ -10,7 +10,7 @@ export default class WorkbenchTreeItem extends TreeItem {
       
       this.tooltip = `${workbench.name} workbench`;
 
-      this.description = path.basename(path.dirname(path.dirname(path.dirname(workbench.path))));
+      this.description = workbench.description;
 
       this.contextValue = "workbench";
     }
