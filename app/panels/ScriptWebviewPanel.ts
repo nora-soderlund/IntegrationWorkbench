@@ -1,6 +1,6 @@
 import { Disposable, ExtensionContext, Uri, ViewColumn, WebviewPanel, TextDocument, window, workspace, commands, ThemeIcon } from "vscode";
 import { getWebviewUri } from "../utils/GetWebviewUri";
-import { readFileSync } from "fs";
+import { existsSync, readFileSync, readdirSync } from "fs";
 import path from "path";
 import WorkbenchRequest from "../workbenches/requests/WorkbenchRequest";
 import WorkbenchHttpRequest from "../workbenches/requests/WorkbenchHttpRequest";
@@ -8,7 +8,9 @@ import Scripts from "../Scripts";
 import Script from "../scripts/Script";
 import { ScriptDeclarationData } from "~interfaces/scripts/ScriptDeclarationData";
 import { ScriptDependentData } from "~interfaces/scripts/ScriptDependentData";
+import { Dependency } from "~interfaces/dependency/Dependency";
 import { workbenches } from "../Workbenches";
+import getRootPath from "../utils/GetRootPath";
 
 export class ScriptWebviewPanel {
   public readonly webviewPanel: WebviewPanel;
@@ -81,6 +83,37 @@ export class ScriptWebviewPanel {
         console.debug("Received event from script webview:", command);
 
         switch (command) {
+          case "integrationWorkbench.getDependencies": {
+            const rootPath = getRootPath();
+
+            if(rootPath) {
+              const nodeModulesPath = path.join(rootPath, "node_modules");
+
+              if(existsSync(nodeModulesPath)) {
+                const dependencies: Dependency[] = [];
+
+                const files = readdirSync(nodeModulesPath);
+
+                for(let file of files) {
+                  if(file.includes('.')) {
+                    continue;
+                  }
+
+                  dependencies.push({
+                    name: file
+                  });
+                }
+
+                this.webviewPanel.webview.postMessage({
+                  command: "integrationWorkbench.updateDependencies",
+                  arguments: [ dependencies ]
+                });
+              }
+            }
+
+            return;
+          }
+
           case "integrationWorkbench.getScriptDeclarations": {
             const scriptDeclarations = await Promise.allSettled(Scripts.loadedScripts.map(async (script) => await script.getDeclarationData()));
 

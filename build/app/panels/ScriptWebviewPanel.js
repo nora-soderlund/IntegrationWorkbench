@@ -20,6 +20,7 @@ const path_1 = __importDefault(require("path"));
 const WorkbenchHttpRequest_1 = __importDefault(require("../workbenches/requests/WorkbenchHttpRequest"));
 const Scripts_1 = __importDefault(require("../Scripts"));
 const Workbenches_1 = require("../Workbenches");
+const GetRootPath_1 = __importDefault(require("../utils/GetRootPath"));
 class ScriptWebviewPanel {
     constructor(context, script) {
         this.context = context;
@@ -74,6 +75,29 @@ class ScriptWebviewPanel {
             const command = message.command;
             console.debug("Received event from script webview:", command);
             switch (command) {
+                case "integrationWorkbench.getDependencies": {
+                    const rootPath = (0, GetRootPath_1.default)();
+                    if (rootPath) {
+                        const nodeModulesPath = path_1.default.join(rootPath, "node_modules");
+                        if ((0, fs_1.existsSync)(nodeModulesPath)) {
+                            const dependencies = [];
+                            const files = (0, fs_1.readdirSync)(nodeModulesPath);
+                            for (let file of files) {
+                                if (file.includes('.')) {
+                                    continue;
+                                }
+                                dependencies.push({
+                                    name: file
+                                });
+                            }
+                            this.webviewPanel.webview.postMessage({
+                                command: "integrationWorkbench.updateDependencies",
+                                arguments: [dependencies]
+                            });
+                        }
+                    }
+                    return;
+                }
                 case "integrationWorkbench.getScriptDeclarations": {
                     const scriptDeclarations = yield Promise.allSettled(Scripts_1.default.loadedScripts.map((script) => __awaiter(this, void 0, void 0, function* () { return yield script.getDeclarationData(); })));
                     this.webviewPanel.webview.postMessage({

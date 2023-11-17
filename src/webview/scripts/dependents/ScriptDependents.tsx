@@ -1,6 +1,7 @@
 import { VSCodeDataGrid, VSCodeDataGridCell, VSCodeDataGridRow, VSCodeLink, VSCodeTextArea } from "@vscode/webview-ui-toolkit/react";
 import { ScriptDependentData } from "../../../interfaces/scripts/ScriptDependentData";
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { Dependency } from "../../../interfaces/dependency/Dependency";
 
 export type ScriptDependentProps = {
   scriptDependentsData: ScriptDependentData[];

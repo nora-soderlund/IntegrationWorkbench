@@ -6,6 +6,8 @@ import { ScriptData } from "../../interfaces/scripts/ScriptData";
 import { ScriptContentData } from "../../interfaces/scripts/ScriptContentData";
 import ScriptDependents from "./dependents/ScriptDependents";
 import { ScriptDependentData } from "../../interfaces/scripts/ScriptDependentData";
+import { ScriptDependencyData } from "../../interfaces/scripts/ScriptDependencyData";
+import ScriptDependencies from "./dependencies/ScriptDependencies";
 
 export default function Scripts() {
   const monaco = useMonaco();
@@ -13,6 +15,7 @@ export default function Scripts() {
   const [ scriptData, setScriptData ] = useState<ScriptContentData | null>(null);
   const [ scriptDeclarations, setScriptDeclarations ] = useState<ScriptDeclarationData[] | null>(null);
   const [ scriptDependentsData, setScriptDependentsData ] = useState<ScriptDependentData[]>([]);
+  const [ scriptDependenciesData, setScriptDependenciesData ] = useState<ScriptDependencyData[]>([]);
 
   useEffect(() => {
     window.addEventListener('message', event => {
@@ -81,6 +84,14 @@ export default function Scripts() {
         padding: "6px 20px"
       }}>
         <VSCodePanelTab>SCRIPT</VSCodePanelTab>
+
+        <VSCodePanelTab>
+          DEPENDENCIES
+
+          {(scriptDependenciesData.length > 0) && (
+            <VSCodeBadge>{scriptDependenciesData.length}</VSCodeBadge>  
+          )}
+        </VSCodePanelTab>
         
         <VSCodePanelTab>
           DEPENDENTS
@@ -112,6 +123,13 @@ export default function Scripts() {
               })
             )}/>
           </div>
+        </VSCodePanelView>
+
+        <VSCodePanelView style={{
+          height: "100%",
+          flexDirection: "column"
+        }}>
+          <ScriptDependencies scriptDependenciesData={scriptDependenciesData}/>
         </VSCodePanelView>
 
         <VSCodePanelView style={{
