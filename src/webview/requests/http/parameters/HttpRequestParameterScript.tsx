@@ -59,7 +59,7 @@ export default function HttpRequestParameterScript({ value, onChange }: HttpRequ
 
     scriptDeclarations.forEach((scriptLibrary) => {
       monaco.languages.typescript.typescriptDefaults.addExtraLib(
-        scriptLibrary.declaration,
+        scriptLibrary.declaration.replaceAll("export", ""),
         scriptLibrary.name
       );
     });

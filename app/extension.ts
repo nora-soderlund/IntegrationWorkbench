@@ -257,6 +257,7 @@ export function activate(context: vscode.ExtensionContext) {
 	scanForWorkbenches(context);
 
 	Scripts.scanForScripts();
+	Scripts.buildScriptIndex();
 
 	//vscode.window.registerTreeDataProvider('workbenches', new WorkbenchTreeDataProvider(rootPath));
 }

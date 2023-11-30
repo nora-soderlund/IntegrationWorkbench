@@ -195,7 +195,6 @@
           "id": "workbenches",
           "name": "Workbenches"
         },
-
         {
           "id": "scripts",
           "name": "Scripts"
@@ -267,7 +266,6 @@
           "when": "view == workbenches && (viewItem == workbench)",
           "group": "workbench@4"
         },
-
         {
           "command": "integrationWorkbench.createCollection",
           "when": "view == workbenches && viewItem == workbench",
@@ -293,13 +291,11 @@
           "when": "view == workbenches && (viewItem == collection)",
           "group": "collection@4"
         },
-        
         {
           "command": "integrationWorkbench.createRequest",
           "when": "view == workbenches && ((config.integrationWorkbench.allowRequestsInWorkbench && viewItem == workbench) || viewItem == collection)",
           "group": "inline"
         },
-
         {
           "command": "integrationWorkbench.runRequest",
           "when": "view == workbenches && (viewItem == request) && config.integrationWorkbench.showRunRequestButton",
@@ -330,13 +326,11 @@
           "when": "view == requests && (viewItem == response-done || viewItem == response-failed)",
           "group": "inline"
         },
-
         {
           "command": "integrationWorkbench.editScriptName",
           "when": "view == scripts && (viewItem == script)",
           "group": "script@1"
         },
-
         {
           "command": "integrationWorkbench.deleteScript",
           "when": "view == scripts && (viewItem == script)",
@@ -414,7 +408,7 @@
     "@vscode/codicons": "^0.0.35",
     "@vscode/test-electron": "^2.3.6",
     "@vscode/webview-ui-toolkit": "^1.2.2",
-    "esbuild": "0.16.17",
+    "esbuild": "^0.19.8",
     "eslint": "^8.52.0",
     "glob": "^10.3.10",
     "mocha": "^10.2.0",
@@ -429,7 +423,8 @@
   "dependencies": {
     "@monaco-editor/react": "^4.6.0",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react-dom": "^18.2.0",
+    "typescript-bundle": "^1.0.18"
   },
   "browserslist": {
     "production": [
