@@ -17,7 +17,9 @@ class OpenScriptCommand {
     }
     handle(script) {
         return __awaiter(this, void 0, void 0, function* () {
-            script.showWebviewPanel(this.context);
+            const file = vscode_1.Uri.file(script.filePath);
+            const textDocument = yield vscode_1.workspace.openTextDocument(file);
+            vscode_1.window.showTextDocument(textDocument);
         });
     }
     ;

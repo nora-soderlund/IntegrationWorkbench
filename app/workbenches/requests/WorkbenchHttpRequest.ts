@@ -83,7 +83,9 @@ export default class WorkbenchHttpRequest extends WorkbenchRequest {
 
           case "typescript": {
             // TODO: add ability to view the entire script that's being evaluated for debugging purposes?
-            const script = Scripts.loadedScripts.map((script) => script.javascript).join('').concat(parameter.value);
+            const scripts = await Promise.all(Scripts.loadedScripts.map(async (script) => await script.build()));
+           
+            const script = scripts.map((script) => script.javascript).join('\n').concat(parameter.value);
 
             let value;
 

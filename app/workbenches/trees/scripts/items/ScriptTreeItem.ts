@@ -3,7 +3,7 @@ import path from "path";
 import { existsSync } from "fs";
 import { isHttpRequestData } from "../../../../../src/interfaces/workbenches/requests/utils/WorkbenchRequestDataTypeValidations";
 import WorkbenchResponse from "../../../responses/WorkbenchHttpResponse";
-import Script from "../../../../scripts/Script";
+import Script from "../../../../scripts/TypescriptScript";
 import ScriptsTreeDataProvider from "../ScriptsTreeDataProvider";
 
 export default class ScriptTreeItem extends TreeItem {
@@ -11,12 +11,9 @@ export default class ScriptTreeItem extends TreeItem {
     public readonly treeDataProvider: ScriptsTreeDataProvider,
     public readonly script: Script
   ) {
-    super(`${script.data.name}.ts`, TreeItemCollapsibleState.None);
+    super(script.getName(), TreeItemCollapsibleState.None);
 
     script.treeDataViewItem = this;
-
-    this.tooltip = `${script.data.name} script`;
-    this.description = script.data.description;
 
     this.update();
 
@@ -28,7 +25,7 @@ export default class ScriptTreeItem extends TreeItem {
   }
 
   update() {
-    this.label = `${this.script.data.name}.ts`;
+    this.label = this.script.getName();
     this.contextValue = "script";
 
     this.iconPath = this.getIconPath();

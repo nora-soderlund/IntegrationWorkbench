@@ -3,7 +3,7 @@ import WorkbenchTreeItem from "../../workbenches/trees/workbenches/items/Workben
 import { randomUUID } from "crypto";
 import WorkbenchRequestTreeItem from "../../workbenches/trees/workbenches/items/WorkbenchRequestTreeItem";
 import WorkbenchRequest from "../../workbenches/requests/WorkbenchRequest";
-import Script from "../../scripts/Script";
+import Script from "../../scripts/TypescriptScript";
 import ScriptTreeItem from "../../workbenches/trees/scripts/items/ScriptTreeItem";
 import Scripts from "../../Scripts";
 
@@ -24,7 +24,7 @@ export default class DeleteScriptCommand {
       throw new Error("Unknown entry point for deleting script.");
     }
 
-    script.delete();
+    script.deleteScript();
 
     const index = Scripts.loadedScripts.indexOf(script);
 

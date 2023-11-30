@@ -5,7 +5,7 @@ import path from "path";
 import WorkbenchRequest from "../workbenches/requests/WorkbenchRequest";
 import WorkbenchHttpRequest from "../workbenches/requests/WorkbenchHttpRequest";
 import Scripts from "../Scripts";
-import Script from "../scripts/Script";
+import Script from "../scripts/TypescriptScript";
 import { ScriptDeclarationData } from "~interfaces/scripts/ScriptDeclarationData";
 
 export class RequestWebviewPanel {
@@ -206,63 +206,45 @@ export class RequestWebviewPanel {
             return;
           }
 
-          case "integrationWorkbench.getScriptLibraries": {
-            this.webviewPanel.webview.postMessage({
-              command: "integrationWorkbench.updateScriptLibraries",
-              arguments: [
-                Scripts.loadedScripts.filter((script) => script.declaration).map((script) => {
-                  return {
-                    fileName: `ts:${script.data.name}.d.ts`,
-                    content: script.declaration
-                  };
-                }).concat([
-                  {
-                    fileName: "ts:environment.d.ts",
-                    content: "declare const process: { env: { HELLO: string; }; };"
-                  }
-                ])
-              ]
-            });
-
-            return;
-          }
-
-          case "integrationWorkbench.getScript": {
-            this.webviewPanel.webview.postMessage({
-              command: "integrationWorkbench.updateScript",
-              arguments: [ this.currentScript?.getContentData() ]
-            });
-
-            return;
-          }
-
-          case "integrationWorkbench.changeScriptContent": {
-            const [ content ] = message.arguments;
-
-            if(this.currentScript) {
-              this.currentScript.setContent(content);
-
-              this.setCurrentScript(this.currentScript);
-            }
-
-            return;
-          }
-
           case "integrationWorkbench.getScriptDeclarations": {
-            console.log("TEST");
-            const scriptDeclarations = await Promise.allSettled(Scripts.loadedScripts.map(async (script) => await script.getDeclarationData()));
-            console.log("TEST2", scriptDeclarations);
+            const promises = await Promise.allSettled(Scripts.loadedScripts.map(async (script) => {
+              return {
+                script,
+                build: await script.build()
+              }
+            }));
+
+            const scripts: {
+              script: Script,
+              build: {
+                declaration: string;
+                javascript: string;
+              }
+            }[] = [];
+
+            for(let promise of promises) {
+              if(promise.status === "fulfilled") {
+                scripts.push(promise.value);
+              }
+            }
+            
+            const argument = scripts.map(({ script, build }) => {
+              return {
+                name: `ts:${script.getNameWithoutExtension()}.d.ts`,
+                declaration: build.declaration
+              };
+            }).concat([
+              {
+                name: "ts:environment.d.ts",
+                declaration: "declare const process: { env: { HELLO: string; }; };"
+              }
+            ]);
+
+            console.log({ argument });
 
             this.webviewPanel.webview.postMessage({
               command: "integrationWorkbench.updateScriptDeclarations",
-              arguments: [
-                scriptDeclarations.filter((scriptDeclaration) => scriptDeclaration.status === "fulfilled").map((scriptDeclaration) => (scriptDeclaration as PromiseFulfilledResult<ScriptDeclarationData>).value).concat([
-                  {
-                    name: "ts:environment.d.ts",
-                    declaration: "declare const process: { env: { HELLO: string; }; };"
-                  }
-                ])
-              ]
+              arguments: [ argument ]
             });
 
             return;
@@ -289,15 +271,6 @@ export class RequestWebviewPanel {
       undefined,
       this.disposables
     );
-  }
-
-  setCurrentScript(script: Script) {
-    this.currentScript = script;
-
-    this.webviewPanel.webview.postMessage({
-      command: "integrationWorkbench.updateScript",
-      arguments: [ this.currentScript.getData() ]
-    });
   }
 
   reveal() {

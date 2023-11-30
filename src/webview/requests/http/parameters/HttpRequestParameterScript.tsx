@@ -22,6 +22,8 @@ export default function HttpRequestParameterScript({ value, onChange }: HttpRequ
         case 'integrationWorkbench.updateScriptDeclarations': {
           const [ scriptDeclarations ] = event.data.arguments;
 
+          console.log("Setting script declarations", scriptDeclarations);
+
           setScriptDeclarations(scriptDeclarations);
   
           break;
@@ -46,12 +48,14 @@ export default function HttpRequestParameterScript({ value, onChange }: HttpRequ
       module: languages.typescript.ModuleKind.ESNext
     });*/
 
-    monaco.languages.typescript.typescriptDefaults.setCompilerOptions({
+    console.log("using script decl", scriptDeclarations);
+
+    /*monaco.languages.typescript.typescriptDefaults.setCompilerOptions({
       lib: ["ESNext"],
       module: monaco.languages.typescript.ModuleKind.CommonJS,
       target: monaco.languages.typescript.ScriptTarget.ESNext,
       esModuleInterop: true
-    });
+    });*/
 
     scriptDeclarations.forEach((scriptLibrary) => {
       monaco.languages.typescript.typescriptDefaults.addExtraLib(

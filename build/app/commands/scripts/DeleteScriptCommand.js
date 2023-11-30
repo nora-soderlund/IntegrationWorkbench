@@ -29,7 +29,7 @@ class DeleteScriptCommand {
             else {
                 throw new Error("Unknown entry point for deleting script.");
             }
-            script.delete();
+            script.deleteScript();
             const index = Scripts_1.default.loadedScripts.indexOf(script);
             if (index !== -1) {
                 Scripts_1.default.loadedScripts.splice(index, 1);

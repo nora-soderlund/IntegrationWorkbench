@@ -15,6 +15,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const vscode_1 = require("vscode");
 const fs_1 = require("fs");
 const path_1 = __importDefault(require("path"));
+const TypescriptScript_1 = __importDefault(require("../../scripts/TypescriptScript"));
+const Scripts_1 = __importDefault(require("../../Scripts"));
+const GetRootPath_1 = __importDefault(require("../../utils/GetRootPath"));
 class EditScriptNameCommand {
     constructor(context) {
         this.context = context;
@@ -22,18 +25,32 @@ class EditScriptNameCommand {
     }
     handle(reference) {
         return __awaiter(this, void 0, void 0, function* () {
+            const rootPath = (0, GetRootPath_1.default)();
+            if (!rootPath) {
+                vscode_1.window.showErrorMessage("You must be in a workspace to create a script!");
+                return;
+            }
+            const scriptsPath = Scripts_1.default.getScriptsPath(rootPath);
             vscode_1.window.showInputBox({
                 prompt: "Enter a request name",
-                value: reference.script.data.name,
+                value: reference.script.getName(),
                 validateInput(value) {
                     if (!value.length) {
                         return "You must enter a script name or cancel.";
                     }
-                    if (/[^A-Za-z0-9_-]/.test(value)) {
+                    if (reference.script instanceof TypescriptScript_1.default) {
+                        if (!value.endsWith('.ts')) {
+                            return "Script name must end with '.ts' for TypeScript files!";
+                        }
+                    }
+                    const nameValue = value.substring(0, value.length - 3);
+                    if (/[^A-Za-z0-9_-]/.test(nameValue)) {
                         return "You must only enter a generic file name.";
                     }
-                    if (value !== reference.script.data.name && (0, fs_1.existsSync)(path_1.default.join(path_1.default.dirname(reference.script.getTypeScriptPath()), value + ".ts"))) {
-                        return "Another script with this name already exists.";
+                    if (value !== reference.script.getName()) {
+                        if ((0, fs_1.existsSync)(path_1.default.join(scriptsPath, value))) {
+                            return "There already exists a script with this name in this folder!";
+                        }
                     }
                     return null;
                 },

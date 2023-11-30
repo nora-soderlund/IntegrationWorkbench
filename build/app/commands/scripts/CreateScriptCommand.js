@@ -15,7 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const vscode_1 = require("vscode");
 const path_1 = __importDefault(require("path"));
 const fs_1 = require("fs");
-const Script_1 = __importDefault(require("../../scripts/Script"));
+const TypescriptScript_1 = __importDefault(require("../../scripts/TypescriptScript"));
 const Scripts_1 = __importDefault(require("../../Scripts"));
 const GetRootPath_1 = __importDefault(require("../../utils/GetRootPath"));
 class CreateScriptCommand {
@@ -30,22 +30,14 @@ class CreateScriptCommand {
                 vscode_1.window.showErrorMessage("You must be in a workspace to create a script!");
                 return;
             }
-            const scriptsPath = path_1.default.join(rootPath, ".workbench/", "scripts/");
-            try {
-                if (!(0, fs_1.existsSync)(scriptsPath)) {
-                    (0, fs_1.mkdirSync)(scriptsPath, {
-                        recursive: true
-                    });
-                }
-                const scriptGitignoreFile = path_1.default.join(rootPath, ".workbench/", "scripts/", ".gitignore");
-                if (!(0, fs_1.existsSync)(scriptGitignoreFile)) {
-                    (0, fs_1.writeFileSync)(scriptGitignoreFile, "# This is an automatically created file, do not make permanent changes here.\nbuild/", {
-                        encoding: "utf-8"
-                    });
-                }
-            }
-            catch (error) {
-                vscode_1.window.showErrorMessage("Failed to create workbenches folder: " + error);
+            const scriptsPath = Scripts_1.default.createScriptsFolder(rootPath);
+            const scriptType = yield vscode_1.window.showQuickPick([
+                "TypeScript"
+            ], {
+                canPickMany: false,
+                title: "Select the type of script to create:"
+            });
+            if (!scriptType) {
                 return;
             }
             const name = yield vscode_1.window.showInputBox({
@@ -54,10 +46,16 @@ class CreateScriptCommand {
                     if (!value.length) {
                         return "You must enter a name for this script!";
                     }
-                    if (/[^A-Za-z0-9_-]/.test(value)) {
+                    if (scriptType === "TypeScript") {
+                        if (!value.endsWith('.ts')) {
+                            return "Script name must end with '.ts' for TypeScript files!";
+                        }
+                    }
+                    const nameValue = value.substring(0, value.length - 3);
+                    if (/[^A-Za-z0-9_-]/.test(nameValue)) {
                         return "You must only enter a generic file name.";
                     }
-                    if ((0, fs_1.existsSync)(path_1.default.join(scriptsPath, value + ".ts"))) {
+                    if ((0, fs_1.existsSync)(path_1.default.join(scriptsPath, value))) {
                         return "There already exists a script with this name in this folder!";
                     }
                     return null;
@@ -66,14 +64,9 @@ class CreateScriptCommand {
             if (!name) {
                 return;
             }
-            const filePath = path_1.default.join(scriptsPath, name + ".ts");
-            const script = new Script_1.default(rootPath, {
-                name,
-                description: "",
-                type: "typescript",
-                dependencies: []
-            });
-            script.setContent(`function ${name}(): string {\n  // Your code goes here...\n\n  return "Hello world!";\n}\n`);
+            const filePath = path_1.default.join(scriptsPath, name);
+            const script = new TypescriptScript_1.default(filePath);
+            script.saveScript(`function ${script.getNameWithoutExtension()}(): string {\n  // Your code goes here...\n\n  return "Hello world!";\n}\n`);
             Scripts_1.default.loadedScripts.push(script);
             vscode_1.commands.executeCommand("integrationWorkbench.refreshScripts");
         });

@@ -70,7 +70,7 @@ class RequestWebviewPanel {
       </html>
     `;
         this.webviewPanel.webview.onDidReceiveMessage((message) => __awaiter(this, void 0, void 0, function* () {
-            var _a, _b;
+            var _a;
             const command = message.command;
             console.debug("Received event from request webview:", command);
             switch (command) {
@@ -167,54 +167,34 @@ class RequestWebviewPanel {
                     }
                     return;
                 }
-                case "integrationWorkbench.getScriptLibraries": {
-                    this.webviewPanel.webview.postMessage({
-                        command: "integrationWorkbench.updateScriptLibraries",
-                        arguments: [
-                            Scripts_1.default.loadedScripts.filter((script) => script.declaration).map((script) => {
-                                return {
-                                    fileName: `ts:${script.data.name}.d.ts`,
-                                    content: script.declaration
-                                };
-                            }).concat([
-                                {
-                                    fileName: "ts:environment.d.ts",
-                                    content: "declare const process: { env: { HELLO: string; }; };"
-                                }
-                            ])
-                        ]
-                    });
-                    return;
-                }
-                case "integrationWorkbench.getScript": {
-                    this.webviewPanel.webview.postMessage({
-                        command: "integrationWorkbench.updateScript",
-                        arguments: [(_a = this.currentScript) === null || _a === void 0 ? void 0 : _a.getContentData()]
-                    });
-                    return;
-                }
-                case "integrationWorkbench.changeScriptContent": {
-                    const [content] = message.arguments;
-                    if (this.currentScript) {
-                        this.currentScript.setContent(content);
-                        this.setCurrentScript(this.currentScript);
-                    }
-                    return;
-                }
                 case "integrationWorkbench.getScriptDeclarations": {
-                    console.log("TEST");
-                    const scriptDeclarations = yield Promise.allSettled(Scripts_1.default.loadedScripts.map((script) => __awaiter(this, void 0, void 0, function* () { return yield script.getDeclarationData(); })));
-                    console.log("TEST2", scriptDeclarations);
+                    const promises = yield Promise.allSettled(Scripts_1.default.loadedScripts.map((script) => __awaiter(this, void 0, void 0, function* () {
+                        return {
+                            script,
+                            build: yield script.build()
+                        };
+                    })));
+                    const scripts = [];
+                    for (let promise of promises) {
+                        if (promise.status === "fulfilled") {
+                            scripts.push(promise.value);
+                        }
+                    }
+                    const argument = scripts.map(({ script, build }) => {
+                        return {
+                            name: `ts:${script.getNameWithoutExtension()}.d.ts`,
+                            declaration: build.declaration
+                        };
+                    }).concat([
+                        {
+                            name: "ts:environment.d.ts",
+                            declaration: "declare const process: { env: { HELLO: string; }; };"
+                        }
+                    ]);
+                    console.log({ argument });
                     this.webviewPanel.webview.postMessage({
                         command: "integrationWorkbench.updateScriptDeclarations",
-                        arguments: [
-                            scriptDeclarations.filter((scriptDeclaration) => scriptDeclaration.status === "fulfilled").map((scriptDeclaration) => scriptDeclaration.value).concat([
-                                {
-                                    name: "ts:environment.d.ts",
-                                    declaration: "declare const process: { env: { HELLO: string; }; };"
-                                }
-                            ])
-                        ]
+                        arguments: [argument]
                     });
                     return;
                 }
@@ -222,7 +202,7 @@ class RequestWebviewPanel {
                     if (this.request instanceof WorkbenchHttpRequest_1.default) {
                         const [enabled] = message.arguments;
                         this.request.data.parametersAutoRefresh = enabled;
-                        (_b = this.request.parent) === null || _b === void 0 ? void 0 : _b.save();
+                        (_a = this.request.parent) === null || _a === void 0 ? void 0 : _a.save();
                         this.webviewPanel.webview.postMessage({
                             command: "integrationWorkbench.updateRequest",
                             arguments: [this.request.getData()]
@@ -232,13 +212,6 @@ class RequestWebviewPanel {
                 }
             }
         }), undefined, this.disposables);
-    }
-    setCurrentScript(script) {
-        this.currentScript = script;
-        this.webviewPanel.webview.postMessage({
-            command: "integrationWorkbench.updateScript",
-            arguments: [this.currentScript.getData()]
-        });
     }
     reveal() {
         const columnToShowIn = vscode_1.window.activeTextEditor ? vscode_1.window.activeTextEditor.viewColumn : undefined;

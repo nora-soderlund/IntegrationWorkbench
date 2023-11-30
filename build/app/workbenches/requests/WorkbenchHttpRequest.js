@@ -69,7 +69,8 @@ class WorkbenchHttpRequest extends WorkbenchRequest_1.default {
                         }
                         case "typescript": {
                             // TODO: add ability to view the entire script that's being evaluated for debugging purposes?
-                            const script = Scripts_1.default.loadedScripts.map((script) => script.javascript).join('').concat(parameter.value);
+                            const scripts = yield Promise.all(Scripts_1.default.loadedScripts.map((script) => __awaiter(this, void 0, void 0, function* () { return yield script.build(); })));
+                            const script = scripts.map((script) => script.javascript).join('\n').concat(parameter.value);
                             let value;
                             try {
                                 value = yield eval(script);
