@@ -256,6 +256,7 @@ function activate(context) {
     }));
     (0, Workbenches_1.scanForWorkbenches)(context);
     Scripts_1.default.scanForScripts(context);
+    Scripts_1.default.generateScriptDependencyDeclarations();
     //vscode.window.registerTreeDataProvider('workbenches', new WorkbenchTreeDataProvider(rootPath));
 }
 exports.activate = activate;

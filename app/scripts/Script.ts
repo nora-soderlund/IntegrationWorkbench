@@ -214,7 +214,8 @@ export default class Script {
     return {
       name: this.data.name,
       description: this.data.description,
-      type: this.data.type
+      type: this.data.type,
+      dependencies: this.data.dependencies
     };
   }
 

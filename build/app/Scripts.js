@@ -8,6 +8,7 @@ const fs_1 = require("fs");
 const path_1 = __importDefault(require("path"));
 const GetRootPath_1 = __importDefault(require("./utils/GetRootPath"));
 const Script_1 = __importDefault(require("./scripts/Script"));
+const child_process_1 = require("child_process");
 class Scripts {
     static scanForScripts(context, sendRefreshScriptsCommand = true) {
         this.loadedScripts = [];
@@ -24,11 +25,7 @@ class Scripts {
                     const data = JSON.parse((0, fs_1.readFileSync)(dataPath, {
                         encoding: "utf-8"
                     }));
-                    const script = new Script_1.default(rootPath, {
-                        name: data.name,
-                        description: data.description,
-                        type: data.type
-                    });
+                    const script = new Script_1.default(rootPath, data);
                     switch (data.type) {
                         case "typescript": {
                             const typescriptPath = path_1.default.join(folderPath, script.data.name + '.ts');
@@ -61,7 +58,70 @@ class Scripts {
         }
         return this.loadedScripts;
     }
+    static generateScriptDependencyDeclaration(rootPath, dependency) {
+        return new Promise((resolve) => {
+            const scriptNodeModulesPath = path_1.default.join(rootPath, ".workbench", "scripts", "node_modules");
+            if (!(0, fs_1.existsSync)(scriptNodeModulesPath)) {
+                (0, fs_1.mkdirSync)(scriptNodeModulesPath, {
+                    recursive: true
+                });
+            }
+            let declaration;
+            let dependencyDeclarationPath;
+            if (dependency.includes('/')) {
+                const [directory, dependencyName] = dependency.split('/');
+                const dependencyPath = path_1.default.join(scriptNodeModulesPath, directory);
+                if (!(0, fs_1.existsSync)(dependencyPath)) {
+                    (0, fs_1.mkdirSync)(dependencyPath);
+                }
+                dependencyDeclarationPath = path_1.default.join(dependencyPath, `${dependencyName}.d.ts`);
+                declaration = (0, child_process_1.execSync)(`npx dts-gen -m ${dependency} -s`, {
+                    cwd: rootPath,
+                    encoding: "utf-8"
+                });
+            }
+            else {
+                dependencyDeclarationPath = path_1.default.join(scriptNodeModulesPath, `${dependency}.d.ts`);
+                declaration = (0, child_process_1.execSync)(`npx dts-gen -m ${dependency} -f ${dependencyDeclarationPath} --overwrite`, {
+                    cwd: rootPath,
+                    encoding: "utf-8"
+                });
+            }
+            const index = this.loadedDependencies.findIndex((loadedDependency) => loadedDependency.name === dependency);
+            if (index !== -1) {
+                this.loadedDependencies.splice(index, 1);
+            }
+            declaration = declaration.replace(/export/g, 'declare');
+            (0, fs_1.writeFileSync)(dependencyDeclarationPath, declaration);
+            this.loadedDependencies.push({
+                name: dependency,
+                declaration
+            });
+            resolve();
+        });
+    }
+    static generateScriptDependencyDeclarations() {
+        const rootPath = (0, GetRootPath_1.default)();
+        if (!rootPath) {
+            return;
+        }
+        const scriptNodeModulesPath = path_1.default.join(rootPath, ".workbench", "scripts", "node_modules");
+        if ((0, fs_1.existsSync)(scriptNodeModulesPath)) {
+            (0, fs_1.rmdirSync)(scriptNodeModulesPath, {
+                recursive: true
+            });
+        }
+        (0, fs_1.mkdirSync)(scriptNodeModulesPath, {
+            recursive: true
+        });
+        this.loadedDependencies = [];
+        const dependencies = [...new Set(this.loadedScripts.flatMap((script) => script.data.dependencies))];
+        for (let dependency of dependencies) {
+            this.generateScriptDependencyDeclaration(rootPath, dependency);
+        }
+    }
 }
 Scripts.loadedScripts = [];
+Scripts.loadedDependencies = [];
 exports.default = Scripts;
 //# sourceMappingURL=Scripts.js.map

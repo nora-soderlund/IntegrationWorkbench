@@ -70,7 +70,8 @@ class CreateScriptCommand {
             const script = new Script_1.default(rootPath, {
                 name,
                 description: "",
-                type: "typescript"
+                type: "typescript",
+                dependencies: []
             });
             script.setContent(`function ${name}(): string {\n  // Your code goes here...\n\n  return "Hello world!";\n}\n`);
             Scripts_1.default.loadedScripts.push(script);

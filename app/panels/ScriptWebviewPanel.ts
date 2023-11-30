@@ -8,7 +8,7 @@ import Scripts from "../Scripts";
 import Script from "../scripts/Script";
 import { ScriptDeclarationData } from "~interfaces/scripts/ScriptDeclarationData";
 import { ScriptDependentData } from "~interfaces/scripts/ScriptDependentData";
-import { Dependency } from "~interfaces/dependency/Dependency";
+import { ScriptDependencyData } from "~interfaces/scripts/ScriptDependencyData";
 import { workbenches } from "../Workbenches";
 import getRootPath from "../utils/GetRootPath";
 
@@ -83,24 +83,89 @@ export class ScriptWebviewPanel {
         console.debug("Received event from script webview:", command);
 
         switch (command) {
+          case "integrationWorkbench.updateScriptDependency": {
+            const [ dependency, used ] = message.arguments;
+            
+            if(used) {
+              script.data.dependencies.push(dependency);
+
+              const rootPath = getRootPath();
+
+              if(rootPath) {
+                Scripts.generateScriptDependencyDeclaration(rootPath, dependency);
+              }
+            }
+            else {
+              const index = script.data.dependencies.indexOf(dependency);
+
+              if(index !== -1) {
+                script.data.dependencies.splice(index, 1);
+              }
+            }
+
+            script.save();
+
+            this.webviewPanel.webview.postMessage({
+              command: "integrationWorkbench.updateScriptDependencies",
+              arguments: [
+                script.data.dependencies.map((dependency) => {
+                  return {
+                    name: dependency
+                  };
+                })
+              ]
+            });
+
+            break;
+          }
+
+          case "integrationWorkbench.getScriptDependencies": {
+            this.webviewPanel.webview.postMessage({
+              command: "integrationWorkbench.updateScriptDependencies",
+              arguments: [
+                script.data.dependencies.map((dependency) => {
+                  return {
+                    name: dependency
+                  };
+                })
+              ]
+            });
+
+            break;
+          };
+
           case "integrationWorkbench.getDependencies": {
             const rootPath = getRootPath();
 
             if(rootPath) {
-              const nodeModulesPath = path.join(rootPath, "node_modules");
+              const packageJsonPath = path.join(rootPath, "package.json");
 
-              if(existsSync(nodeModulesPath)) {
-                const dependencies: Dependency[] = [];
+              if(existsSync(packageJsonPath)) {
+                const dependencies: ScriptDependencyData[] = [];
 
-                const files = readdirSync(nodeModulesPath);
+                const packageJson = JSON.parse(readFileSync(packageJsonPath, {
+                  encoding: "utf-8"
+                }));
 
-                for(let file of files) {
-                  if(file.includes('.')) {
-                    continue;
-                  }
+                if(packageJson.dependencies) {
+                  Object.keys(packageJson.dependencies).forEach((dependency) => {
+                    dependencies.push({
+                      name: dependency,
+                      type: "dependency",
+                      version: packageJson.dependencies[dependency],
+                      used: script.data.dependencies.includes(dependency)
+                    });
+                  });
+                }
 
-                  dependencies.push({
-                    name: file
+                if(packageJson.devDependencies) {
+                  Object.keys(packageJson.devDependencies).forEach((dependency) => {
+                    dependencies.push({
+                      name: dependency,
+                      type: "devDependency",
+                      version: packageJson.devDependencies[dependency],
+                      used: script.data.dependencies.includes(dependency)
+                    });
                   });
                 }
 
@@ -125,7 +190,14 @@ export class ScriptWebviewPanel {
                     name: "ts:environment.d.ts",
                     declaration: "declare const process: { env: { HELLO: string; }; };"
                   }
-                ])
+                ]).concat(
+                  Scripts.loadedDependencies.map((dependency) => {
+                    return {
+                      name: `ts:${dependency.name.replace('@', '').replace('/', '-')}.d.ts`,
+                      declaration: dependency.declaration
+                    };
+                  })
+                )
               ]
             });
 

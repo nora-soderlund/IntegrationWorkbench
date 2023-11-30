@@ -75,19 +75,76 @@ class ScriptWebviewPanel {
             const command = message.command;
             console.debug("Received event from script webview:", command);
             switch (command) {
+                case "integrationWorkbench.updateScriptDependency": {
+                    const [dependency, used] = message.arguments;
+                    if (used) {
+                        script.data.dependencies.push(dependency);
+                        const rootPath = (0, GetRootPath_1.default)();
+                        if (rootPath) {
+                            Scripts_1.default.generateScriptDependencyDeclaration(rootPath, dependency);
+                        }
+                    }
+                    else {
+                        const index = script.data.dependencies.indexOf(dependency);
+                        if (index !== -1) {
+                            script.data.dependencies.splice(index, 1);
+                        }
+                    }
+                    script.save();
+                    this.webviewPanel.webview.postMessage({
+                        command: "integrationWorkbench.updateScriptDependencies",
+                        arguments: [
+                            script.data.dependencies.map((dependency) => {
+                                return {
+                                    name: dependency
+                                };
+                            })
+                        ]
+                    });
+                    break;
+                }
+                case "integrationWorkbench.getScriptDependencies":
+                    {
+                        this.webviewPanel.webview.postMessage({
+                            command: "integrationWorkbench.updateScriptDependencies",
+                            arguments: [
+                                script.data.dependencies.map((dependency) => {
+                                    return {
+                                        name: dependency
+                                    };
+                                })
+                            ]
+                        });
+                        break;
+                    }
+                    ;
                 case "integrationWorkbench.getDependencies": {
                     const rootPath = (0, GetRootPath_1.default)();
                     if (rootPath) {
-                        const nodeModulesPath = path_1.default.join(rootPath, "node_modules");
-                        if ((0, fs_1.existsSync)(nodeModulesPath)) {
+                        const packageJsonPath = path_1.default.join(rootPath, "package.json");
+                        if ((0, fs_1.existsSync)(packageJsonPath)) {
                             const dependencies = [];
-                            const files = (0, fs_1.readdirSync)(nodeModulesPath);
-                            for (let file of files) {
-                                if (file.includes('.')) {
-                                    continue;
-                                }
-                                dependencies.push({
-                                    name: file
+                            const packageJson = JSON.parse((0, fs_1.readFileSync)(packageJsonPath, {
+                                encoding: "utf-8"
+                            }));
+                            if (packageJson.dependencies) {
+                                Object.keys(packageJson.dependencies).forEach((dependency) => {
+                                    dependencies.push({
+                                        name: dependency,
+                                        type: "dependency",
+                                        version: packageJson.dependencies[dependency],
+                                        used: script.data.dependencies.includes(dependency)
+                                    });
+                                });
+                            }
+                            if (packageJson.devDependencies) {
+                                Object.keys(packageJson.devDependencies).forEach((dependency) => {
+                                    dependencies.push({
+                                        name: dependency,
+                                        type: "devDependency",
+                                        version: packageJson.devDependencies[dependency],
+                                        used: script.data.dependencies.includes(dependency)
+                                    });
                                 });
                             }
                             this.webviewPanel.webview.postMessage({
@@ -108,7 +165,12 @@ class ScriptWebviewPanel {
                                     name: "ts:environment.d.ts",
                                     declaration: "declare const process: { env: { HELLO: string; }; };"
                                 }
-                            ])
+                            ]).concat(Scripts_1.default.loadedDependencies.map((dependency) => {
+                                return {
+                                    name: `ts:${dependency.name.replace('@', '').replace('/', '-')}.d.ts`,
+                                    declaration: dependency.declaration
+                                };
+                            }))
                         ]
                     });
                     return;

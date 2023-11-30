@@ -25,6 +25,8 @@ export default function Scripts() {
         case 'integrationWorkbench.updateScriptDeclarations': {
           const [ scriptDeclarations ] = event.data.arguments;
 
+          console.log(scriptDeclarations);
+
           setScriptDeclarations(scriptDeclarations);
   
           break;
@@ -45,6 +47,14 @@ export default function Scripts() {
 
           break;
         }
+
+        case 'integrationWorkbench.updateScriptDependencies': {
+          const [ scriptDependenciesData ] = event.data.arguments;
+
+          setScriptDependenciesData(scriptDependenciesData);
+
+          break;
+        }
       }
     });
 
@@ -55,6 +65,11 @@ export default function Scripts() {
 
     window.vscode.postMessage({
       command: "integrationWorkbench.getScriptDeclarations",
+      arguments: []
+    });
+
+    window.vscode.postMessage({
+      command: "integrationWorkbench.getScriptDependencies",
       arguments: []
     });
 
@@ -129,7 +144,7 @@ export default function Scripts() {
           height: "100%",
           flexDirection: "column"
         }}>
-          <ScriptDependencies scriptDependenciesData={scriptDependenciesData}/>
+          <ScriptDependencies/>
         </VSCodePanelView>
 
         <VSCodePanelView style={{
