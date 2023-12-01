@@ -207,28 +207,30 @@ export class RequestWebviewPanel {
           }
 
           case "integrationWorkbench.getScriptDeclarations": {
-            const promises = await Promise.allSettled(Scripts.loadedScripts.map(async (script) => {
+            type ScriptBuildResult = {
+              script: Script,
+              build: {
+                declaration: string;
+                javascript: string;
+              };
+            };
+
+            const promises = await Promise.allSettled(Scripts.loadedScripts.map<Promise<ScriptBuildResult>>(async (script) => {
               return {
                 script,
                 build: await script.build()
               }
             }));
 
-            const scripts: {
-              script: Script,
-              build: {
-                declaration: string;
-                javascript: string;
+            const fulfilledPromises = promises.reduce<ScriptBuildResult[]>((newArray, promise) => {
+              if (promise.status === 'fulfilled') {
+                newArray.push(promise.value);
               }
-            }[] = [];
 
-            for(let promise of promises) {
-              if(promise.status === "fulfilled") {
-                scripts.push(promise.value);
-              }
-            }
-            
-            const argument = scripts.map(({ script, build }) => {
+              return newArray
+            }, []);
+
+            const argument = fulfilledPromises.map(({ script, build }) => {
               return {
                 name: `ts:${script.getNameWithoutExtension()}.d.ts`,
                 declaration: build.declaration

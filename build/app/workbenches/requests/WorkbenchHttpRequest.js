@@ -69,8 +69,7 @@ class WorkbenchHttpRequest extends WorkbenchRequest_1.default {
                         }
                         case "typescript": {
                             // TODO: add ability to view the entire script that's being evaluated for debugging purposes?
-                            const scriptIndex = yield Scripts_1.default.buildScriptIndex();
-                            const script = scriptIndex.concat(parameter.value);
+                            const script = yield Scripts_1.default.buildScript(parameter.value);
                             let value;
                             try {
                                 value = yield eval(script);

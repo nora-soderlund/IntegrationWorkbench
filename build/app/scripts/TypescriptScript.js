@@ -59,7 +59,8 @@ class TypescriptScript {
         const compilerOptions = {
             declaration: true,
             allowJs: true,
-            module: typescript_1.default.ModuleKind.CommonJS
+            module: typescript_1.default.ModuleKind.CommonJS,
+            esModuleInterop: true
         };
         typescript_1.default.createSourceFile(this.filePath, this.getScript(), typescript_1.default.ScriptTarget.Latest, true, typescript_1.default.ScriptKind.TS);
         const program = typescript_1.default.createProgram({
@@ -69,10 +70,10 @@ class TypescriptScript {
         return new Promise((resolve, reject) => {
             let declaration, javascript;
             const result = program.emit(undefined, (fileName, data) => {
-                if (fileName.endsWith('.d.ts')) {
+                if (fileName.endsWith(`${this.getNameWithoutExtension()}.d.ts`)) {
                     declaration = data;
                 }
-                else if (fileName.endsWith('.js')) {
+                else if (fileName.endsWith(`${this.getNameWithoutExtension()}.js`)) {
                     javascript = data;
                 }
                 if (declaration && javascript) {

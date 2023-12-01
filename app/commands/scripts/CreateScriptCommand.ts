@@ -70,7 +70,7 @@ export default class CreateScriptCommand {
 
     const script = new Script(filePath);
 
-    script.saveScript(`function ${script.getNameWithoutExtension()}(): string {\n  // Your code goes here...\n\n  return "Hello world!";\n}\n`);
+    script.saveScript(`export function ${script.getNameWithoutExtension()}(): string {\n  // Your code goes here...\n\n  return "Hello world!";\n}\n`);
 
     Scripts.loadedScripts.push(script);
 

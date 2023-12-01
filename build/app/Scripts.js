@@ -58,22 +58,35 @@ class Scripts {
         }
         return this.loadedScripts;
     }
-    static buildScriptIndex() {
+    static buildScript(contents) {
         return __awaiter(this, void 0, void 0, function* () {
+            const inject = this.loadedScripts.map((script) => script.filePath);
+            console.log("Building script", { contents, inject });
             const result = yield esbuild_1.default.build({
                 bundle: true,
                 stdin: {
-                    contents: ''
+                    contents,
+                    loader: "jsx",
+                    resolveDir: this.getScriptsPath((0, GetRootPath_1.default)()),
+                    sourcefile: path_1.default.join(this.getScriptsPath((0, GetRootPath_1.default)()), "index.ts")
                 },
-                inject: this.loadedScripts.map((script) => script.filePath),
+                sourceRoot: this.getScriptsPath((0, GetRootPath_1.default)()),
+                inject,
                 outfile: "index.js",
+                platform: "node",
                 format: "cjs",
                 write: false,
-                treeShaking: false
+                treeShaking: false,
+                keepNames: true,
+                tsconfigRaw: {
+                    compilerOptions: {}
+                }
             });
             return new Promise((resolve) => __awaiter(this, void 0, void 0, function* () {
                 for (let out of result.outputFiles) {
+                    console.log(out);
                     if (out.path.endsWith("index.js")) {
+                        console.log(out.text);
                         resolve(out.text);
                     }
                 }

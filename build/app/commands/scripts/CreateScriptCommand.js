@@ -66,7 +66,7 @@ class CreateScriptCommand {
             }
             const filePath = path_1.default.join(scriptsPath, name);
             const script = new TypescriptScript_1.default(filePath);
-            script.saveScript(`function ${script.getNameWithoutExtension()}(): string {\n  // Your code goes here...\n\n  return "Hello world!";\n}\n`);
+            script.saveScript(`export function ${script.getNameWithoutExtension()}(): string {\n  // Your code goes here...\n\n  return "Hello world!";\n}\n`);
             Scripts_1.default.loadedScripts.push(script);
             vscode_1.commands.executeCommand("integrationWorkbench.refreshScripts");
         });

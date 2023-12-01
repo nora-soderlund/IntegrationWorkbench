@@ -174,13 +174,13 @@ class RequestWebviewPanel {
                             build: yield script.build()
                         };
                     })));
-                    const scripts = [];
-                    for (let promise of promises) {
-                        if (promise.status === "fulfilled") {
-                            scripts.push(promise.value);
+                    const fulfilledPromises = promises.reduce((newArray, promise) => {
+                        if (promise.status === 'fulfilled') {
+                            newArray.push(promise.value);
                         }
-                    }
-                    const argument = scripts.map(({ script, build }) => {
+                        return newArray;
+                    }, []);
+                    const argument = fulfilledPromises.map(({ script, build }) => {
                         return {
                             name: `ts:${script.getNameWithoutExtension()}.d.ts`,
                             declaration: build.declaration

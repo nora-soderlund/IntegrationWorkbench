@@ -62,7 +62,8 @@ export default class TypescriptScript {
     const compilerOptions: ts.CompilerOptions = {
       declaration: true,
       allowJs: true,
-      module: ts.ModuleKind.CommonJS
+      module: ts.ModuleKind.CommonJS,
+      esModuleInterop: true
     };
 
     ts.createSourceFile(
@@ -85,10 +86,10 @@ export default class TypescriptScript {
       let declaration: string, javascript: string;
 
       const result = program.emit(undefined, (fileName, data) => {
-        if (fileName.endsWith('.d.ts')) {
+        if (fileName.endsWith(`${this.getNameWithoutExtension()}.d.ts`)) {
           declaration = data;
         }
-        else if (fileName.endsWith('.js')) {
+        else if (fileName.endsWith(`${this.getNameWithoutExtension()}.js`)) {
           javascript = data;
         }
 

@@ -64,22 +64,41 @@ export default class Scripts {
     return this.loadedScripts;
   }
 
-  static async buildScriptIndex() {
+  static async buildScript(contents: string) {
+    const inject = this.loadedScripts.map((script) => script.filePath);
+
+    console.log("Building script", { contents, inject });
+
     const result = await esbuild.build({
       bundle: true,
       stdin: {
-        contents: ''
+        contents,
+        loader: "jsx",
+        resolveDir: this.getScriptsPath(getRootPath()!),
+        sourcefile: path.join(this.getScriptsPath(getRootPath()!), "index.ts")
       },
-      inject: this.loadedScripts.map((script) => script.filePath),
+      sourceRoot: this.getScriptsPath(getRootPath()!),
+      inject,
       outfile: "index.js",
+      platform: "node",
       format: "cjs",
       write: false,
-      treeShaking: false
+      treeShaking: false,
+      keepNames: true,
+      tsconfigRaw: {
+        compilerOptions: {
+          
+        }
+      }
     });
 
     return new Promise<string>(async (resolve) => {
       for (let out of result.outputFiles) {
+        console.log(out);
+
         if(out.path.endsWith("index.js")) {
+          console.log(out.text);
+
           resolve(out.text);
         }
       }
