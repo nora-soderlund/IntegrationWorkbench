@@ -4,6 +4,7 @@ import { existsSync, mkdirSync, writeFileSync } from "fs";
 import Script from "../../scripts/TypescriptScript";
 import Scripts from "../../Scripts";
 import getRootPath from "../../utils/GetRootPath";
+import OpenScriptCommand from "./OpenScriptCommand";
 
 export default class CreateScriptCommand {
   constructor(private readonly context: ExtensionContext) {
@@ -70,10 +71,11 @@ export default class CreateScriptCommand {
 
     const script = new Script(filePath);
 
-    script.saveScript(`export function ${script.getNameWithoutExtension()}(): string {\n  // Your code goes here...\n\n  return "Hello world!";\n}\n`);
+    script.saveScript(`export async function ${script.getNameWithoutExtension()}() {\n  // Your code goes here...\n\n  return "Hello world!";\n}\n`);
 
     Scripts.loadedScripts.push(script);
 
     commands.executeCommand("integrationWorkbench.refreshScripts");
+    commands.executeCommand("integrationWorkbench.openScript", script);
   };
 }

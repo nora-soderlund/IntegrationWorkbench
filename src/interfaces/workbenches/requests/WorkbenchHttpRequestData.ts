@@ -1,3 +1,5 @@
+import { UserInput } from "../../UserInput";
+
 export type WorkbenchHttpRequestNoneBodyData = {
   type: "none";
 };
@@ -19,12 +21,6 @@ export type WorkbenchHttpRequestBodyData =
 
 export type WorkbenchHttpRequestHeaderData = {
   name: string;
-  value: string;
-};
-
-export type WorkbenchHttpRequestParameterData = {
-  name: string;
-  type: "raw" | "typescript";
   value: string;
 };
 
@@ -63,7 +59,7 @@ export type WorkbenchHttpRequestData = {
 
     headers: WorkbenchHttpRequestHeaderData[];
 
-    parameters: WorkbenchHttpRequestParameterData[];
+    parameters: UserInput[];
     parametersAutoRefresh: boolean;
 
     body: WorkbenchHttpRequestBodyData;

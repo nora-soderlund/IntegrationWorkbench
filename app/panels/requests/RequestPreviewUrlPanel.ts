@@ -2,6 +2,8 @@ import { StatusBarAlignment, StatusBarItem, ThemeColor, window } from "vscode";
 import { RequestWebviewPanel } from "../RequestWebviewPanel";
 import WorkbenchHttpRequest from "../../workbenches/requests/WorkbenchHttpRequest";
 import { outputChannel } from "../../extension";
+import { WorkbenchHttpRequestPreviewUrlData } from "~interfaces/workbenches/requests/WorkbenchHttpRequestPreviewUrlData";
+
 
 export default class RequestPreviewUrlPanel {
   public readonly statusBarItem: StatusBarItem;
@@ -41,29 +43,40 @@ export default class RequestPreviewUrlPanel {
     this.statusBarItem.text = "$(loading~spin) Building preview...";
     this.statusBarItem.show();
 
+    let previewUrlData: WorkbenchHttpRequestPreviewUrlData;
+
+    const timestamp = performance.now();
+
     try {
-      this.requestWebviewPanel.webviewPanel.webview.postMessage({
-        command: "integrationWorkbench.updateHttpRequestPreviewUrl",
-        arguments: [ true, await this.request.getParsedUrl(new AbortController()) ]
-      });
+      const url = await this.request.getParsedUrl(new AbortController());
+
+      previewUrlData = {
+        success: true,
+        duration: performance.now() - timestamp,
+        url
+      };
     }
     catch(error) {
       if(error instanceof Error || typeof error === "string") {
         outputChannel.error(error);
 
-        this.requestWebviewPanel.webviewPanel.webview.postMessage({
-          command: "integrationWorkbench.updateHttpRequestPreviewUrl",
-          arguments: [ false ]
-        });
-
         //this.statusBarItem.text = "$(error) Failed to build preview";
         //this.statusBarItem.backgroundColor = new ThemeColor("statusBarItem.errorBackground");
         //this.statusBarItem.color = new ThemeColor("statusBarItem.errorForeground");
       }
+
+      previewUrlData = {
+        success: false,
+        duration: performance.now() - timestamp
+      };
     }
-    finally {
-      this.statusBarItem.text = "";
-      this.statusBarItem.hide();
-    }
+
+    this.requestWebviewPanel.webviewPanel.webview.postMessage({
+      command: "integrationWorkbench.updateHttpRequestPreviewUrl",
+      arguments: [ previewUrlData ]
+    });
+
+    this.statusBarItem.text = "";
+    this.statusBarItem.hide();
   }
 }

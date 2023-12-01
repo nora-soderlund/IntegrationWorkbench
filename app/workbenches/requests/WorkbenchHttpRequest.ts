@@ -1,5 +1,5 @@
 import { ThemeIcon, Uri, commands } from "vscode";
-import { WorkbenchHttpAuthorization, WorkbenchHttpRequestBodyData, WorkbenchHttpRequestData, WorkbenchHttpRequestHeaderData, WorkbenchHttpRequestParameterData } from "~interfaces/workbenches/requests/WorkbenchHttpRequestData";
+import { WorkbenchHttpAuthorization, WorkbenchHttpRequestBodyData, WorkbenchHttpRequestData, WorkbenchHttpRequestHeaderData } from "~interfaces/workbenches/requests/WorkbenchHttpRequestData";
 import { Workbench } from "../Workbench";
 import { WorkbenchCollection } from "../collections/WorkbenchCollection";
 import WorkbenchRequest from "./WorkbenchRequest";
@@ -8,6 +8,7 @@ import { existsSync } from "fs";
 import WorkbenchHttpResponse from "../responses/WorkbenchHttpResponse";
 import { randomUUID } from "crypto";
 import Scripts from "../../Scripts";
+import { UserInput } from "~interfaces/UserInput";
 
 export default class WorkbenchHttpRequest extends WorkbenchRequest {
   constructor(
@@ -45,9 +46,9 @@ export default class WorkbenchHttpRequest extends WorkbenchRequest {
   }
 
   async getParsedUrl(abortController: AbortController) {
-    return new Promise<string | null>(async (resolve, reject) => {
+    return new Promise<string>(async (resolve, reject) => {
       if(!this.data.url) {
-        resolve(null);
+        reject("Request URL is falsey.");
 
         return;
       }
@@ -68,7 +69,7 @@ export default class WorkbenchHttpRequest extends WorkbenchRequest {
       let parsedUrl = this.data.url;
 
       for(let key of uniqueKeys) {
-        const parameter = this.data.parameters.find((parameter) => parameter.name === key);
+        const parameter = this.data.parameters.find((parameter) => parameter.key === key);
 
         if(!parameter) {
           continue;
@@ -149,7 +150,7 @@ export default class WorkbenchHttpRequest extends WorkbenchRequest {
     this.parent?.save();
   }
 
-  setParameters(parameters: WorkbenchHttpRequestParameterData[]) {
+  setParameters(parameters: UserInput[]) {
     this.data.parameters = parameters;
 
     this.parent?.save();

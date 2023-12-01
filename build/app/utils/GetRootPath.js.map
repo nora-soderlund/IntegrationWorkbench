@@ -1,1 +1,0 @@
-{"version":3,"file":"GetRootPath.js","sourceRoot":"","sources":["../../../app/utils/GetRootPath.ts"],"names":[],"mappings":";;AAAA,mCAAmC;AAEnC,SAAwB,WAAW;;IACjC,IAAG,MAAA,kBAAS,CAAC,gBAAgB,0CAAE,MAAM,EAAE;QACrC,OAAO,kBAAS,CAAC,gBAAgB,CAAC,CAAC,CAAC,CAAC,GAAG,CAAC,MAAM,CAAC;KACjD;IAED,OAAO,SAAS,CAAC;AACnB,CAAC;AAND,8BAMC;AAAA,CAAC"}

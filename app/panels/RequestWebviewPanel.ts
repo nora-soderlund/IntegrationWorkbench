@@ -8,6 +8,7 @@ import Scripts from "../Scripts";
 import Script from "../scripts/TypescriptScript";
 import { ScriptDeclarationData } from "~interfaces/scripts/ScriptDeclarationData";
 import RequestPreviewUrlPanel from "./requests/RequestPreviewUrlPanel";
+import { outputChannel } from "../extension";
 
 export class RequestWebviewPanel {
   public readonly webviewPanel: WebviewPanel;
@@ -82,6 +83,12 @@ export class RequestWebviewPanel {
         console.debug("Received event from request webview:", command);
 
         switch (command) {
+          case "integrationWorkbench.showOutputLogs": {
+            outputChannel.show();
+
+            break;
+          }
+
           case "integrationWorkbench.changeHttpRequestMethod": {
             const [ method ] = message.arguments;
 

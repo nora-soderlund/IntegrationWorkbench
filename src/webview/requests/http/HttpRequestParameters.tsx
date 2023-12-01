@@ -1,13 +1,11 @@
-import React, { Component, useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { HttpRequestProps } from "./HttpRequest";
-import { VSCodeButton, VSCodeCheckbox, VSCodeDataGrid, VSCodeDataGridCell, VSCodeDataGridRow, VSCodeDivider, VSCodeDropdown, VSCodeLink, VSCodeOption, VSCodeRadio, VSCodeRadioGroup, VSCodeTag, VSCodeTextField } from '@vscode/webview-ui-toolkit/react';
-import HttpRequestBodySwitch from "./body/HttpRequestBodySwitch";
-import { WorkbenchHttpRequestApplicationJsonBodyData, WorkbenchHttpRequestNoneBodyData, WorkbenchHttpRequestRawBodyData } from "../../../interfaces/workbenches/requests/WorkbenchHttpRequestData";
-import HttpRequestParameterScript from "./parameters/HttpRequestParameterScript";
+import { VSCodeButton, VSCodeCheckbox, VSCodeDataGrid, VSCodeDataGridCell, VSCodeDataGridRow, VSCodeDivider, VSCodeLink } from '@vscode/webview-ui-toolkit/react';
+import { WorkbenchHttpRequestPreviewUrlData } from "../../../interfaces/workbenches/requests/WorkbenchHttpRequestPreviewUrlData";
+import KeyValueTable from "../../components/KeyValueTable";
 
 export default function HttpRequestParameters({ requestData }: HttpRequestProps) {
-  const [ previewUrl, setPreviewUrl ] = useState<string | null>(null);
-  const [ previewUrlFailed, setPreviewUrlFailed ] = useState<boolean>(false);
+  const [ previewUrlData, setPreviewUrlData ] = useState<WorkbenchHttpRequestPreviewUrlData | null>(null);
 
   useEffect(() => {
     window.addEventListener('message', event => {
@@ -15,15 +13,9 @@ export default function HttpRequestParameters({ requestData }: HttpRequestProps)
 
       switch (command) {
         case 'integrationWorkbench.updateHttpRequestPreviewUrl': {
-          const [ success, previewUrl ] = event.data.arguments;
+          const [ previewUrlData ]: [ WorkbenchHttpRequestPreviewUrlData ] = event.data.arguments;
 
-          if(!success) {
-            setPreviewUrlFailed(true);
-          }
-          else {
-            setPreviewUrlFailed(false);
-            setPreviewUrl(previewUrl);
-          }
+          setPreviewUrlData(previewUrlData);
   
           break;
         }
@@ -75,25 +67,36 @@ export default function HttpRequestParameters({ requestData }: HttpRequestProps)
 
           <VSCodeDataGridCell cellType="columnheader" gridColumn="3"></VSCodeDataGridCell>
         </VSCodeDataGridRow>
-
-        {(!previewUrlFailed) && (
-          <VSCodeDataGridRow className="data-grid-variables-header-row">
-            <VSCodeDataGridCell gridColumn="1">
-              {(previewUrl)?(previewUrl):(
-                <i>No preview available yet...</i>
-              )}
-            </VSCodeDataGridCell>
-
-            <VSCodeDataGridCell gridColumn="2"></VSCodeDataGridCell>
-            <VSCodeDataGridCell gridColumn="3"></VSCodeDataGridCell>
-          </VSCodeDataGridRow>
-        )}
       </VSCodeDataGrid>
 
-      {(previewUrlFailed) && (
-        <div className="infobox infobox-error">
-          <i className="codicon codicon-error"></i>{" "}Preview failed... <VSCodeLink>Show output logs.</VSCodeLink>
-        </div>
+      {(!previewUrlData)?(
+        <p>
+          <i>No preview available yet...</i>
+        </p>
+      ):(
+        (previewUrlData.success)?(
+          <p>{previewUrlData.url}</p>
+        ):(
+          <div className="infobox infobox-error" style={{
+            display: "flex",
+            flexDirection: "row",
+            alignItems: "center",
+            gap: "0.5em"
+          }}>
+            <i className="codicon codicon-error"></i>{" "}Preview failed after {Math.round(previewUrlData.duration)}ms...
+            
+            <VSCodeButton onClick={(() => 
+              window.vscode.postMessage({
+                command: "integrationWorkbench.showOutputLogs",
+                arguments: []
+              })
+            )} style={{
+              marginLeft: "auto"
+            }}>
+              Show output logs
+            </VSCodeButton>
+          </div>
+        )
       )}
 
       <VSCodeDivider style={{
@@ -108,7 +111,7 @@ export default function HttpRequestParameters({ requestData }: HttpRequestProps)
               [
                 ...requestData.data.parameters,
                 {
-                  name: "",
+                  key: "",
                   value: "",
                   type: "raw"
                 }
@@ -117,118 +120,40 @@ export default function HttpRequestParameters({ requestData }: HttpRequestProps)
           })
         )}>click here</VSCodeLink> to add one.</p>
       ):(
-        <VSCodeDataGrid className="data-grid-unfocusable data-grid-unhoverable">
-          <VSCodeDataGridRow rowType="header" className="data-grid-variables-row" style={{
-            alignItems: "center"
-          }}>
-            <VSCodeDataGridCell cellType="columnheader" gridColumn="1">
-              Parameter
-            </VSCodeDataGridCell>
-
-            <VSCodeDataGridCell cellType="columnheader" gridColumn="2">
-              Value
-            </VSCodeDataGridCell>
-
-            <VSCodeDataGridCell cellType="columnheader" gridColumn="3">
-              <VSCodeButton appearance="icon" aria-label="Add" onClick={() => (
-                window.vscode.postMessage({
-                  command: "integrationWorkbench.changeHttpRequestParameters",
-                  arguments: [
-                    [
-                      ...requestData.data.parameters,
-                      {
-                        name: "",
-                        value: "",
-                        type: "raw"
-                      }
-                    ]
-                  ]
-                })
-              )}>
-                <span className="codicon codicon-add"/>
-              </VSCodeButton>
-            </VSCodeDataGridCell>
-          </VSCodeDataGridRow>
-
-          {requestData.data.parameters.map((header, index) => (
-            <VSCodeDataGridRow key={index} className="data-grid-buttons-hoverable data-grid-variables-row">
-              <VSCodeDataGridCell gridColumn="1">
-                <VSCodeTextField type="text" placeholder="Enter a header..." value={header.name} onChange={(event) => {
-                  header.name = (event.target as HTMLInputElement).value;
-
-                  window.vscode.postMessage({
-                    command: "integrationWorkbench.changeHttpRequestParameters",
-                    arguments: [ requestData.data.parameters ]
-                  });
-                }}/>
-              </VSCodeDataGridCell>
-
-              <VSCodeDataGridCell gridColumn="2" style={{
-                display: "flex",
-                flexDirection: "column",
-                gap: "0.5em"
-              }}>
-                {(header.type === "raw")?(
-                  <VSCodeTextField type="text" placeholder="Enter a value..." value={header.value} onChange={(event) => {
-                    header.value = (event.target as HTMLInputElement).value;
-
-                    window.vscode.postMessage({
-                      command: "integrationWorkbench.changeHttpRequestParameters",
-                      arguments: [ requestData.data.parameters ]
-                    });
-                  }}/>
-                ):(
-                  <HttpRequestParameterScript value={header.value} onChange={(value) => {
-                    header.value = value ?? "";
-
-                    window.vscode.postMessage({
-                      command: "integrationWorkbench.changeHttpRequestParameters",
-                      arguments: [ requestData.data.parameters ]
-                    });
-                  }}/>
-                )}
-
-                <VSCodeLink onClick={() => {
-                  console.log("click!!");
-                  
-                  switch(header.type) {
-                    case "raw": {
-                      header.type = "typescript";
-
-                      break;
-                    }
-
-                    case "typescript": {
-                      header.type = "raw";
-
-                      break;
-                    }
+        <KeyValueTable
+          items={requestData.data.parameters}
+          onAdd={() => (
+            window.vscode.postMessage({
+              command: "integrationWorkbench.changeHttpRequestParameters",
+              arguments: [
+                [
+                  ...requestData.data.parameters,
+                  {
+                    key: "",
+                    value: "",
+                    type: "raw"
                   }
+                ]
+              ]
+            })
+          )}
+          onChange={(item) => {
+            window.vscode.postMessage({
+              command: "integrationWorkbench.changeHttpRequestParameters",
+              arguments: [ requestData.data.parameters ]
+            })
+          }}
+          onDelete={(item) => {
+            const index = requestData.data.parameters.indexOf(item);
 
-                  window.vscode.postMessage({
-                    command: "integrationWorkbench.changeHttpRequestParameters",
-                    arguments: [ requestData.data.parameters ]
-                  });
-                }}>
-                  Change to {(header.type === "raw")?("script"):("raw")}
-                </VSCodeLink>
-              </VSCodeDataGridCell>
+            requestData.data.parameters.splice(index, 1);
 
-              <VSCodeDataGridCell gridColumn="3">
-                <VSCodeButton appearance="icon" aria-label="Delete" onClick={() => {
-                  requestData.data.parameters.splice(index, 1);
-
-                  window.vscode.postMessage({
-                    command: "integrationWorkbench.changeHttpRequestParameters",
-                    arguments: [ requestData.data.parameters ]
-                  });
-                }}>
-                  <span className="codicon codicon-trashcan"/>
-                </VSCodeButton>
-              </VSCodeDataGridCell>
-            </VSCodeDataGridRow>
-          ))}
-        </VSCodeDataGrid>
+            window.vscode.postMessage({
+              command: "integrationWorkbench.changeHttpRequestParameters",
+              arguments: [ requestData.data.parameters ]
+            });
+          }}
+        />
       )}
     </div>
   );

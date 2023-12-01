@@ -1,1 +1,0 @@
-{"version":3,"file":"GetWebviewUri.js","sourceRoot":"","sources":["../../../app/utils/GetWebviewUri.ts"],"names":[],"mappings":";;;AAAA,mCAAsC;AAEtC,SAAgB,aAAa,CAAC,OAAgB,EAAE,YAAiB,EAAE,QAAkB;IACnF,OAAO,OAAO,CAAC,YAAY,CAAC,YAAG,CAAC,QAAQ,CAAC,YAAY,EAAE,GAAG,QAAQ,CAAC,CAAC,CAAC;AACvE,CAAC;AAFD,sCAEC"}
