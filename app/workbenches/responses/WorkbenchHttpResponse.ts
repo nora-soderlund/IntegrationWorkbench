@@ -59,9 +59,11 @@ export default class WorkbenchHttpResponse {
 
         body = this.request.data.body.body;
 
-        this.request.data.headers.forEach((header) => {
-          headers.set(header.name, header.value);
-        });
+        for(let header of this.request.data.headers) {
+          const value = await Scripts.evaluateUserInput(header);
+
+          headers.set(header.key, value);
+        }
       }
 
       console.log(headers.get("Authorization"));

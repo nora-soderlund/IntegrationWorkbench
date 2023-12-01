@@ -53,12 +53,7 @@ class CreateRequestCommand {
                         authorization: {
                             type: "none"
                         },
-                        headers: [
-                            {
-                                name: "Content-Type",
-                                value: "application/json"
-                            }
-                        ],
+                        headers: [],
                         body: {
                             type: "none"
                         }

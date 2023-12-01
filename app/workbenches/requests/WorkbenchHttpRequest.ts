@@ -127,7 +127,7 @@ export default class WorkbenchHttpRequest extends WorkbenchRequest {
     this.parent?.save();
   }
 
-  setHeaders(headers: WorkbenchHttpRequestHeaderData[]) {
+  setHeaders(headers: UserInput[]) {
     this.data.headers = headers;
 
     this.parent?.save();

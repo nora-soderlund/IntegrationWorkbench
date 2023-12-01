@@ -33,7 +33,8 @@ export default class WorkbenchRequest {
         },
         headers: [
           {
-            name: "Content-Type",
+            type: "raw",
+            key: "Content-Type",
             value: "application/json"
           }
         ],
