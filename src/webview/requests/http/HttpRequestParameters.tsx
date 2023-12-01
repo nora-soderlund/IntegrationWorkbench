@@ -32,15 +32,20 @@ export default function HttpRequestParameters({ requestData }: HttpRequestProps)
 
   return (
     <div>
-      <VSCodeDataGrid className="data-grid-unfocusable data-grid-unhoverable">
-        <VSCodeDataGridRow rowType="header" className="data-grid-variables-header-row" style={{
-            alignItems: "center"
-          }}>
-          <VSCodeDataGridCell cellType="columnheader" gridColumn="1">
-            Preview
-          </VSCodeDataGridCell>
+      <div style={{
+        display: "flex",
+        flexDirection: "column",
+        gap: "0.5em"
+      }}>
+        <div style={{
+          display: "flex",
+          flexDirection: "row",
+          alignItems: "center"
+        }}>
+          <b>Preview</b>
 
-          <VSCodeDataGridCell gridColumn="2" style={{
+          <div style={{
+            marginLeft: "auto",
             display: "flex",
             flexDirection: "row",
             gap: "0.5em",
@@ -63,41 +68,42 @@ export default function HttpRequestParameters({ requestData }: HttpRequestProps)
             }}>
               <span className="codicon codicon-refresh"/>
             </VSCodeButton>
-          </VSCodeDataGridCell>
-
-          <VSCodeDataGridCell cellType="columnheader" gridColumn="3"></VSCodeDataGridCell>
-        </VSCodeDataGridRow>
-      </VSCodeDataGrid>
-
-      {(!previewUrlData)?(
-        <p>
-          <i>No preview available yet...</i>
-        </p>
-      ):(
-        (previewUrlData.success)?(
-          <p>{previewUrlData.url}</p>
-        ):(
-          <div className="infobox infobox-error" style={{
-            display: "flex",
-            flexDirection: "row",
-            alignItems: "center",
-            gap: "0.5em"
-          }}>
-            <i className="codicon codicon-error"></i>{" "}Preview failed after {Math.round(previewUrlData.duration)}ms...
-            
-            <VSCodeButton onClick={(() => 
-              window.vscode.postMessage({
-                command: "integrationWorkbench.showOutputLogs",
-                arguments: []
-              })
-            )} style={{
-              marginLeft: "auto"
-            }}>
-              Show output logs
-            </VSCodeButton>
           </div>
-        )
-      )}
+        </div>
+
+        {(!previewUrlData)?(
+          <div>
+            <i>No preview available yet...</i>
+          </div>
+        ):(
+          (previewUrlData.success)?(
+            <div>{previewUrlData.url}</div>
+          ):(
+            <div className="infobox infobox-error">
+              <div>
+                <i className="codicon codicon-error"></i>{" "}<b>An error occured after {Math.round(previewUrlData.duration)}ms:</b>
+                
+                {(previewUrlData.error) && (
+                  <p>
+                    {previewUrlData.error}
+                  </p>
+                )}
+              </div>
+
+              <VSCodeButton onClick={(() => 
+                window.vscode.postMessage({
+                  command: "integrationWorkbench.showOutputLogs",
+                  arguments: []
+                })
+              )} style={{
+                width: "max-content"
+              }}>
+                Show output logs
+              </VSCodeButton>
+            </div>
+          )
+        )}
+      </div>
 
       <VSCodeDivider style={{
         margin: "1em 0"

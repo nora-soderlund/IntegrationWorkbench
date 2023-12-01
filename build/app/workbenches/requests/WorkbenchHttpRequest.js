@@ -62,8 +62,13 @@ class WorkbenchHttpRequest extends WorkbenchRequest_1.default {
                     if (!parameter) {
                         continue;
                     }
-                    const value = yield Scripts_1.default.evaluateUserInput(parameter);
-                    parsedUrl = parsedUrl === null || parsedUrl === void 0 ? void 0 : parsedUrl.replace('{' + key + '}', value);
+                    try {
+                        const value = yield Scripts_1.default.evaluateUserInput(parameter);
+                        parsedUrl = parsedUrl === null || parsedUrl === void 0 ? void 0 : parsedUrl.replace('{' + key + '}', value);
+                    }
+                    catch (error) {
+                        reject(error);
+                    }
                 }
                 abortController.signal.removeEventListener("abort", abortListener);
                 resolve(parsedUrl);

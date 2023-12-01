@@ -49,16 +49,23 @@ class RequestPreviewUrlPanel {
                 };
             }
             catch (error) {
-                if (error instanceof Error || typeof error === "string") {
+                if (error instanceof Error) {
                     extension_1.outputChannel.error(error);
                     //this.statusBarItem.text = "$(error) Failed to build preview";
                     //this.statusBarItem.backgroundColor = new ThemeColor("statusBarItem.errorBackground");
                     //this.statusBarItem.color = new ThemeColor("statusBarItem.errorForeground");
+                    previewUrlData = {
+                        success: false,
+                        error: error.message,
+                        duration: performance.now() - timestamp
+                    };
                 }
-                previewUrlData = {
-                    success: false,
-                    duration: performance.now() - timestamp
-                };
+                else {
+                    previewUrlData = {
+                        success: false,
+                        duration: performance.now() - timestamp
+                    };
+                }
             }
             this.requestWebviewPanel.webviewPanel.webview.postMessage({
                 command: "integrationWorkbench.updateHttpRequestPreviewUrl",

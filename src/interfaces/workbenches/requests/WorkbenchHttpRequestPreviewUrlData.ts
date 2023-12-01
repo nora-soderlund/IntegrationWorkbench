@@ -7,4 +7,5 @@ export type WorkbenchHttpRequestPreviewUrlData =
   | {
       success: false;
       duration: number;
+      error?: string;
     };

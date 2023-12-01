@@ -75,9 +75,14 @@ export default class WorkbenchHttpRequest extends WorkbenchRequest {
           continue;
         }
 
-        const value = await Scripts.evaluateUserInput(parameter);
+        try {
+          const value = await Scripts.evaluateUserInput(parameter);
 
-        parsedUrl = parsedUrl?.replace('{' + key + '}', value);
+          parsedUrl = parsedUrl?.replace('{' + key + '}', value);
+        }
+        catch(error) {
+          reject(error);
+        }
       }
 
       abortController.signal.removeEventListener("abort", abortListener);
