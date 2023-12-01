@@ -33,8 +33,10 @@ export default function Response() {
   }
 
   return (
-    <div>
-      <h1>TBD</h1>
+    <div style={{
+      padding: "0 20px"
+    }}>
+      <p>No response is selected.</p>
     </div>
   );
 };

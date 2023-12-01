@@ -8,6 +8,7 @@ const vscode_1 = require("vscode");
 const GetWebviewUri_1 = require("../utils/GetWebviewUri");
 const fs_1 = require("fs");
 const path_1 = __importDefault(require("path"));
+const extension_1 = require("../extension");
 class ResponseWebviewPanel {
     constructor(context) {
         this.context = context;
@@ -66,6 +67,10 @@ class ResponseWebviewPanel {
                         case "integrationWorkbench.changeHttpRequestMethod": {
                             const [] = message.arguments;
                             return;
+                        }
+                        case "integrationWorkbench.showOutputLogs": {
+                            extension_1.outputChannel.show();
+                            break;
                         }
                     }
                 }, undefined, this.disposables);

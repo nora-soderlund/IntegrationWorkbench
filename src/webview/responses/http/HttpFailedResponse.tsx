@@ -1,5 +1,5 @@
 import React from "react";
-import { VSCodePanelTab, VSCodePanelView, VSCodePanels } from "@vscode/webview-ui-toolkit/react";
+import { VSCodeButton, VSCodePanelTab, VSCodePanelView, VSCodePanels } from "@vscode/webview-ui-toolkit/react";
 import { WorkbenchHttpResponseData } from "../../../interfaces/workbenches/responses/WorkbenchHttpResponseData";
 import HttpResponseBodySwitch from "./HttpResponseBodySwitch";
 import HttpResponseHeaders from "./HttpResponseHeaders";
@@ -16,9 +16,24 @@ export default function HttpFailedResponse({ responseData }: HttpResponseProps) 
 
         <VSCodePanelView>
           <div className="infobox infobox-error">
-            <i className="codicon codicon-error"></i>
+            <div>
+              <i className="codicon codicon-error"></i>{" "}<b>An error occured:</b>
+              
+              <p>
+                {responseData.error}
+              </p>
+            </div>
 
-            Request failed programmatically with error: {responseData.error}
+            <VSCodeButton onClick={(() => 
+              window.vscode.postMessage({
+                command: "integrationWorkbench.showOutputLogs",
+                arguments: []
+              })
+            )} style={{
+              width: "max-content"
+            }}>
+              Show output logs
+            </VSCodeButton>
           </div>
         </VSCodePanelView>
       </VSCodePanels>

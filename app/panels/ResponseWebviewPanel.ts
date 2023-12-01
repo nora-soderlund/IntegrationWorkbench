@@ -5,6 +5,7 @@ import path from "path";
 import WorkbenchRequest from "../workbenches/requests/WorkbenchRequest";
 import WorkbenchHttpRequest from "../workbenches/requests/WorkbenchHttpRequest";
 import { WorkbenchResponse } from "../workbenches/responses/WorkbenchResponse";
+import { outputChannel } from "../extension";
 
 export class ResponseWebviewPanel {
   private readonly disposables: Disposable[] = [];
@@ -78,6 +79,12 @@ export class ResponseWebviewPanel {
                 const [] = message.arguments;
 
                 return;
+              }
+
+              case "integrationWorkbench.showOutputLogs": {
+                outputChannel.show();
+    
+                break;
               }
             }
           },
