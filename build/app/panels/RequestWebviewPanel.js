@@ -21,6 +21,7 @@ const WorkbenchHttpRequest_1 = __importDefault(require("../workbenches/requests/
 const Scripts_1 = __importDefault(require("../Scripts"));
 const RequestPreviewUrlPanel_1 = __importDefault(require("./requests/RequestPreviewUrlPanel"));
 const extension_1 = require("../extension");
+const RequestPreviewHeadersPanel_1 = __importDefault(require("./requests/RequestPreviewHeadersPanel"));
 class RequestWebviewPanel {
     constructor(context, request) {
         this.context = context;
@@ -72,7 +73,7 @@ class RequestWebviewPanel {
       </html>
     `;
         this.webviewPanel.webview.onDidReceiveMessage((message) => __awaiter(this, void 0, void 0, function* () {
-            var _a, _b;
+            var _a, _b, _c;
             const command = message.command;
             console.debug("Received event from request webview:", command);
             switch (command) {
@@ -180,10 +181,20 @@ class RequestWebviewPanel {
                     }
                     return;
                 }
+                case "integrationWorkbench.setHttpRequestHeadersAutoRefresh": {
+                    if (this.request instanceof WorkbenchHttpRequest_1.default) {
+                        const [enabled] = message.arguments;
+                        this.request.data.headersAutoRefresh = enabled;
+                        (_c = this.request.parent) === null || _c === void 0 ? void 0 : _c.save();
+                        this.updateRequest();
+                    }
+                    return;
+                }
             }
         }), undefined, this.disposables);
         if (request instanceof WorkbenchHttpRequest_1.default) {
             this.previewUrl = new RequestPreviewUrlPanel_1.default(this, request);
+            this.previewHeaders = new RequestPreviewHeadersPanel_1.default(this, request);
         }
     }
     updateRequest() {

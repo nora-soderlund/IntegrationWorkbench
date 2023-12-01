@@ -38,6 +38,7 @@ export default class WorkbenchRequest {
             value: "application/json"
           }
         ],
+        headersAutoRefresh: false,
         body: {
           type: "none"
         }

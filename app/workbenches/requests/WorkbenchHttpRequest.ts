@@ -9,6 +9,7 @@ import WorkbenchHttpResponse from "../responses/WorkbenchHttpResponse";
 import { randomUUID } from "crypto";
 import Scripts from "../../Scripts";
 import { UserInput } from "~interfaces/UserInput";
+import { WorkbenchHttpRequestPreviewHeadersData } from "~interfaces/workbenches/requests/WorkbenchHttpRequestPreviewHeadersData";
 
 export default class WorkbenchHttpRequest extends WorkbenchRequest {
   constructor(
@@ -32,6 +33,7 @@ export default class WorkbenchHttpRequest extends WorkbenchRequest {
         method: this.data.method,
         url: this.data.url,
         headers: [ ...this.data.headers ],
+        headersAutoRefresh: this.data.headersAutoRefresh,
         parameters: [ ...this.data.parameters ],
         parametersAutoRefresh: this.data.parametersAutoRefresh,
         body: {
@@ -88,6 +90,39 @@ export default class WorkbenchHttpRequest extends WorkbenchRequest {
       abortController.signal.removeEventListener("abort", abortListener);
 
       resolve(parsedUrl);
+    });
+  }
+
+  async getParsedHeaders(abortController: AbortController) {
+    return new Promise<{
+      key: string;
+      value: string
+    }[]>(async (resolve, reject) => {
+      const abortListener = () => reject("Aborted.");
+      abortController.signal.addEventListener("abort", abortListener);
+
+      const headers: {
+        key: string;
+        value: string
+      }[] = [];
+
+      for(let header of this.data.headers) {
+        try {
+          const value = await Scripts.evaluateUserInput(header);
+
+          headers.push({
+            key: header.key,
+            value
+          });
+        }
+        catch(error) {
+          reject(error);
+        }
+      }
+
+      abortController.signal.removeEventListener("abort", abortListener);
+
+      resolve(headers);
     });
   }
 

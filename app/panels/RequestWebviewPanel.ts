@@ -9,12 +9,14 @@ import Script from "../scripts/TypescriptScript";
 import { ScriptDeclarationData } from "~interfaces/scripts/ScriptDeclarationData";
 import RequestPreviewUrlPanel from "./requests/RequestPreviewUrlPanel";
 import { outputChannel } from "../extension";
+import RequestPreviewHeadersPanel from "./requests/RequestPreviewHeadersPanel";
 
 export class RequestWebviewPanel {
   public readonly webviewPanel: WebviewPanel;
   public readonly disposables: Disposable[] = [];
 
   private previewUrl?: RequestPreviewUrlPanel;
+  private previewHeaders?: RequestPreviewHeadersPanel;
 
   constructor(
     private readonly context: ExtensionContext,
@@ -238,6 +240,20 @@ export class RequestWebviewPanel {
 
             return;
           }
+
+          case "integrationWorkbench.setHttpRequestHeadersAutoRefresh": {
+            if(this.request instanceof WorkbenchHttpRequest) {
+              const [ enabled ] = message.arguments;
+
+              this.request.data.headersAutoRefresh = enabled;
+
+              this.request.parent?.save();
+
+              this.updateRequest();
+            }
+
+            return;
+          }
         }
       },
       undefined,
@@ -246,6 +262,7 @@ export class RequestWebviewPanel {
 
     if(request instanceof WorkbenchHttpRequest) {
       this.previewUrl = new RequestPreviewUrlPanel(this, request);
+      this.previewHeaders = new RequestPreviewHeadersPanel(this, request);
     }
   }
 

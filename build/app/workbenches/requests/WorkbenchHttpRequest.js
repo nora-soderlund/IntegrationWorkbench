@@ -32,6 +32,7 @@ class WorkbenchHttpRequest extends WorkbenchRequest_1.default {
                 method: this.data.method,
                 url: this.data.url,
                 headers: [...this.data.headers],
+                headersAutoRefresh: this.data.headersAutoRefresh,
                 parameters: [...this.data.parameters],
                 parametersAutoRefresh: this.data.parametersAutoRefresh,
                 body: Object.assign({}, this.data.body)
@@ -72,6 +73,29 @@ class WorkbenchHttpRequest extends WorkbenchRequest_1.default {
                 }
                 abortController.signal.removeEventListener("abort", abortListener);
                 resolve(parsedUrl);
+            }));
+        });
+    }
+    getParsedHeaders(abortController) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return new Promise((resolve, reject) => __awaiter(this, void 0, void 0, function* () {
+                const abortListener = () => reject("Aborted.");
+                abortController.signal.addEventListener("abort", abortListener);
+                const headers = [];
+                for (let header of this.data.headers) {
+                    try {
+                        const value = yield Scripts_1.default.evaluateUserInput(header);
+                        headers.push({
+                            key: header.key,
+                            value
+                        });
+                    }
+                    catch (error) {
+                        reject(error);
+                    }
+                }
+                abortController.signal.removeEventListener("abort", abortListener);
+                resolve(headers);
             }));
         });
     }

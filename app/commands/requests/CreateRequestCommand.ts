@@ -51,6 +51,7 @@ export default class CreateRequestCommand {
               type: "none"
             },
             headers: [],
+            headersAutoRefresh: false,
             body: {
               type: "none"
             }

@@ -58,6 +58,7 @@ export type WorkbenchHttpRequestData = {
     authorization: WorkbenchHttpAuthorization;
 
     headers: UserInput[];
+    headersAutoRefresh: boolean;
 
     parameters: UserInput[];
     parametersAutoRefresh: boolean;
