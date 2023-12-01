@@ -33,7 +33,7 @@ export default class WorkbenchesRequestsTreeDataProvider implements TreeDataProv
     if (!element) {
       return Promise.resolve(
         [
-          new WorkbenchResponsesBookmarkTreeItem(),
+          //new WorkbenchResponsesBookmarkTreeItem(),
           ...this.workbenchResponses
         ]
       );

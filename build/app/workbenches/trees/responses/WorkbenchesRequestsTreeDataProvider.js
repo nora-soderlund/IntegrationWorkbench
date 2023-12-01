@@ -1,10 +1,6 @@
 "use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 const vscode_1 = require("vscode");
-const WorkbenchResponsesBookmarkTreeItem_1 = __importDefault(require("./items/WorkbenchResponsesBookmarkTreeItem"));
 class WorkbenchesRequestsTreeDataProvider {
     constructor(context) {
         this.context = context;
@@ -25,7 +21,7 @@ class WorkbenchesRequestsTreeDataProvider {
         }
         if (!element) {
             return Promise.resolve([
-                new WorkbenchResponsesBookmarkTreeItem_1.default(),
+                //new WorkbenchResponsesBookmarkTreeItem(),
                 ...this.workbenchResponses
             ]);
         }
