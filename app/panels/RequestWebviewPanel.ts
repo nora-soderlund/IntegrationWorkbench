@@ -1,4 +1,4 @@
-import { Disposable, ExtensionContext, Uri, ViewColumn, WebviewPanel, TextDocument, window, workspace, commands, ThemeIcon } from "vscode";
+import { Disposable, ExtensionContext, Uri, ViewColumn, WebviewPanel, TextDocument, window, workspace, commands, ThemeIcon, StatusBarAlignment, StatusBarItem, ThemeColor } from "vscode";
 import { getWebviewUri } from "../utils/GetWebviewUri";
 import { readFileSync } from "fs";
 import path from "path";
@@ -7,16 +7,17 @@ import WorkbenchHttpRequest from "../workbenches/requests/WorkbenchHttpRequest";
 import Scripts from "../Scripts";
 import Script from "../scripts/TypescriptScript";
 import { ScriptDeclarationData } from "~interfaces/scripts/ScriptDeclarationData";
+import RequestPreviewUrlPanel from "./requests/RequestPreviewUrlPanel";
 
 export class RequestWebviewPanel {
   public readonly webviewPanel: WebviewPanel;
-  private readonly disposables: Disposable[] = [];
+  public readonly disposables: Disposable[] = [];
 
-  private currentScript?: Script;
+  private previewUrl?: RequestPreviewUrlPanel;
 
   constructor(
     private readonly context: ExtensionContext,
-		private readonly request: WorkbenchRequest
+		public readonly request: WorkbenchRequest
   ) {
     this.webviewPanel = window.createWebviewPanel(
       "integrationWorkbench.request",
@@ -88,10 +89,7 @@ export class RequestWebviewPanel {
               this.request.setMethod(method);
             }
 
-            this.webviewPanel.webview.postMessage({
-              command: "integrationWorkbench.updateRequest",
-              arguments: [ this.request.getData() ]
-            });
+            this.updateRequest();
 
             return;
           }
@@ -103,10 +101,7 @@ export class RequestWebviewPanel {
               this.request.setUrl(url);
             }
 
-            this.webviewPanel.webview.postMessage({
-              command: "integrationWorkbench.updateRequest",
-              arguments: [ this.request.getData() ]
-            });
+            this.updateRequest();
 
             return;
           }
@@ -118,10 +113,7 @@ export class RequestWebviewPanel {
               this.request.setHeaders(headers);
             }
 
-            this.webviewPanel.webview.postMessage({
-              command: "integrationWorkbench.updateRequest",
-              arguments: [ this.request.getData() ]
-            });
+            this.updateRequest();
 
             return;
           }
@@ -133,17 +125,11 @@ export class RequestWebviewPanel {
               this.request.setParameters(parameters);
 
               if(this.request.data.parametersAutoRefresh) {
-                this.webviewPanel.webview.postMessage({
-                  command: "integrationWorkbench.updateHttpRequestPreviewUrl",
-                  arguments: [ await this.request.getParsedUrl(new AbortController()) ]
-                });
+                this.previewUrl?.updatePreviewUrl();
               }
             }
 
-            this.webviewPanel.webview.postMessage({
-              command: "integrationWorkbench.updateRequest",
-              arguments: [ this.request.getData() ]
-            });
+            this.updateRequest();
 
             return;
           }
@@ -157,10 +143,7 @@ export class RequestWebviewPanel {
               this.request.setBody(bodyData);
             }
 
-            this.webviewPanel.webview.postMessage({
-              command: "integrationWorkbench.updateRequest",
-              arguments: [ this.request.getData() ]
-            });
+            this.updateRequest();
 
             return;
           }
@@ -172,10 +155,7 @@ export class RequestWebviewPanel {
               this.request.setAuthorization(authorizationData);
             }
 
-            this.webviewPanel.webview.postMessage({
-              command: "integrationWorkbench.updateRequest",
-              arguments: [ this.request.getData() ]
-            });
+            this.updateRequest();
 
             return;
           }
@@ -187,21 +167,7 @@ export class RequestWebviewPanel {
           }
 
           case "integrationWorkbench.getRequest": {
-            this.webviewPanel.webview.postMessage({
-              command: "integrationWorkbench.updateRequest",
-              arguments: [ this.request.getData() ]
-            });
-
-            return;
-          }
-
-          case "integrationWorkbench.getHttpRequestPreviewUrl": {
-            if(this.request instanceof WorkbenchHttpRequest) {
-              this.webviewPanel.webview.postMessage({
-                command: "integrationWorkbench.updateHttpRequestPreviewUrl",
-                arguments: [ await this.request.getParsedUrl(new AbortController()) ]
-              });
-            }
+            this.updateRequest();
 
             return;
           }
@@ -260,10 +226,7 @@ export class RequestWebviewPanel {
 
               this.request.parent?.save();
 
-              this.webviewPanel.webview.postMessage({
-                command: "integrationWorkbench.updateRequest",
-                arguments: [ this.request.getData() ]
-              });
+              this.updateRequest();
             }
 
             return;
@@ -273,6 +236,17 @@ export class RequestWebviewPanel {
       undefined,
       this.disposables
     );
+
+    if(request instanceof WorkbenchHttpRequest) {
+      this.previewUrl = new RequestPreviewUrlPanel(this, request);
+    }
+  }
+
+  private updateRequest() {
+    this.webviewPanel.webview.postMessage({
+      command: "integrationWorkbench.updateRequest",
+      arguments: [ this.request.getData() ]
+    });
   }
 
   reveal() {

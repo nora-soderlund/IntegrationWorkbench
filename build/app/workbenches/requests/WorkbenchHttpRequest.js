@@ -75,7 +75,8 @@ class WorkbenchHttpRequest extends WorkbenchRequest_1.default {
                                 value = yield eval(script);
                             }
                             catch (error) {
-                                throw new Error("Failed to evaluate script: " + error);
+                                console.error("Failed to evaluate script: " + error);
+                                reject(error);
                             }
                             parsedUrl = parsedUrl === null || parsedUrl === void 0 ? void 0 : parsedUrl.replace('{' + key + '}', value);
                         }

@@ -91,7 +91,9 @@ export default class WorkbenchHttpRequest extends WorkbenchRequest {
               value = await eval(script);
             }
             catch(error) {
-              throw new Error("Failed to evaluate script: " + error);
+              console.error("Failed to evaluate script: " + error);
+
+              reject(error);
             }
 
             parsedUrl = parsedUrl?.replace('{' + key + '}', value);

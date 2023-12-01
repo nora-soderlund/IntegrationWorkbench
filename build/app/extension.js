@@ -26,7 +26,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deactivate = exports.activate = void 0;
+exports.deactivate = exports.activate = exports.outputChannel = void 0;
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
 const vscode = __importStar(require("vscode"));
@@ -58,6 +58,9 @@ const EditWorkbenchNameCommand_1 = __importDefault(require("./commands/workbench
 const EditWorkbenchDescriptionCommand_1 = __importDefault(require("./commands/workbenches/EditWorkbenchDescriptionCommand"));
 const DeleteScriptCommand_1 = __importDefault(require("./commands/scripts/DeleteScriptCommand"));
 const CancelResponseCommand_1 = __importDefault(require("./commands/responses/CancelResponseCommand"));
+exports.outputChannel = vscode.window.createOutputChannel("Integration Workbench", {
+    log: true
+});
 // This method is called when your extension is activated
 // Your extension is activated the very first time the command is executed
 function activate(context) {

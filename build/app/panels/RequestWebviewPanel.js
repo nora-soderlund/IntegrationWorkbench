@@ -19,6 +19,7 @@ const fs_1 = require("fs");
 const path_1 = __importDefault(require("path"));
 const WorkbenchHttpRequest_1 = __importDefault(require("../workbenches/requests/WorkbenchHttpRequest"));
 const Scripts_1 = __importDefault(require("../Scripts"));
+const RequestPreviewUrlPanel_1 = __importDefault(require("./requests/RequestPreviewUrlPanel"));
 class RequestWebviewPanel {
     constructor(context, request) {
         this.context = context;
@@ -70,7 +71,7 @@ class RequestWebviewPanel {
       </html>
     `;
         this.webviewPanel.webview.onDidReceiveMessage((message) => __awaiter(this, void 0, void 0, function* () {
-            var _a;
+            var _a, _b;
             const command = message.command;
             console.debug("Received event from request webview:", command);
             switch (command) {
@@ -79,10 +80,7 @@ class RequestWebviewPanel {
                     if (this.request instanceof WorkbenchHttpRequest_1.default) {
                         this.request.setMethod(method);
                     }
-                    this.webviewPanel.webview.postMessage({
-                        command: "integrationWorkbench.updateRequest",
-                        arguments: [this.request.getData()]
-                    });
+                    this.updateRequest();
                     return;
                 }
                 case "integrationWorkbench.changeHttpRequestUrl": {
@@ -90,10 +88,7 @@ class RequestWebviewPanel {
                     if (this.request instanceof WorkbenchHttpRequest_1.default) {
                         this.request.setUrl(url);
                     }
-                    this.webviewPanel.webview.postMessage({
-                        command: "integrationWorkbench.updateRequest",
-                        arguments: [this.request.getData()]
-                    });
+                    this.updateRequest();
                     return;
                 }
                 case "integrationWorkbench.changeHttpRequestHeaders": {
@@ -101,10 +96,7 @@ class RequestWebviewPanel {
                     if (this.request instanceof WorkbenchHttpRequest_1.default) {
                         this.request.setHeaders(headers);
                     }
-                    this.webviewPanel.webview.postMessage({
-                        command: "integrationWorkbench.updateRequest",
-                        arguments: [this.request.getData()]
-                    });
+                    this.updateRequest();
                     return;
                 }
                 case "integrationWorkbench.changeHttpRequestParameters": {
@@ -112,16 +104,10 @@ class RequestWebviewPanel {
                     if (this.request instanceof WorkbenchHttpRequest_1.default) {
                         this.request.setParameters(parameters);
                         if (this.request.data.parametersAutoRefresh) {
-                            this.webviewPanel.webview.postMessage({
-                                command: "integrationWorkbench.updateHttpRequestPreviewUrl",
-                                arguments: [yield this.request.getParsedUrl(new AbortController())]
-                            });
+                            (_a = this.previewUrl) === null || _a === void 0 ? void 0 : _a.updatePreviewUrl();
                         }
                     }
-                    this.webviewPanel.webview.postMessage({
-                        command: "integrationWorkbench.updateRequest",
-                        arguments: [this.request.getData()]
-                    });
+                    this.updateRequest();
                     return;
                 }
                 case "integrationWorkbench.changeHttpRequestBody": {
@@ -130,10 +116,7 @@ class RequestWebviewPanel {
                     if (this.request instanceof WorkbenchHttpRequest_1.default) {
                         this.request.setBody(bodyData);
                     }
-                    this.webviewPanel.webview.postMessage({
-                        command: "integrationWorkbench.updateRequest",
-                        arguments: [this.request.getData()]
-                    });
+                    this.updateRequest();
                     return;
                 }
                 case "integrationWorkbench.changeHttpRequestAuthorization": {
@@ -141,10 +124,7 @@ class RequestWebviewPanel {
                     if (this.request instanceof WorkbenchHttpRequest_1.default) {
                         this.request.setAuthorization(authorizationData);
                     }
-                    this.webviewPanel.webview.postMessage({
-                        command: "integrationWorkbench.updateRequest",
-                        arguments: [this.request.getData()]
-                    });
+                    this.updateRequest();
                     return;
                 }
                 case "integrationWorkbench.sendHttpRequest": {
@@ -152,19 +132,7 @@ class RequestWebviewPanel {
                     return;
                 }
                 case "integrationWorkbench.getRequest": {
-                    this.webviewPanel.webview.postMessage({
-                        command: "integrationWorkbench.updateRequest",
-                        arguments: [this.request.getData()]
-                    });
-                    return;
-                }
-                case "integrationWorkbench.getHttpRequestPreviewUrl": {
-                    if (this.request instanceof WorkbenchHttpRequest_1.default) {
-                        this.webviewPanel.webview.postMessage({
-                            command: "integrationWorkbench.updateHttpRequestPreviewUrl",
-                            arguments: [yield this.request.getParsedUrl(new AbortController())]
-                        });
-                    }
+                    this.updateRequest();
                     return;
                 }
                 case "integrationWorkbench.getScriptDeclarations": {
@@ -202,16 +170,22 @@ class RequestWebviewPanel {
                     if (this.request instanceof WorkbenchHttpRequest_1.default) {
                         const [enabled] = message.arguments;
                         this.request.data.parametersAutoRefresh = enabled;
-                        (_a = this.request.parent) === null || _a === void 0 ? void 0 : _a.save();
-                        this.webviewPanel.webview.postMessage({
-                            command: "integrationWorkbench.updateRequest",
-                            arguments: [this.request.getData()]
-                        });
+                        (_b = this.request.parent) === null || _b === void 0 ? void 0 : _b.save();
+                        this.updateRequest();
                     }
                     return;
                 }
             }
         }), undefined, this.disposables);
+        if (request instanceof WorkbenchHttpRequest_1.default) {
+            this.previewUrl = new RequestPreviewUrlPanel_1.default(this, request);
+        }
+    }
+    updateRequest() {
+        this.webviewPanel.webview.postMessage({
+            command: "integrationWorkbench.updateRequest",
+            arguments: [this.request.getData()]
+        });
     }
     reveal() {
         const columnToShowIn = vscode_1.window.activeTextEditor ? vscode_1.window.activeTextEditor.viewColumn : undefined;

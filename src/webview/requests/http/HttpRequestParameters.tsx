@@ -6,7 +6,8 @@ import { WorkbenchHttpRequestApplicationJsonBodyData, WorkbenchHttpRequestNoneBo
 import HttpRequestParameterScript from "./parameters/HttpRequestParameterScript";
 
 export default function HttpRequestParameters({ requestData }: HttpRequestProps) {
-  const [ previewUrl, setPreviewUrl ] = useState<string | undefined>(requestData.data.url);
+  const [ previewUrl, setPreviewUrl ] = useState<string | null>(null);
+  const [ previewUrlFailed, setPreviewUrlFailed ] = useState<boolean>(false);
 
   useEffect(() => {
     window.addEventListener('message', event => {
@@ -14,19 +15,27 @@ export default function HttpRequestParameters({ requestData }: HttpRequestProps)
 
       switch (command) {
         case 'integrationWorkbench.updateHttpRequestPreviewUrl': {
-          const [ previewUrl ] = event.data.arguments;
+          const [ success, previewUrl ] = event.data.arguments;
 
-          setPreviewUrl(previewUrl);
+          if(!success) {
+            setPreviewUrlFailed(true);
+          }
+          else {
+            setPreviewUrlFailed(false);
+            setPreviewUrl(previewUrl);
+          }
   
           break;
         }
       }
     });
 
-    window.vscode.postMessage({
-      command: "integrationWorkbench.getHttpRequestPreviewUrl",
-      arguments: []
-    });
+    if(requestData.data.parametersAutoRefresh) {
+      window.vscode.postMessage({
+        command: "integrationWorkbench.getHttpRequestPreviewUrl",
+        arguments: []
+      });
+    }
   }, []);
 
   return (
@@ -67,19 +76,25 @@ export default function HttpRequestParameters({ requestData }: HttpRequestProps)
           <VSCodeDataGridCell cellType="columnheader" gridColumn="3"></VSCodeDataGridCell>
         </VSCodeDataGridRow>
 
-        <VSCodeDataGridRow className="data-grid-variables-header-row">
-          <VSCodeDataGridCell gridColumn="1">
-            {(previewUrl)?(
-              previewUrl
-            ):(
-              <i>No preview url available...</i>
-            )}
-          </VSCodeDataGridCell>
+        {(!previewUrlFailed) && (
+          <VSCodeDataGridRow className="data-grid-variables-header-row">
+            <VSCodeDataGridCell gridColumn="1">
+              {(previewUrl)?(previewUrl):(
+                <i>No preview available yet...</i>
+              )}
+            </VSCodeDataGridCell>
 
-          <VSCodeDataGridCell gridColumn="2"></VSCodeDataGridCell>
-          <VSCodeDataGridCell gridColumn="3"></VSCodeDataGridCell>
-        </VSCodeDataGridRow>
+            <VSCodeDataGridCell gridColumn="2"></VSCodeDataGridCell>
+            <VSCodeDataGridCell gridColumn="3"></VSCodeDataGridCell>
+          </VSCodeDataGridRow>
+        )}
       </VSCodeDataGrid>
+
+      {(previewUrlFailed) && (
+        <div className="infobox infobox-error">
+          <i className="codicon codicon-error"></i>{" "}Preview failed... <VSCodeLink>Show output logs.</VSCodeLink>
+        </div>
+      )}
 
       <VSCodeDivider style={{
         margin: "1em 0"
