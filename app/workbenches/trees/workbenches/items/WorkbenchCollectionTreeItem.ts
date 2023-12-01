@@ -16,5 +16,5 @@ export default class WorkbenchCollectionTreeItem extends TreeItem implements Wor
     this.contextValue = "collection";
   }
 
-  iconPath = new ThemeIcon("folder");
+  //iconPath = new ThemeIcon("folder");
 }
