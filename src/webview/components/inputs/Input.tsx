@@ -4,12 +4,13 @@ import ScriptInput from "./ScriptInput";
 export type InputProps = {
   type: "raw" | "typescript";
   value: string;
+  secret?: boolean;
 
   onChange: (value: string) => void;
   onChangeType: (type: "raw" | "typescript") => void;
 };
 
-export default function Input({ type, value, onChange, onChangeType }: InputProps) {
+export default function Input({ type, value, onChange, onChangeType, secret }: InputProps) {
   return (
     <div style={{
       display: "flex",
@@ -17,7 +18,7 @@ export default function Input({ type, value, onChange, onChangeType }: InputProp
       gap: "0.5em"
     }}>
       {(type === "raw")?(
-        <VSCodeTextField type="text" placeholder="Enter a value..." value={value} onChange={(event) =>
+        <VSCodeTextField type={(secret)?("password"):("text")} placeholder="Enter a value..." value={value} onChange={(event) =>
           onChange((event.target as HTMLInputElement).value)
         }/>
       ):(

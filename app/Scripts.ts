@@ -7,6 +7,7 @@ import { ScriptDeclarationData } from "~interfaces/scripts/ScriptDeclarationData
 import TypescriptScript from "./scripts/TypescriptScript";
 import { CompilerOptions, ModuleKind, ScriptKind, ScriptTarget, createProgram, createSourceFile, formatDiagnosticsWithColorAndContext, getPreEmitDiagnostics, sys } from "typescript";
 import esbuild from "esbuild";
+import { UserInput } from "~interfaces/UserInput";
 
 export default class Scripts {
   static loadedScripts: Script[] = [];
@@ -170,6 +171,34 @@ export default class Scripts {
       }
       else {
         console.log('Build files generated successfully.');
+      }
+    });
+  }
+
+  static async evaluateUserInput(userInput: UserInput) {
+    return new Promise<string>(async (resolve, reject) => {
+      switch(userInput.type) {
+        case "raw": {
+          resolve(userInput.value);
+
+          break;
+        }
+
+        case "typescript": {
+          // TODO: add ability to view the entire script that's being evaluated for debugging purposes?
+          const script = await Scripts.buildScript(userInput.value);
+
+          try {
+            const value = String(await eval(script));
+
+            resolve(value);
+          }
+          catch(error) {
+            console.error("Failed to evaluate script: " + error);
+
+            reject(error);
+          }
+        }
       }
     });
   }

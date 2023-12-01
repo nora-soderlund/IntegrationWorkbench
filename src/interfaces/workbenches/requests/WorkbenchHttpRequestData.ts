@@ -31,14 +31,14 @@ export type WorkbenchHttpNoneAuthorization = {
 export type WorkbenchHttpBasicAuthorization = {
   type: "basic";
   
-  username: string;
-  password: string;
+  username: UserInput;
+  password: UserInput;
 };
 
 export type WorkbenchHttpBearerAuthorization = {
   type: "bearer";
   
-  token: string;
+  token: UserInput;
 };
 
 export type WorkbenchHttpAuthorization = 

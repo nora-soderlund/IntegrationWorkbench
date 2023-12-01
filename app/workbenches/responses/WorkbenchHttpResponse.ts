@@ -6,6 +6,7 @@ import { isHttpRequestApplicationJsonBodyData } from "~interfaces/workbenches/re
 import { WorkbenchResponseStatus } from "~interfaces/workbenches/responses/WorkbenchResponseStatus";
 import WorkbenchResponseTreeItem from "../trees/responses/items/WorkbenchResponseTreeItem";
 import WorkbenchHttpRequest from "../requests/WorkbenchHttpRequest";
+import Scripts from "../../Scripts";
 
 export default class WorkbenchHttpResponse {
   private response?: Response;
@@ -24,7 +25,7 @@ export default class WorkbenchHttpResponse {
   ) {
     this.request = WorkbenchHttpRequest.fromData(null, requestData);
 
-    this.request.getParsedUrl(this.abortController).then((parsedUrl) => {
+    this.request.getParsedUrl(this.abortController).then(async (parsedUrl) => {
       if(!parsedUrl) {
         window.showErrorMessage("No URL was provided in the request.");
 
@@ -36,13 +37,18 @@ export default class WorkbenchHttpResponse {
 
       switch(this.request.data.authorization.type) {
         case "basic": {
-          headers.set("Authorization", `Basic ${btoa(`${this.request.data.authorization.username}:${this.request.data.authorization.password}`)}`);
+          const username = await Scripts.evaluateUserInput(this.request.data.authorization.username);
+          const password = await Scripts.evaluateUserInput(this.request.data.authorization.password);
+          
+          headers.set("Authorization", `Basic ${btoa(`${username}:${password}`)}`);
 
           break;
         }
 
         case "bearer": {
-          headers.set("Authorization", `Bearer ${this.request.data.authorization.token}`);
+          const token = await Scripts.evaluateUserInput(this.request.data.authorization.token);
+
+          headers.set("Authorization", `Bearer ${token}`);
 
           break;
         }

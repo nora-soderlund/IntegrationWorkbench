@@ -15,6 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const vscode_1 = require("vscode");
 const WorkbenchRequestDataTypeValidations_1 = require("../../../src/interfaces/workbenches/requests/utils/WorkbenchRequestDataTypeValidations");
 const WorkbenchHttpRequest_1 = __importDefault(require("../requests/WorkbenchHttpRequest"));
+const Scripts_1 = __importDefault(require("../../Scripts"));
 class WorkbenchHttpResponse {
     constructor(id, requestData, requestedAt) {
         this.id = id;
@@ -22,7 +23,7 @@ class WorkbenchHttpResponse {
         this.status = "loading";
         this.abortController = new AbortController();
         this.request = WorkbenchHttpRequest_1.default.fromData(null, requestData);
-        this.request.getParsedUrl(this.abortController).then((parsedUrl) => {
+        this.request.getParsedUrl(this.abortController).then((parsedUrl) => __awaiter(this, void 0, void 0, function* () {
             if (!parsedUrl) {
                 vscode_1.window.showErrorMessage("No URL was provided in the request.");
                 return;
@@ -31,11 +32,14 @@ class WorkbenchHttpResponse {
             let body;
             switch (this.request.data.authorization.type) {
                 case "basic": {
-                    headers.set("Authorization", `Basic ${btoa(`${this.request.data.authorization.username}:${this.request.data.authorization.password}`)}`);
+                    const username = yield Scripts_1.default.evaluateUserInput(this.request.data.authorization.username);
+                    const password = yield Scripts_1.default.evaluateUserInput(this.request.data.authorization.password);
+                    headers.set("Authorization", `Basic ${btoa(`${username}:${password}`)}`);
                     break;
                 }
                 case "bearer": {
-                    headers.set("Authorization", `Bearer ${this.request.data.authorization.token}`);
+                    const token = yield Scripts_1.default.evaluateUserInput(this.request.data.authorization.token);
+                    headers.set("Authorization", `Bearer ${token}`);
                     break;
                 }
             }
@@ -55,7 +59,7 @@ class WorkbenchHttpResponse {
             })
                 .then(this.handleResponse.bind(this))
                 .catch(this.handleResponseError.bind(this));
-        })
+        }))
             .catch(this.handleResponseError.bind(this));
     }
     getData() {

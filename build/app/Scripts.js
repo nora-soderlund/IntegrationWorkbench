@@ -143,6 +143,30 @@ class Scripts {
             });
         });
     }
+    static evaluateUserInput(userInput) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return new Promise((resolve, reject) => __awaiter(this, void 0, void 0, function* () {
+                switch (userInput.type) {
+                    case "raw": {
+                        resolve(userInput.value);
+                        break;
+                    }
+                    case "typescript": {
+                        // TODO: add ability to view the entire script that's being evaluated for debugging purposes?
+                        const script = yield Scripts.buildScript(userInput.value);
+                        try {
+                            const value = String(yield eval(script));
+                            resolve(value);
+                        }
+                        catch (error) {
+                            console.error("Failed to evaluate script: " + error);
+                            reject(error);
+                        }
+                    }
+                }
+            }));
+        });
+    }
 }
 Scripts.loadedScripts = [];
 Scripts.loadedDependencies = [];

@@ -1,8 +1,8 @@
-import React, { Component, useEffect, useRef, useState } from "react";
+import React from "react";
 import { HttpRequestProps } from "../HttpRequest";
-import { VSCodeButton, VSCodeDataGrid, VSCodeDataGridCell, VSCodeDataGridRow, VSCodeDropdown, VSCodeLink, VSCodeOption, VSCodeRadio, VSCodeRadioGroup, VSCodeTextField } from '@vscode/webview-ui-toolkit/react';
-import HttpRequestBodySwitch from "../body/HttpRequestBodySwitch";
-import { WorkbenchHttpBearerAuthorization, WorkbenchHttpRequestApplicationJsonBodyData, WorkbenchHttpRequestNoneBodyData, WorkbenchHttpRequestRawBodyData } from "../../../../interfaces/workbenches/requests/WorkbenchHttpRequestData";
+import { VSCodeDataGrid, VSCodeDataGridCell, VSCodeDataGridRow } from '@vscode/webview-ui-toolkit/react';
+import { WorkbenchHttpBearerAuthorization } from "../../../../interfaces/workbenches/requests/WorkbenchHttpRequestData";
+import Input from "../../../components/inputs/Input";
 
 type HttpRequesBearerAuthorizationProps = HttpRequestProps & {
   authorizationData: WorkbenchHttpBearerAuthorization;
@@ -20,8 +20,15 @@ export default function HttpRequesBearerAuthorization({ requestData, authorizati
 
         <VSCodeDataGridRow>
           <VSCodeDataGridCell gridColumn="1">
-            <VSCodeTextField type="text" placeholder="Enter a token..." value={authorizationData.token} onChange={(event) => {
-              authorizationData.token = (event.target as HTMLInputElement).value;
+            <Input secret={true} type={authorizationData.token.type} value={authorizationData.token.value} onChange={(value) => {
+              authorizationData.token.value = value;
+
+              window.vscode.postMessage({
+                command: "integrationWorkbench.changeHttpRequestAuthorization",
+                arguments: [ authorizationData ]
+              });
+            }} onChangeType={(type) => {
+              authorizationData.token.type = type;
 
               window.vscode.postMessage({
                 command: "integrationWorkbench.changeHttpRequestAuthorization",

@@ -75,31 +75,9 @@ export default class WorkbenchHttpRequest extends WorkbenchRequest {
           continue;
         }
 
-        switch(parameter.type) {
-          case "raw": {
-            parsedUrl = parsedUrl?.replace('{' + key + '}', parameter.value);
+        const value = await Scripts.evaluateUserInput(parameter);
 
-            break;
-          }
-
-          case "typescript": {
-            // TODO: add ability to view the entire script that's being evaluated for debugging purposes?
-            const script = await Scripts.buildScript(parameter.value);
-
-            let value;
-
-            try {
-              value = await eval(script);
-            }
-            catch(error) {
-              console.error("Failed to evaluate script: " + error);
-
-              reject(error);
-            }
-
-            parsedUrl = parsedUrl?.replace('{' + key + '}', value);
-          }
-        }
+        parsedUrl = parsedUrl?.replace('{' + key + '}', value);
       }
 
       abortController.signal.removeEventListener("abort", abortListener);

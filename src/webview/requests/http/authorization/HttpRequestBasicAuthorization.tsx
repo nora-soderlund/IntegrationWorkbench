@@ -3,6 +3,7 @@ import { HttpRequestProps } from "../HttpRequest";
 import { VSCodeButton, VSCodeDataGrid, VSCodeDataGridCell, VSCodeDataGridRow, VSCodeDropdown, VSCodeLink, VSCodeOption, VSCodeRadio, VSCodeRadioGroup, VSCodeTextField } from '@vscode/webview-ui-toolkit/react';
 import HttpRequestBodySwitch from "../body/HttpRequestBodySwitch";
 import { WorkbenchHttpBasicAuthorization, WorkbenchHttpRequestApplicationJsonBodyData, WorkbenchHttpRequestNoneBodyData, WorkbenchHttpRequestRawBodyData } from "../../../../interfaces/workbenches/requests/WorkbenchHttpRequestData";
+import Input from "../../../components/inputs/Input";
 
 type HttpRequesBasicAuthorizationProps = HttpRequestProps & {
   authorizationData: WorkbenchHttpBasicAuthorization;
@@ -24,8 +25,15 @@ export default function HttpRequesBasicAuthorization({ requestData, authorizatio
 
         <VSCodeDataGridRow>
           <VSCodeDataGridCell gridColumn="1">
-            <VSCodeTextField type="text" placeholder="Enter an username..." value={authorizationData.username} onChange={(event) => {
-              authorizationData.username = (event.target as HTMLInputElement).value;
+            <Input type={authorizationData.username.type} value={authorizationData.username.value} onChange={(value) => {
+              authorizationData.username.value = value;
+
+              window.vscode.postMessage({
+                command: "integrationWorkbench.changeHttpRequestAuthorization",
+                arguments: [ authorizationData ]
+              });
+            }} onChangeType={(type) => {
+              authorizationData.username.type = type;
 
               window.vscode.postMessage({
                 command: "integrationWorkbench.changeHttpRequestAuthorization",
@@ -35,8 +43,15 @@ export default function HttpRequesBasicAuthorization({ requestData, authorizatio
           </VSCodeDataGridCell>
 
           <VSCodeDataGridCell gridColumn="2">
-            <VSCodeTextField type="password" placeholder="Enter a password..." value={authorizationData.password} onChange={(event) => {
-              authorizationData.password = (event.target as HTMLInputElement).value;
+            <Input secret={true} type={authorizationData.password.type} value={authorizationData.password.value} onChange={(value) => {
+              authorizationData.password.value = value;
+
+              window.vscode.postMessage({
+                command: "integrationWorkbench.changeHttpRequestAuthorization",
+                arguments: [ authorizationData ]
+              });
+            }} onChangeType={(type) => {
+              authorizationData.password.type = type;
 
               window.vscode.postMessage({
                 command: "integrationWorkbench.changeHttpRequestAuthorization",

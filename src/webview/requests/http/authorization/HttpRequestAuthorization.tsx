@@ -33,8 +33,16 @@ export default function HttpRequestAuthorization({ requestData }: HttpRequestPro
             const authorizationData: WorkbenchHttpBasicAuthorization = {
               type: "basic",
 
-              username: "",
-              password: ""
+              username: {
+                type: "raw",
+                key: "username",
+                value: ""
+              },
+              password: {
+                type: "raw",
+                key: "password",
+                value: ""
+              }
             };
 
             window.vscode.postMessage({
@@ -49,7 +57,11 @@ export default function HttpRequestAuthorization({ requestData }: HttpRequestPro
             const authorizationData: WorkbenchHttpBearerAuthorization = {
               type: "bearer",
 
-              token: ""
+              token: {
+                type: "raw",
+                key: "token",
+                value: ""
+              }
             };
 
             window.vscode.postMessage({
