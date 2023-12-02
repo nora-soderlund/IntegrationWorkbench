@@ -103,7 +103,7 @@ export default function EnvironmentVariables({ environmentData }: EnvironmentPro
                     {(value.length)?(
                       value
                     ):(
-                      <i>No value...</i>
+                      <i>No value</i>
                     )}
                   </VSCodeDataGridCell>
                 </VSCodeDataGridRow>
