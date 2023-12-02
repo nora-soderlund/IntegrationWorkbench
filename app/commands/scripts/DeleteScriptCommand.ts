@@ -6,12 +6,11 @@ import WorkbenchRequest from "../../workbenches/requests/WorkbenchRequest";
 import Script from "../../entities/scripts/TypescriptScript";
 import ScriptTreeItem from "../../views/trees/scripts/items/ScriptTreeItem";
 import Scripts from "../../Scripts";
+import Command from "../Command";
 
-export default class DeleteScriptCommand {
-  constructor(private readonly context: ExtensionContext) {
-    context.subscriptions.push(
-      commands.registerCommand('integrationWorkbench.deleteScript', this.handle.bind(this))
-    );
+export default class DeleteScriptCommand extends Command {
+  constructor(context: ExtensionContext) {
+    super(context, 'integrationWorkbench.deleteScript');
   }
   
   async handle(reference: unknown) {

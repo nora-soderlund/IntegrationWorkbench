@@ -7,12 +7,11 @@ import path from "path";
 import { workbenches } from "../../Workbenches";
 import { randomUUID } from "crypto";
 import { existsSync, mkdirSync } from "fs";
+import Command from "../Command";
 
-export default class CreateWorkbenchCommand {
-  constructor(private readonly context: ExtensionContext) {
-    context.subscriptions.push(
-      commands.registerCommand('integrationWorkbench.createWorkbench', this.handle.bind(this))
-    );
+export default class CreateWorkbenchCommand extends Command {
+  constructor(context: ExtensionContext) {
+    super(context, 'integrationWorkbench.createWorkbench');
   }
   
   async handle() {

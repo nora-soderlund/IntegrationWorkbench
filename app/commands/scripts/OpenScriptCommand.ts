@@ -1,15 +1,14 @@
-import { Command, ExtensionContext, Uri, commands, window, workspace } from "vscode";
+import { ExtensionContext, Uri, commands, window, workspace } from "vscode";
 import { Workbench } from "../../workbenches/Workbench";
 import { RequestWebviewPanel } from "../../views/webviews/RequestWebviewPanel";
 import WorkbenchRequest from "../../workbenches/requests/WorkbenchRequest";
 import { WorkbenchCollection } from "../../workbenches/collections/WorkbenchCollection";
 import Script from "../../entities/scripts/TypescriptScript";
+import Command from "../Command";
 
-export default class OpenScriptCommand {
-  constructor(private readonly context: ExtensionContext) {
-    context.subscriptions.push(
-      commands.registerCommand('integrationWorkbench.openScript', this.handle.bind(this))
-    );
+export default class OpenScriptCommand extends Command {
+  constructor(context: ExtensionContext) {
+    super(context, 'integrationWorkbench.openScript');
   }
   
   async handle(script: Script) {

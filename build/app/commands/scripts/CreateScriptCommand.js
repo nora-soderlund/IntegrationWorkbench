@@ -18,10 +18,10 @@ const fs_1 = require("fs");
 const TypescriptScript_1 = __importDefault(require("../../entities/scripts/TypescriptScript"));
 const Scripts_1 = __importDefault(require("../../Scripts"));
 const GetRootPath_1 = __importDefault(require("../../utils/GetRootPath"));
-class CreateScriptCommand {
+const Command_1 = __importDefault(require("../Command"));
+class CreateScriptCommand extends Command_1.default {
     constructor(context) {
-        this.context = context;
-        context.subscriptions.push(vscode_1.commands.registerCommand('integrationWorkbench.createScript', this.handle.bind(this)));
+        super(context, 'integrationWorkbench.createScript');
     }
     handle() {
         return __awaiter(this, void 0, void 0, function* () {

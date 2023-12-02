@@ -18,10 +18,10 @@ const path_1 = __importDefault(require("path"));
 const TypescriptScript_1 = __importDefault(require("../../entities/scripts/TypescriptScript"));
 const Scripts_1 = __importDefault(require("../../Scripts"));
 const GetRootPath_1 = __importDefault(require("../../utils/GetRootPath"));
-class EditScriptNameCommand {
+const Command_1 = __importDefault(require("../Command"));
+class EditScriptNameCommand extends Command_1.default {
     constructor(context) {
-        this.context = context;
-        context.subscriptions.push(vscode_1.commands.registerCommand('integrationWorkbench.editScriptName', this.handle.bind(this)));
+        super(context, 'integrationWorkbench.editScriptName');
     }
     handle(reference) {
         return __awaiter(this, void 0, void 0, function* () {

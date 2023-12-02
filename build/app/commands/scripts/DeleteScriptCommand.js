@@ -15,10 +15,10 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const vscode_1 = require("vscode");
 const ScriptTreeItem_1 = __importDefault(require("../../views/trees/scripts/items/ScriptTreeItem"));
 const Scripts_1 = __importDefault(require("../../Scripts"));
-class DeleteScriptCommand {
+const Command_1 = __importDefault(require("../Command"));
+class DeleteScriptCommand extends Command_1.default {
     constructor(context) {
-        this.context = context;
-        context.subscriptions.push(vscode_1.commands.registerCommand('integrationWorkbench.deleteScript', this.handle.bind(this)));
+        super(context, 'integrationWorkbench.deleteScript');
     }
     handle(reference) {
         return __awaiter(this, void 0, void 0, function* () {

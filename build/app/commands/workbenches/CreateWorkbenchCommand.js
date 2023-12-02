@@ -21,10 +21,10 @@ const path_1 = __importDefault(require("path"));
 const Workbenches_1 = require("../../Workbenches");
 const crypto_1 = require("crypto");
 const fs_1 = require("fs");
-class CreateWorkbenchCommand {
+const Command_1 = __importDefault(require("../Command"));
+class CreateWorkbenchCommand extends Command_1.default {
     constructor(context) {
-        this.context = context;
-        context.subscriptions.push(vscode_1.commands.registerCommand('integrationWorkbench.createWorkbench', this.handle.bind(this)));
+        super(context, 'integrationWorkbench.createWorkbench');
     }
     handle() {
         return __awaiter(this, void 0, void 0, function* () {

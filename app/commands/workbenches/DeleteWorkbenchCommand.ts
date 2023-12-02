@@ -2,12 +2,11 @@ import { ExtensionContext, commands, window } from "vscode";
 import { Workbench } from "../../workbenches/Workbench";
 import WorkbenchTreeItem from "../../views/trees/workbenches/items/WorkbenchTreeItem";
 import { scanForWorkbenches } from "../../Workbenches";
+import Command from "../Command";
 
-export default class DeleteWorkbenchCommand {
-  constructor(private readonly context: ExtensionContext) {
-    context.subscriptions.push(
-      commands.registerCommand('integrationWorkbench.deleteWorkbench', this.handle.bind(this))
-    );
+export default class DeleteWorkbenchCommand extends Command {
+  constructor(context: ExtensionContext) {
+    super(context, 'integrationWorkbench.deleteWorkbench');
   }
   
   async handle(reference: unknown) {

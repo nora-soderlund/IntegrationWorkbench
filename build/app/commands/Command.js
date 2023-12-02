@@ -8,24 +8,20 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 const vscode_1 = require("vscode");
-const Command_1 = __importDefault(require("../Command"));
-class OpenScriptCommand extends Command_1.default {
-    constructor(context) {
-        super(context, 'integrationWorkbench.openScript');
+class Command {
+    constructor(context, command) {
+        this.context = context;
+        this.command = command;
+        context.subscriptions.push(vscode_1.commands.registerCommand(command, this.handle.bind(this)));
     }
-    handle(script) {
+    handle(...args) {
         return __awaiter(this, void 0, void 0, function* () {
-            const file = vscode_1.Uri.file(script.filePath);
-            const textDocument = yield vscode_1.workspace.openTextDocument(file);
-            vscode_1.window.showTextDocument(textDocument);
+            throw new Error("Not implemented");
         });
     }
     ;
 }
-exports.default = OpenScriptCommand;
-//# sourceMappingURL=OpenScriptCommand.js.map
+exports.default = Command;
+//# sourceMappingURL=Command.js.map

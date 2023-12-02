@@ -5,12 +5,11 @@ import Script from "../../entities/scripts/TypescriptScript";
 import Scripts from "../../Scripts";
 import getRootPath from "../../utils/GetRootPath";
 import OpenScriptCommand from "./OpenScriptCommand";
+import Command from "../Command";
 
-export default class CreateScriptCommand {
-  constructor(private readonly context: ExtensionContext) {
-    context.subscriptions.push(
-      commands.registerCommand('integrationWorkbench.createScript', this.handle.bind(this))
-    );
+export default class CreateScriptCommand extends Command {
+  constructor(context: ExtensionContext) {
+    super(context, 'integrationWorkbench.createScript');
   }
   
   async handle() {

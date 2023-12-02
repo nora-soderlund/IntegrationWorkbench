@@ -2,12 +2,11 @@ import { ExtensionContext, commands, window } from "vscode";
 import WorkbenchTreeItem from "../../views/trees/workbenches/items/WorkbenchTreeItem";
 import { randomUUID } from "crypto";
 import { Workbench } from "../../workbenches/Workbench";
+import Command from "../Command";
 
-export default class RunWorkbenchCommand {
-  constructor(private readonly context: ExtensionContext) {
-    context.subscriptions.push(
-      commands.registerCommand('integrationWorkbench.runWorkbench', this.handle.bind(this))
-    );
+export default class RunWorkbenchCommand extends Command {
+  constructor(context: ExtensionContext) {
+    super(context, 'integrationWorkbench.runWorkbench');
   }
   
   async handle(reference: unknown) {

@@ -9,12 +9,11 @@ import path from "path";
 import TypescriptScript from "../../entities/scripts/TypescriptScript";
 import Scripts from "../../Scripts";
 import getRootPath from "../../utils/GetRootPath";
+import Command from "../Command";
 
-export default class EditScriptNameCommand {
-  constructor(private readonly context: ExtensionContext) {
-    context.subscriptions.push(
-      commands.registerCommand('integrationWorkbench.editScriptName', this.handle.bind(this))
-    );
+export default class EditScriptNameCommand extends Command {
+  constructor(context: ExtensionContext) {
+    super(context, 'integrationWorkbench.editScriptName');
   }
   
   async handle(reference: ScriptTreeItem) {

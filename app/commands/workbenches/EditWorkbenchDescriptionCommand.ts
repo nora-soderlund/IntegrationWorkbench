@@ -9,12 +9,11 @@ import path from "path";
 import { existsSync, mkdirSync } from "fs";
 import getUniqueFolderPath from "../../utils/GetUniqueFolderPath";
 import getCamelizedString from "../../utils/GetCamelizedString";
+import Command from "../Command";
 
-export default class EditWorkbenchDescriptionCommand {
-  constructor(private readonly context: ExtensionContext) {
-    context.subscriptions.push(
-      commands.registerCommand('integrationWorkbench.editWorkbenchDescription', this.handle.bind(this))
-    );
+export default class EditWorkbenchDescriptionCommand extends Command {
+  constructor(context: ExtensionContext) {
+    super(context, 'integrationWorkbench.editWorkbenchDescription');
   }
   
   async handle(reference: unknown) {
