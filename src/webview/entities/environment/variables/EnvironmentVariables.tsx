@@ -78,37 +78,49 @@ export default function EnvironmentVariables({ environmentData }: EnvironmentPro
           </div>
         ):(
           (previewVariablesData.success)?(
-            <VSCodeDataGrid className="data-grid-unfocusable data-grid-unhoverable" style={{
-              width: "100%"
-            }}>
-              <VSCodeDataGridRow rowType="header" style={{
-                alignItems: "center"
-              }}>
-                <VSCodeDataGridCell cellType="columnheader" gridColumn="1">
-                  Header
-                </VSCodeDataGridCell>
+            (previewVariablesData.items.length)?(
+              <React.Fragment>
+                <VSCodeDataGrid className="data-grid-unfocusable data-grid-unhoverable" style={{
+                  width: "100%"
+                }}>
+                  <VSCodeDataGridRow rowType="header" style={{
+                    alignItems: "center"
+                  }}>
+                    <VSCodeDataGridCell cellType="columnheader" gridColumn="1">
+                      Header
+                    </VSCodeDataGridCell>
 
-                <VSCodeDataGridCell cellType="columnheader" gridColumn="2">
-                  Value
-                </VSCodeDataGridCell>
-              </VSCodeDataGridRow>
+                    <VSCodeDataGridCell cellType="columnheader" gridColumn="2">
+                      Value
+                    </VSCodeDataGridCell>
+                  </VSCodeDataGridRow>
 
-              {previewVariablesData.items.map(({ key, value }) => (
-                <VSCodeDataGridRow key={key} className="data-grid-buttons-hoverable">
-                  <VSCodeDataGridCell gridColumn="1">
-                    {key}
-                  </VSCodeDataGridCell>
+                  {previewVariablesData.items.map(({ key, value }) => (
+                    <VSCodeDataGridRow key={key} className="data-grid-buttons-hoverable">
+                      <VSCodeDataGridCell gridColumn="1">
+                        {key}
+                      </VSCodeDataGridCell>
 
-                  <VSCodeDataGridCell gridColumn="2">
-                    {(value.length)?(
-                      value
-                    ):(
-                      <i>No value</i>
-                    )}
-                  </VSCodeDataGridCell>
-                </VSCodeDataGridRow>
-              ))}
-            </VSCodeDataGrid>
+                      <VSCodeDataGridCell gridColumn="2">
+                        {(value.length)?(
+                          value
+                        ):(
+                          <i>No value</i>
+                        )}
+                      </VSCodeDataGridCell>
+                    </VSCodeDataGridRow>
+                  ))}
+                </VSCodeDataGrid>
+
+                <VSCodeButton appearance="secondary" onClick={() => setPreviewVariablesData(null)} style={{
+                  marginRight: "auto"
+                }}>
+                  Dismiss preview
+                </VSCodeButton>
+              </React.Fragment>
+            ):(
+              <p>This environment has no variables.</p>
+            )
           ):(
             <div className="infobox infobox-error">
               <div>

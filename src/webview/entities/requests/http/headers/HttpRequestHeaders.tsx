@@ -78,37 +78,45 @@ export default function HttpRequestHeaders({ requestData }: HttpRequestProps) {
         ):(
           (previewHeaderData.success)?(
             (previewHeaderData.headers.length)?(
-              <VSCodeDataGrid className="data-grid-unfocusable data-grid-unhoverable" style={{
-                width: "100%"
-              }}>
-                <VSCodeDataGridRow rowType="header" style={{
-                  alignItems: "center"
+              <React.Fragment>
+                <VSCodeDataGrid className="data-grid-unfocusable data-grid-unhoverable" style={{
+                  width: "100%"
                 }}>
-                  <VSCodeDataGridCell cellType="columnheader" gridColumn="1">
-                    Header
-                  </VSCodeDataGridCell>
-
-                  <VSCodeDataGridCell cellType="columnheader" gridColumn="2">
-                    Value
-                  </VSCodeDataGridCell>
-                </VSCodeDataGridRow>
-
-                {previewHeaderData.headers.map(({ key, value }) => (
-                  <VSCodeDataGridRow key={key} className="data-grid-buttons-hoverable">
-                    <VSCodeDataGridCell gridColumn="1">
-                      {key}
+                  <VSCodeDataGridRow rowType="header" style={{
+                    alignItems: "center"
+                  }}>
+                    <VSCodeDataGridCell cellType="columnheader" gridColumn="1">
+                      Header
                     </VSCodeDataGridCell>
 
-                    <VSCodeDataGridCell gridColumn="2">
-                      {(value.length)?(
-                        value
-                      ):(
-                        <i>No header value...</i>
-                      )}
+                    <VSCodeDataGridCell cellType="columnheader" gridColumn="2">
+                      Value
                     </VSCodeDataGridCell>
                   </VSCodeDataGridRow>
-                ))}
-              </VSCodeDataGrid>
+
+                  {previewHeaderData.headers.map(({ key, value }) => (
+                    <VSCodeDataGridRow key={key} className="data-grid-buttons-hoverable">
+                      <VSCodeDataGridCell gridColumn="1">
+                        {key}
+                      </VSCodeDataGridCell>
+
+                      <VSCodeDataGridCell gridColumn="2">
+                        {(value.length)?(
+                          value
+                        ):(
+                          <i>No header value...</i>
+                        )}
+                      </VSCodeDataGridCell>
+                    </VSCodeDataGridRow>
+                  ))}
+                </VSCodeDataGrid>
+
+                <VSCodeButton appearance="secondary" onClick={() => setPreviewHeaderData(null)} style={{
+                  marginRight: "auto"
+                }}>
+                  Dismiss preview
+                </VSCodeButton>
+              </React.Fragment>
             ):(
               <p>This request has no headers.</p>
             )
