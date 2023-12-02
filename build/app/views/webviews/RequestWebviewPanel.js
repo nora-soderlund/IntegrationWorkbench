@@ -22,6 +22,7 @@ const Scripts_1 = __importDefault(require("../../Scripts"));
 const RequestPreviewUrlPanel_1 = __importDefault(require("./requests/RequestPreviewUrlPanel"));
 const extension_1 = require("../../extension");
 const RequestPreviewHeadersPanel_1 = __importDefault(require("./requests/RequestPreviewHeadersPanel"));
+const Environments_1 = __importDefault(require("../../Environments"));
 class RequestWebviewPanel {
     constructor(context, request) {
         this.context = context;
@@ -162,7 +163,7 @@ class RequestWebviewPanel {
                     }).concat([
                         {
                             name: "ts:environment.d.ts",
-                            declaration: "declare const process: { env: { HELLO: string; }; };"
+                            declaration: yield Environments_1.default.getEnvironmentDeclaration()
                         }
                     ]);
                     console.log({ argument });

@@ -1,8 +1,8 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
-import Request from './webview/requests/Request';
-import Response from './webview/responses/Response';
-import Script from './webview/scripts/Script';
+import Request from './webview/entities/requests/Request';
+import Response from './webview/entities/responses/Response';
+import Environment from './webview/entities/environment/Environment';
 
 const rootElement = document.getElementById('root') as HTMLElement;
 
@@ -19,8 +19,8 @@ switch(window.type) {
     break;
   }
 
-  case "script": {
-    ReactDOM.render(<Script/>, rootElement);
+  case "environment": {
+    ReactDOM.render(<Environment/>, rootElement);
 
     break;
   }

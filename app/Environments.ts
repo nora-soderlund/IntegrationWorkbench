@@ -90,4 +90,18 @@ export default class Environments {
   
     return this.loadedEnvironments;
   }
+
+  public static async getEnvironmentDeclaration(environment?: Environment) {
+    if(!environment) {
+      if(!this.selectedEnvironment) {
+        return "";
+      }
+
+      environment = this.selectedEnvironment;
+    }
+
+    const parsedVariables = await environment.getParsedVariables(new AbortController());
+
+    return `declare const process: { env: { ${parsedVariables.map((parsedVariable) => `${parsedVariable.key}: any;`).join(' ')} }; };`;
+  }
 }

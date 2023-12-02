@@ -14,10 +14,13 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.EnvironmentWebviewPanel = void 0;
 const vscode_1 = require("vscode");
-const EnvironmentPreviewVariablesPanel_1 = __importDefault(require("./preivews/EnvironmentPreviewVariablesPanel"));
+const EnvironmentPreviewVariablesPanel_1 = __importDefault(require("./previews/EnvironmentPreviewVariablesPanel"));
 const fs_1 = require("fs");
 const path_1 = __importDefault(require("path"));
 const GetWebviewUri_1 = require("../../../utils/GetWebviewUri");
+const extension_1 = require("../../../extension");
+const Scripts_1 = __importDefault(require("../../../Scripts"));
+const Environments_1 = __importDefault(require("../../../Environments"));
 class EnvironmentWebviewPanel {
     constructor(context, environment) {
         this.context = context;
@@ -72,8 +75,53 @@ class EnvironmentWebviewPanel {
             const command = message.command;
             console.debug("Received event from request webview:", command);
             switch (command) {
-                case "integrationWorkbench.getRequest": {
+                case "integrationWorkbench.showOutputLogs": {
+                    extension_1.outputChannel.show();
+                    break;
+                }
+                case "integrationWorkbench.getEnvironment": {
                     this.updateEnvironment();
+                    return;
+                }
+                case "integrationWorkbench.changeEnvironmentVariables": {
+                    const [variables] = message.arguments;
+                    this.environment.data.variables = variables;
+                    this.environment.save();
+                    if (this.environment.data.variablesAutoRefresh) {
+                        this.previewVariables.updatePreviewVariables();
+                    }
+                    this.updateEnvironment();
+                    return;
+                }
+                case "integrationWorkbench.getScriptDeclarations": {
+                    const promises = yield Promise.allSettled(Scripts_1.default.loadedScripts.map((script) => __awaiter(this, void 0, void 0, function* () {
+                        return {
+                            script,
+                            build: yield script.build()
+                        };
+                    })));
+                    const fulfilledPromises = promises.reduce((newArray, promise) => {
+                        if (promise.status === 'fulfilled') {
+                            newArray.push(promise.value);
+                        }
+                        return newArray;
+                    }, []);
+                    const argument = fulfilledPromises.map(({ script, build }) => {
+                        return {
+                            name: `ts:${script.getNameWithoutExtension()}.d.ts`,
+                            declaration: build.declaration
+                        };
+                    }).concat([
+                        {
+                            name: "ts:environment.d.ts",
+                            declaration: yield Environments_1.default.getEnvironmentDeclaration()
+                        }
+                    ]);
+                    console.log({ argument });
+                    this.webviewPanel.webview.postMessage({
+                        command: "integrationWorkbench.updateScriptDeclarations",
+                        arguments: [argument]
+                    });
                     return;
                 }
             }

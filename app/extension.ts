@@ -27,7 +27,6 @@ import RunWorkbenchCommand from './commands/workbenches/RunWorkbenchCommand';
 import ScriptsTreeDataProvider from './views/trees/scripts/ScriptsTreeDataProvider';
 import Scripts from './Scripts';
 import CreateScriptCommand from './commands/scripts/CreateScriptCommand';
-import ScriptTreeItem from './views/trees/scripts/items/ScriptTreeItem';
 import OpenScriptCommand from './commands/scripts/OpenScriptCommand';
 import EditScriptNameCommand from './commands/scripts/EditScriptNameCommand';
 import EditWorkbenchNameCommand from './commands/workbenches/EditWorkbenchNameCommand';

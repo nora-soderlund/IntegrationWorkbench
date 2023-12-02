@@ -1,15 +1,19 @@
 import { Disposable, ExtensionContext, ThemeIcon, Uri, ViewColumn, WebviewPanel, window } from "vscode";
-import EnvironmentPreviewVariablesPanel from "./preivews/EnvironmentPreviewVariablesPanel";
+import EnvironmentPreviewVariablesPanel from "./previews/EnvironmentPreviewVariablesPanel";
 import Environment from "../../../entities/Environment";
 import { readFileSync } from "fs";
 import path from "path";
 import { getWebviewUri } from "../../../utils/GetWebviewUri";
+import { outputChannel } from "../../../extension";
+import TypescriptScript from "../../../scripts/TypescriptScript";
+import Scripts from "../../../Scripts";
+import Environments from "../../../Environments";
 
 export class EnvironmentWebviewPanel {
   public readonly webviewPanel: WebviewPanel;
   public readonly disposables: Disposable[] = [];
 
-  private previewVariables?: EnvironmentPreviewVariablesPanel;
+  private previewVariables: EnvironmentPreviewVariablesPanel;
 
   constructor(
     private readonly context: ExtensionContext,
@@ -78,8 +82,75 @@ export class EnvironmentWebviewPanel {
         console.debug("Received event from request webview:", command);
 
         switch (command) {
-          case "integrationWorkbench.getRequest": {
+          case "integrationWorkbench.showOutputLogs": {
+            outputChannel.show();
+
+            break;
+          }
+
+          case "integrationWorkbench.getEnvironment": {
             this.updateEnvironment();
+
+            return;
+          }
+
+          case "integrationWorkbench.changeEnvironmentVariables": {
+            const [ variables ] = message.arguments;
+
+            this.environment.data.variables = variables;
+            this.environment.save();
+
+            if(this.environment.data.variablesAutoRefresh) {
+              this.previewVariables.updatePreviewVariables();
+            }
+
+            this.updateEnvironment();
+
+            return;
+          }
+
+          case "integrationWorkbench.getScriptDeclarations": {
+            type ScriptBuildResult = {
+              script: TypescriptScript,
+              build: {
+                declaration: string;
+                javascript: string;
+              };
+            };
+
+            const promises = await Promise.allSettled(Scripts.loadedScripts.map<Promise<ScriptBuildResult>>(async (script) => {
+              return {
+                script,
+                build: await script.build()
+              }
+            }));
+
+            const fulfilledPromises = promises.reduce<ScriptBuildResult[]>((newArray, promise) => {
+              if (promise.status === 'fulfilled') {
+                newArray.push(promise.value);
+              }
+
+              return newArray
+            }, []);
+
+            const argument = fulfilledPromises.map(({ script, build }) => {
+              return {
+                name: `ts:${script.getNameWithoutExtension()}.d.ts`,
+                declaration: build.declaration
+              };
+            }).concat([
+              {
+                name: "ts:environment.d.ts",
+                declaration: await Environments.getEnvironmentDeclaration()
+              }
+            ]);
+
+            console.log({ argument });
+
+            this.webviewPanel.webview.postMessage({
+              command: "integrationWorkbench.updateScriptDeclarations",
+              arguments: [ argument ]
+            });
 
             return;
           }

@@ -6,10 +6,10 @@ import WorkbenchRequest from "../../workbenches/requests/WorkbenchRequest";
 import WorkbenchHttpRequest from "../../workbenches/requests/WorkbenchHttpRequest";
 import Scripts from "../../Scripts";
 import Script from "../../scripts/TypescriptScript";
-import { ScriptDeclarationData } from "~interfaces/scripts/ScriptDeclarationData";
 import RequestPreviewUrlPanel from "./requests/RequestPreviewUrlPanel";
 import { outputChannel } from "../../extension";
 import RequestPreviewHeadersPanel from "./requests/RequestPreviewHeadersPanel";
+import Environments from "../../Environments";
 
 export class RequestWebviewPanel {
   public readonly webviewPanel: WebviewPanel;
@@ -213,7 +213,7 @@ export class RequestWebviewPanel {
             }).concat([
               {
                 name: "ts:environment.d.ts",
-                declaration: "declare const process: { env: { HELLO: string; }; };"
+                declaration: await Environments.getEnvironmentDeclaration()
               }
             ]);
 

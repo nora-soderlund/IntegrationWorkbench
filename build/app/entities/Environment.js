@@ -13,7 +13,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const fs_1 = require("fs");
-const vscode_1 = require("vscode");
 const EnvironmentWebviewPanel_1 = require("../views/webviews/environments/EnvironmentWebviewPanel");
 const Scripts_1 = __importDefault(require("../Scripts"));
 class Environment {
@@ -61,7 +60,7 @@ class Environment {
         else {
             this.requestWebviewPanel.reveal();
         }
-        vscode_1.commands.executeCommand("integrationWorkbench.openEnvironment", this);
+        //commands.executeCommand("integrationWorkbench.openEnvironment", this);
     }
     deleteWebviewPanel() {
         delete this.requestWebviewPanel;
