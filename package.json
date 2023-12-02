@@ -13,6 +13,12 @@
     "Testing",
     "Other"
   ],
+  "keywords": [
+    "API",
+    "Integration",
+    "Requests",
+    "HTTP"
+  ],
   "author": {
     "name": "Nora Söderlund",
     "email": "norasoderlund@icloud.com",
