@@ -6,3 +6,5 @@ node_modules
 
 # Keep copied Shiki dist folder
 !resources/shiki/dist
+
+build/
