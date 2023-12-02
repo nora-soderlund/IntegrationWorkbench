@@ -29,7 +29,7 @@ function main() {
             langs: ['json']
         });
         window.addEventListener('message', event => {
-            var _a, _b;
+            var _a, _b, _c;
             const { command } = event.data;
             console.debug("Received event from extension:", command);
             switch (command) {
@@ -96,12 +96,12 @@ function main() {
                                     const httpResponseBody = response.querySelector(".http-response-body");
                                     const httpResponseParsedBody = response.querySelector(".http-response-parsed-body");
                                     if ((_a = responseData.result.body) === null || _a === void 0 ? void 0 : _a.length) {
-                                        if (((_b = responseData.result.headers["content-type"]) === null || _b === void 0 ? void 0 : _b.toLowerCase()) === "application/json") {
+                                        if ((_c = (_b = responseData.result.headers["content-type"]) === null || _b === void 0 ? void 0 : _b.toLowerCase()) === null || _c === void 0 ? void 0 : _c.startsWith("application/json")) {
                                             try {
                                                 const body = JSON.parse(responseData.result.body);
                                                 httpResponseParsedBody.innerHTML = highlighter.codeToHtml(JSON.stringify(body, undefined, 2), { lang: 'json' });
                                             }
-                                            catch (_c) {
+                                            catch (_d) {
                                                 httpResponseParsedBody.innerHTML = "Bad response.";
                                             }
                                         }
@@ -118,7 +118,7 @@ function main() {
                         ${highlighter.codeToHtml(JSON.stringify(body, undefined, 2), { lang: 'json' })}
                       `;
                                             }
-                                            catch (_d) {
+                                            catch (_e) {
                                                 httpResponseParsedBody.innerText = responseData.result.body;
                                             }
                                         }

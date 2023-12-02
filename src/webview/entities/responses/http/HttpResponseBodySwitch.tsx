@@ -14,7 +14,7 @@ export default function HttpResponseBodySwitch({ responseData }: HttpResponsePro
   }
 
   if(responseData.result.body) {
-    if(responseData.result.headers["content-type"]?.toLowerCase() === "application/json") {
+    if(responseData.result.headers["content-type"]?.toLowerCase()?.startsWith("application/json")) {
       if(responseData.result?.body) {
         try {
           const parsedJson = JSON.parse(responseData.result.body);

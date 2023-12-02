@@ -97,7 +97,7 @@ async function main() {
                 const httpResponseParsedBody = response.querySelector(".http-response-parsed-body") as HTMLDivElement;
 
                 if(responseData.result.body?.length) {
-                  if(responseData.result.headers["content-type"]?.toLowerCase() === "application/json") {
+                  if(responseData.result.headers["content-type"]?.toLowerCase()?.startsWith("application/json")) {
                     try {
                       const body = JSON.parse(responseData.result.body);
 
