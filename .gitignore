@@ -4,7 +4,6 @@ node_modules
 .vscode-test/
 *.vsix
 
-# Keep copied Shiki dist folder
-!resources/shiki/dist
-
 build/
+
+yarn-error.log
