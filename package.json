@@ -172,7 +172,6 @@
         "shortTitle": "Delete",
         "icon": "$(trashcan)"
       },
-
       {
         "command": "integrationWorkbench.createEnvironment",
         "title": "Create an Environment",
@@ -373,7 +372,6 @@
           "when": "view == scripts && (viewItem == script)",
           "group": "script@2"
         },
-        
         {
           "command": "integrationWorkbench.editEnvironmentName",
           "when": "view == environments && (viewItem == environment)",
@@ -475,6 +473,7 @@
   },
   "dependencies": {
     "@monaco-editor/react": "^4.6.0",
+    "dotenv": "^16.3.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "typescript-bundle": "^1.0.18"

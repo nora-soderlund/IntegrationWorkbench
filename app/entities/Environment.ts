@@ -1,9 +1,10 @@
-import { readFileSync, rmSync, writeFileSync } from "fs";
+import { existsSync, readFileSync, rmSync, writeFileSync } from "fs";
 import EnvironmentTreeItem from "../views/trees/environments/items/EnvironmentTreeItem";
 import { EnvironmentData } from "~interfaces/entities/EnvironmentData";
 import { ExtensionContext, commands } from "vscode";
 import { EnvironmentWebviewPanel } from "../views/webviews/environments/EnvironmentWebviewPanel";
 import Scripts from "../Scripts";
+import { parse } from "dotenv";
 
 export default class Environment {
   public data: EnvironmentData;
@@ -45,6 +46,23 @@ export default class Environment {
         key: string;
         value: string
       }[] = [];
+
+      if(this.data.variablesFilePath) {
+        if(existsSync(this.data.variablesFilePath)) {
+          const content = readFileSync(this.data.variablesFilePath, {
+            encoding: "utf-8"
+          });
+
+          const entries = Object.entries(parse(content));
+
+          for(let entry of entries) {
+            variables.push({
+              key: entry[0],
+              value: entry[1]
+            });
+          }
+        }
+      }
 
       for(let header of this.data.variables) {
         try {

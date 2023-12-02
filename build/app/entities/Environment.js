@@ -15,6 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const fs_1 = require("fs");
 const EnvironmentWebviewPanel_1 = require("../views/webviews/environments/EnvironmentWebviewPanel");
 const Scripts_1 = __importDefault(require("../Scripts"));
+const dotenv_1 = require("dotenv");
 class Environment {
     constructor(filePath) {
         this.filePath = filePath;
@@ -33,6 +34,20 @@ class Environment {
                 const abortListener = () => reject("Aborted.");
                 abortController.signal.addEventListener("abort", abortListener);
                 const variables = [];
+                if (this.data.variablesFilePath) {
+                    if ((0, fs_1.existsSync)(this.data.variablesFilePath)) {
+                        const content = (0, fs_1.readFileSync)(this.data.variablesFilePath, {
+                            encoding: "utf-8"
+                        });
+                        const entries = Object.entries((0, dotenv_1.parse)(content));
+                        for (let entry of entries) {
+                            variables.push({
+                                key: entry[0],
+                                value: entry[1]
+                            });
+                        }
+                    }
+                }
                 for (let header of this.data.variables) {
                     try {
                         const value = yield Scripts_1.default.evaluateUserInput(header);

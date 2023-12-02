@@ -140,6 +140,67 @@ export default function EnvironmentVariables({ environmentData }: EnvironmentPro
         margin: "1em 0"
       }}/>
 
+      <div style={{
+        display: "flex",
+        flexDirection: "column"
+      }}>
+        <div style={{
+          flex: 1
+        }}>
+          <b>Environment Variables File</b>
+
+          <p>Select a workspace .env file to load for this environment.</p>
+        </div>
+
+        <div style={{
+          display: "flex",
+          flexDirection: "row",
+          gap: "0.5em",
+          alignItems: "center"
+        }}>
+          {(environmentData.variablesFilePath)?(
+            <React.Fragment>
+              <VSCodeButton style={{ margin: "auto 0" }} appearance="secondary" onClick={() => 
+                window.vscode.postMessage({
+                  command: "integrationWorkbench.removeEnvironmentVariablesFile",
+                  arguments: []
+                })
+              }>
+                Remove file
+              </VSCodeButton>
+
+              Selected file:{" "}
+              
+              <VSCodeLink onClick={() => 
+                window.vscode.postMessage({
+                  command: "integrationWorkbench.openEnvironmentVariablesFile",
+                  arguments: []
+                })
+              }>
+                {environmentData.variablesFilePath.substring(environmentData.variablesFilePath.lastIndexOf('/') + 1)}
+              </VSCodeLink>
+            </React.Fragment>
+          ):(
+            <React.Fragment>
+              <VSCodeButton onClick={() => 
+                window.vscode.postMessage({
+                  command: "integrationWorkbench.changeEnvironmentVariablesFile",
+                  arguments: []
+                })
+              }>
+                Select file
+              </VSCodeButton>
+            
+              No file selected
+            </React.Fragment>
+          )}
+        </div>
+      </div>
+
+      <VSCodeDivider style={{
+        margin: "1em 0"
+      }}/>
+
       {(!environmentData.variables.length)?(
         <p>This request has no parameters, <VSCodeLink onClick={() => (
           window.vscode.postMessage({

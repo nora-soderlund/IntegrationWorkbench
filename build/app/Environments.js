@@ -77,6 +77,18 @@ class Environments {
         }
         return this.loadedEnvironments;
     }
+    static getEnvironmentInjection(environment) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (!environment) {
+                if (!this.selectedEnvironment) {
+                    return "";
+                }
+                environment = this.selectedEnvironment;
+            }
+            const parsedVariables = yield environment.getParsedVariables(new AbortController());
+            return `const process = { env: { ${parsedVariables.map((parsedVariable) => `${parsedVariable.key}: ${JSON.stringify(parsedVariable.value)}`).join(', ')} } };`;
+        });
+    }
     static getEnvironmentDeclaration(environment) {
         return __awaiter(this, void 0, void 0, function* () {
             if (!environment) {

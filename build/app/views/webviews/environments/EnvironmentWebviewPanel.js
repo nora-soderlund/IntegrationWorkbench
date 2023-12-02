@@ -124,6 +124,37 @@ class EnvironmentWebviewPanel {
                     });
                     return;
                 }
+                case "integrationWorkbench.changeEnvironmentVariablesFile": {
+                    const selections = yield vscode_1.window.showOpenDialog({
+                        canSelectFiles: true,
+                        canSelectFolders: false,
+                        canSelectMany: false,
+                        openLabel: "Select",
+                        title: "Select .env file to use for this environment:"
+                    });
+                    if (!(selections === null || selections === void 0 ? void 0 : selections.length)) {
+                        return;
+                    }
+                    const selection = selections[0];
+                    this.environment.data.variablesFilePath = selection.fsPath;
+                    this.environment.save();
+                    this.updateEnvironment();
+                    break;
+                }
+                case "integrationWorkbench.removeEnvironmentVariablesFile": {
+                    delete this.environment.data.variablesFilePath;
+                    this.environment.save();
+                    this.updateEnvironment();
+                    break;
+                }
+                case "integrationWorkbench.openEnvironmentVariablesFile": {
+                    if (this.environment.data.variablesFilePath) {
+                        const file = vscode_1.Uri.file(this.environment.data.variablesFilePath);
+                        const textDocument = yield vscode_1.workspace.openTextDocument(file);
+                        vscode_1.window.showTextDocument(textDocument);
+                    }
+                    break;
+                }
             }
         }), undefined, this.disposables);
         this.previewVariables = new EnvironmentPreviewVariablesPanel_1.default(this, environment);

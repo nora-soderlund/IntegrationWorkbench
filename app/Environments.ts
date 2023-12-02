@@ -91,6 +91,20 @@ export default class Environments {
     return this.loadedEnvironments;
   }
 
+  public static async getEnvironmentInjection(environment?: Environment) {
+    if(!environment) {
+      if(!this.selectedEnvironment) {
+        return "";
+      }
+
+      environment = this.selectedEnvironment;
+    }
+
+    const parsedVariables = await environment.getParsedVariables(new AbortController());
+
+    return `const process = { env: { ${parsedVariables.map((parsedVariable) => `${parsedVariable.key}: ${JSON.stringify(parsedVariable.value)}`).join(', ')} } };`;
+  }
+
   public static async getEnvironmentDeclaration(environment?: Environment) {
     if(!environment) {
       if(!this.selectedEnvironment) {

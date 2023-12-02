@@ -8,6 +8,8 @@ import TypescriptScript from "./scripts/TypescriptScript";
 import { CompilerOptions, ModuleKind, ScriptKind, ScriptTarget, createProgram, createSourceFile, formatDiagnosticsWithColorAndContext, getPreEmitDiagnostics, sys } from "typescript";
 import esbuild from "esbuild";
 import { UserInput } from "~interfaces/UserInput";
+import Environment from "./entities/Environment";
+import Environments from "./Environments";
 
 export default class Scripts {
   static loadedScripts: Script[] = [];
@@ -65,10 +67,14 @@ export default class Scripts {
     return this.loadedScripts;
   }
 
-  static async buildScript(contents: string) {
+  static async buildScript(input: string) {
     const inject = this.loadedScripts.map((script) => script.filePath);
 
-    console.log("Building script", { contents, inject });
+    const environmentInjection = await Environments.getEnvironmentInjection();
+
+    const contents = environmentInjection.concat(input);
+
+    console.log("Building script", { input, contents, inject });
 
     const result = await esbuild.build({
       bundle: true,
@@ -189,7 +195,7 @@ export default class Scripts {
           const script = await Scripts.buildScript(userInput.value);
 
           try {
-            const value = String(await eval(script));
+            const value = await eval(script);
 
             resolve(value);
           }

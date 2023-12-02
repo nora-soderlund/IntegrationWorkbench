@@ -19,6 +19,7 @@ const GetRootPath_1 = __importDefault(require("./utils/GetRootPath"));
 const TypescriptScript_1 = __importDefault(require("./scripts/TypescriptScript"));
 const typescript_1 = require("typescript");
 const esbuild_1 = __importDefault(require("esbuild"));
+const Environments_1 = __importDefault(require("./Environments"));
 class Scripts {
     static getScriptsPath(rootPath) {
         return path_1.default.join(rootPath, ".workbench/", "scripts/");
@@ -58,10 +59,12 @@ class Scripts {
         }
         return this.loadedScripts;
     }
-    static buildScript(contents) {
+    static buildScript(input) {
         return __awaiter(this, void 0, void 0, function* () {
             const inject = this.loadedScripts.map((script) => script.filePath);
-            console.log("Building script", { contents, inject });
+            const environmentInjection = yield Environments_1.default.getEnvironmentInjection();
+            const contents = environmentInjection.concat(input);
+            console.log("Building script", { input, contents, inject });
             const result = yield esbuild_1.default.build({
                 bundle: true,
                 stdin: {
@@ -155,7 +158,7 @@ class Scripts {
                         // TODO: add ability to view the entire script that's being evaluated for debugging purposes?
                         const script = yield Scripts.buildScript(userInput.value);
                         try {
-                            const value = String(yield eval(script));
+                            const value = yield eval(script);
                             resolve(value);
                         }
                         catch (error) {
