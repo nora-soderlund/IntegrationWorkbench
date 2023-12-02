@@ -6,7 +6,7 @@ import WorkbenchRequest from "../../workbenches/requests/WorkbenchRequest";
 import ScriptTreeItem from "../../views/trees/scripts/items/ScriptTreeItem";
 import { existsSync } from "fs";
 import path from "path";
-import TypescriptScript from "../../scripts/TypescriptScript";
+import TypescriptScript from "../../entities/TypescriptScript";
 import Scripts from "../../Scripts";
 import getRootPath from "../../utils/GetRootPath";
 

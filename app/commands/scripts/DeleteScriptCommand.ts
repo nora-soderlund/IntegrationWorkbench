@@ -3,7 +3,7 @@ import WorkbenchTreeItem from "../../views/trees/workbenches/items/WorkbenchTree
 import { randomUUID } from "crypto";
 import WorkbenchRequestTreeItem from "../../views/trees/workbenches/items/WorkbenchRequestTreeItem";
 import WorkbenchRequest from "../../workbenches/requests/WorkbenchRequest";
-import Script from "../../scripts/TypescriptScript";
+import Script from "../../entities/TypescriptScript";
 import ScriptTreeItem from "../../views/trees/scripts/items/ScriptTreeItem";
 import Scripts from "../../Scripts";
 

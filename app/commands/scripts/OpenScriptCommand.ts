@@ -3,7 +3,7 @@ import { Workbench } from "../../workbenches/Workbench";
 import { RequestWebviewPanel } from "../../views/webviews/RequestWebviewPanel";
 import WorkbenchRequest from "../../workbenches/requests/WorkbenchRequest";
 import { WorkbenchCollection } from "../../workbenches/collections/WorkbenchCollection";
-import Script from "../../scripts/TypescriptScript";
+import Script from "../../entities/TypescriptScript";
 
 export default class OpenScriptCommand {
   constructor(private readonly context: ExtensionContext) {

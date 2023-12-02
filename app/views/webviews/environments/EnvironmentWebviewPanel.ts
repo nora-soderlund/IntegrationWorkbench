@@ -5,7 +5,7 @@ import { readFileSync } from "fs";
 import path from "path";
 import { getWebviewUri } from "../../../utils/GetWebviewUri";
 import { outputChannel } from "../../../extension";
-import TypescriptScript from "../../../scripts/TypescriptScript";
+import TypescriptScript from "../../../entities/TypescriptScript";
 import Scripts from "../../../Scripts";
 import Environments from "../../../Environments";
 

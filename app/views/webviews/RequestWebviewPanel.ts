@@ -5,7 +5,7 @@ import path from "path";
 import WorkbenchRequest from "../../workbenches/requests/WorkbenchRequest";
 import WorkbenchHttpRequest from "../../workbenches/requests/WorkbenchHttpRequest";
 import Scripts from "../../Scripts";
-import Script from "../../scripts/TypescriptScript";
+import Script from "../../entities/TypescriptScript";
 import RequestPreviewUrlPanel from "./requests/RequestPreviewUrlPanel";
 import { outputChannel } from "../../extension";
 import RequestPreviewHeadersPanel from "./requests/RequestPreviewHeadersPanel";
