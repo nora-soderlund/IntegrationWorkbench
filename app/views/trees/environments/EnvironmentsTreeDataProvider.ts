@@ -21,7 +21,7 @@ export default class EnvironmentsTreeDataProvider implements TreeDataProvider<En
 
   getChildren(element?: EnvironmentTreeItem): Thenable<EnvironmentTreeItem[]> {
     if(this.selectAfterRefresh) {
-      commands.executeCommand("integrationWorkbench.editEnvironment", this.selectAfterRefresh);
+      commands.executeCommand("integrationWorkbench.openEnvironment", this.selectAfterRefresh);
 
       delete this.selectAfterRefresh;
     }

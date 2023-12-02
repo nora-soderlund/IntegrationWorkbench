@@ -41,6 +41,7 @@ import DeleteEnvironmentCommand from './commands/environments/DeleteEnvironmentC
 import EditEnvironmentNameCommand from './commands/environments/EditEnvironmentNameCommand';
 import EditEnvironmentDescriptionCommand from './commands/environments/EditEnvironmentDescriptionCommand';
 import SelectEnvironmentCommand from './commands/environments/SelectEnvironmentCommand';
+import OpenEnvironmentCommand from './commands/environments/OpenEnvironmentCommand';
 
 export const outputChannel = vscode.window.createOutputChannel("Integration Workbench", {
 	log: true
@@ -254,6 +255,7 @@ export function activate(context: vscode.ExtensionContext) {
 	new EditEnvironmentNameCommand(context);
 	new EditEnvironmentDescriptionCommand(context);
 	new DeleteEnvironmentCommand(context);
+	new OpenEnvironmentCommand(context);
 
 	new SelectEnvironmentCommand(context);
 

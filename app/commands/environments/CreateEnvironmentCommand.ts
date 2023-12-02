@@ -56,7 +56,8 @@ export default class CreateEnvironmentCommand {
     }
 
     const environmentData: EnvironmentData = {
-      name
+      name,
+      variables: []
     };
 
     writeFileSync(uniqueEnvironmentPath, JSON.stringify(environmentData, undefined, 2));

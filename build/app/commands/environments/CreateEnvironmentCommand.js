@@ -51,7 +51,8 @@ class CreateEnvironmentCommand {
                 return null;
             }
             const environmentData = {
-                name
+                name,
+                variables: []
             };
             (0, fs_1.writeFileSync)(uniqueEnvironmentPath, JSON.stringify(environmentData, undefined, 2));
             const environment = new Environment_1.default(uniqueEnvironmentPath);

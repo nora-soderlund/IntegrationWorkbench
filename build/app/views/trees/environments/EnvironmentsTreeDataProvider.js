@@ -20,7 +20,7 @@ class EnvironmentsTreeDataProvider {
     }
     getChildren(element) {
         if (this.selectAfterRefresh) {
-            vscode_1.commands.executeCommand("integrationWorkbench.editEnvironment", this.selectAfterRefresh);
+            vscode_1.commands.executeCommand("integrationWorkbench.openEnvironment", this.selectAfterRefresh);
             delete this.selectAfterRefresh;
         }
         if (!element) {

@@ -31,7 +31,7 @@ class SelectEnvironmentCommand {
             }
             const selection = yield vscode_1.window.showQuickPick(["None"].concat(Environments_1.default.loadedEnvironments.map((environment) => environment.data.name)), {
                 canPickMany: false,
-                title: "Select environment to use:"
+                title: "Select environment to use:",
             });
             if (!selection) {
                 return;

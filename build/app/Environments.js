@@ -45,6 +45,7 @@ class Environments {
         else {
             this.statusBarItem.text = "$(server-environment) Select environment";
         }
+        this.selectedEnvironment = environment;
     }
     static scan(sendRefreshCommand = true) {
         this.loadedEnvironments = [];

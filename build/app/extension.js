@@ -65,6 +65,7 @@ const DeleteEnvironmentCommand_1 = __importDefault(require("./commands/environme
 const EditEnvironmentNameCommand_1 = __importDefault(require("./commands/environments/EditEnvironmentNameCommand"));
 const EditEnvironmentDescriptionCommand_1 = __importDefault(require("./commands/environments/EditEnvironmentDescriptionCommand"));
 const SelectEnvironmentCommand_1 = __importDefault(require("./commands/environments/SelectEnvironmentCommand"));
+const OpenEnvironmentCommand_1 = __importDefault(require("./commands/environments/OpenEnvironmentCommand"));
 exports.outputChannel = vscode.window.createOutputChannel("Integration Workbench", {
     log: true
 });
@@ -252,6 +253,7 @@ function activate(context) {
     new EditEnvironmentNameCommand_1.default(context);
     new EditEnvironmentDescriptionCommand_1.default(context);
     new DeleteEnvironmentCommand_1.default(context);
+    new OpenEnvironmentCommand_1.default(context);
     new SelectEnvironmentCommand_1.default(context);
     context.subscriptions.push(vscode.commands.registerCommand('integrationWorkbench.refreshWorkbenches', () => {
         workbenchesTreeDataProvider.refresh();
