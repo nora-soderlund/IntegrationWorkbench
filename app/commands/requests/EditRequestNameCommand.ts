@@ -2,7 +2,7 @@ import { ExtensionContext, commands, window } from "vscode";
 import WorkbenchTreeItem from "../../views/trees/workbenches/items/WorkbenchTreeItem";
 import { randomUUID } from "crypto";
 import WorkbenchRequestTreeItem from "../../views/trees/workbenches/items/WorkbenchRequestTreeItem";
-import WorkbenchRequest from "../../workbenches/requests/WorkbenchRequest";
+import WorkbenchRequest from "../../entities/requests/WorkbenchRequest";
 
 export default class EditRequestNameCommand {
   constructor(private readonly context: ExtensionContext) {

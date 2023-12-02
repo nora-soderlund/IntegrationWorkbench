@@ -2,9 +2,9 @@ import { Disposable, ExtensionContext, Uri, ViewColumn, WebviewPanel, TextDocume
 import { getWebviewUri } from "../../utils/GetWebviewUri";
 import { readFileSync } from "fs";
 import path from "path";
-import WorkbenchRequest from "../../workbenches/requests/WorkbenchRequest";
-import WorkbenchHttpRequest from "../../workbenches/requests/WorkbenchHttpRequest";
-import { WorkbenchResponse } from "../../workbenches/responses/WorkbenchResponse";
+import WorkbenchRequest from "../../entities/requests/WorkbenchRequest";
+import WorkbenchHttpRequest from "../../entities/requests/WorkbenchHttpRequest";
+import { WorkbenchResponse } from "../../entities/responses/WorkbenchResponse";
 import { outputChannel } from "../../extension";
 
 export class ResponseWebviewPanel {

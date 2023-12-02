@@ -5,7 +5,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const vscode_1 = require("vscode");
 const EnvironmentTreeItem_1 = __importDefault(require("./items/EnvironmentTreeItem"));
-const Environments_1 = __importDefault(require("../../../Environments"));
+const Environments_1 = __importDefault(require("../../../instances/Environments"));
 class EnvironmentsTreeDataProvider {
     constructor(context) {
         this.context = context;

@@ -1,6 +1,6 @@
 import { TreeDataProvider, TreeItem, Event, EventEmitter, ExtensionContext, commands, ProviderResult } from 'vscode';
 import EnvironmentTreeItem from './items/EnvironmentTreeItem';
-import Environments from '../../../Environments';
+import Environments from '../../../instances/Environments';
 
 export default class EnvironmentsTreeDataProvider implements TreeDataProvider<EnvironmentTreeItem> {
   public selectAfterRefresh?: EnvironmentTreeItem;

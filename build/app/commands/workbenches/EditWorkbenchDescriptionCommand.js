@@ -14,10 +14,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const vscode_1 = require("vscode");
 const WorkbenchTreeItem_1 = __importDefault(require("../../views/trees/workbenches/items/WorkbenchTreeItem"));
-class EditWorkbenchDescriptionCommand {
+const Command_1 = __importDefault(require("../Command"));
+class EditWorkbenchDescriptionCommand extends Command_1.default {
     constructor(context) {
-        this.context = context;
-        context.subscriptions.push(vscode_1.commands.registerCommand('integrationWorkbench.editWorkbenchDescription', this.handle.bind(this)));
+        super(context, 'integrationWorkbench.editWorkbenchDescription');
     }
     handle(reference) {
         return __awaiter(this, void 0, void 0, function* () {

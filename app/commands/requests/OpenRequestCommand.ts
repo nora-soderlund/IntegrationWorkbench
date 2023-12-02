@@ -1,8 +1,8 @@
 import { Command, ExtensionContext, commands } from "vscode";
-import { Workbench } from "../../workbenches/Workbench";
+import { Workbench } from "../../entities/workbenches/Workbench";
 import { RequestWebviewPanel } from "../../views/webviews/RequestWebviewPanel";
-import WorkbenchRequest from "../../workbenches/requests/WorkbenchRequest";
-import { WorkbenchCollection } from "../../workbenches/collections/WorkbenchCollection";
+import WorkbenchRequest from "../../entities/requests/WorkbenchRequest";
+import { WorkbenchCollection } from "../../entities/collections/WorkbenchCollection";
 
 export default class OpenRequestCommand {
   constructor(private readonly context: ExtensionContext) {

@@ -1,5 +1,5 @@
 import { ExtensionContext, commands, window } from "vscode";
-import Environments from "../../Environments";
+import Environments from "../../instances/Environments";
 
 export default class SelectEnvironmentCommand {
   constructor(private readonly context: ExtensionContext) {

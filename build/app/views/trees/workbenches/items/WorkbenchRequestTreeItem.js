@@ -6,7 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const vscode_1 = require("vscode");
 const path_1 = __importDefault(require("path"));
 const fs_1 = require("fs");
-const WorkbenchHttpRequest_1 = __importDefault(require("../../../../workbenches/requests/WorkbenchHttpRequest"));
+const WorkbenchHttpRequest_1 = __importDefault(require("../../../../entities/requests/WorkbenchHttpRequest"));
 class WorkbenchRequestTreeItem extends vscode_1.TreeItem {
     constructor(workbench, request, collection) {
         super(request.name, vscode_1.TreeItemCollapsibleState.None);

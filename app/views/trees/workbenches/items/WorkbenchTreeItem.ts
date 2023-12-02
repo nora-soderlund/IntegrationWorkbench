@@ -1,5 +1,5 @@
 import { TreeItem, TreeItemCollapsibleState, Uri } from "vscode";
-import { Workbench } from "../../../../workbenches/Workbench";
+import { Workbench } from "../../../../entities/workbenches/Workbench";
 import path from "path";
 
 export default class WorkbenchTreeItem extends TreeItem {

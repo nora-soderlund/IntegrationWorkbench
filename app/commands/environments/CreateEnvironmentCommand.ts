@@ -2,12 +2,12 @@ import { ExtensionContext, commands, window } from "vscode";
 import getUniqueFolderPath from "../../utils/GetUniqueFolderPath";
 import getCamelizedString from "../../utils/GetCamelizedString";
 import getRootPath from "../../utils/GetRootPath";
-import { Workbench } from "../../workbenches/Workbench";
+import { Workbench } from "../../entities/workbenches/Workbench";
 import path from "path";
-import { workbenches } from "../../Workbenches";
+import { workbenches } from "../../instances/Workbenches";
 import { randomUUID } from "crypto";
 import { existsSync, mkdirSync, writeFileSync } from "fs";
-import Environments from "../../Environments";
+import Environments from "../../instances/Environments";
 import { EnvironmentData } from "~interfaces/entities/EnvironmentData";
 import Environment from "../../entities/environments/Environment";
 

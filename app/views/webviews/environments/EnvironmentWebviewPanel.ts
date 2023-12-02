@@ -6,8 +6,8 @@ import path from "path";
 import { getWebviewUri } from "../../../utils/GetWebviewUri";
 import { outputChannel } from "../../../extension";
 import TypescriptScript from "../../../entities/scripts/TypescriptScript";
-import Scripts from "../../../Scripts";
-import Environments from "../../../Environments";
+import Scripts from "../../../instances/Scripts";
+import Environments from "../../../instances/Environments";
 
 export class EnvironmentWebviewPanel {
   public readonly webviewPanel: WebviewPanel;

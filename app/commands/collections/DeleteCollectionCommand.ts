@@ -2,9 +2,9 @@ import { ExtensionContext, commands, window } from "vscode";
 import WorkbenchTreeItem from "../../views/trees/workbenches/items/WorkbenchTreeItem";
 import { randomUUID } from "crypto";
 import WorkbenchRequestTreeItem from "../../views/trees/workbenches/items/WorkbenchRequestTreeItem";
-import WorkbenchRequest from "../../workbenches/requests/WorkbenchRequest";
+import WorkbenchRequest from "../../entities/requests/WorkbenchRequest";
 import WorkbenchCollectionTreeItem from "../../views/trees/workbenches/items/WorkbenchCollectionTreeItem";
-import { WorkbenchCollection } from "../../workbenches/collections/WorkbenchCollection";
+import { WorkbenchCollection } from "../../entities/collections/WorkbenchCollection";
 
 export default class DeleteCollectionCommand {
   constructor(private readonly context: ExtensionContext) {

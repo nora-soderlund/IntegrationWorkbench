@@ -1,11 +1,11 @@
 import { ExtensionContext, commands, window } from "vscode";
 import WorkbenchCollectionTreeItem from "../../views/trees/workbenches/items/WorkbenchCollectionTreeItem";
 import { randomUUID } from "crypto";
-import WorkbenchRequest from "../../workbenches/requests/WorkbenchRequest";
-import WorkbenchHttpRequest from "../../workbenches/requests/WorkbenchHttpRequest";
+import WorkbenchRequest from "../../entities/requests/WorkbenchRequest";
+import WorkbenchHttpRequest from "../../entities/requests/WorkbenchHttpRequest";
 import WorkbenchTreeItem from "../../views/trees/workbenches/items/WorkbenchTreeItem";
-import { Workbench } from "../../workbenches/Workbench";
-import { WorkbenchCollection } from "../../workbenches/collections/WorkbenchCollection";
+import { Workbench } from "../../entities/workbenches/Workbench";
+import { WorkbenchCollection } from "../../entities/collections/WorkbenchCollection";
 
 export default class CreateRequestCommand {
   constructor(private readonly context: ExtensionContext) {

@@ -2,12 +2,12 @@ import { ExtensionContext, commands, window } from "vscode";
 import WorkbenchTreeItem from "../../views/trees/workbenches/items/WorkbenchTreeItem";
 import { randomUUID } from "crypto";
 import WorkbenchRequestTreeItem from "../../views/trees/workbenches/items/WorkbenchRequestTreeItem";
-import WorkbenchRequest from "../../workbenches/requests/WorkbenchRequest";
+import WorkbenchRequest from "../../entities/requests/WorkbenchRequest";
 import ScriptTreeItem from "../../views/trees/scripts/items/ScriptTreeItem";
 import { existsSync } from "fs";
 import path from "path";
 import TypescriptScript from "../../entities/scripts/TypescriptScript";
-import Scripts from "../../Scripts";
+import Scripts from "../../instances/Scripts";
 import getRootPath from "../../utils/GetRootPath";
 import Command from "../Command";
 

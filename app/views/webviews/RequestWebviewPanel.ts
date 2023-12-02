@@ -2,14 +2,14 @@ import { Disposable, ExtensionContext, Uri, ViewColumn, WebviewPanel, TextDocume
 import { getWebviewUri } from "../../utils/GetWebviewUri";
 import { readFileSync } from "fs";
 import path from "path";
-import WorkbenchRequest from "../../workbenches/requests/WorkbenchRequest";
-import WorkbenchHttpRequest from "../../workbenches/requests/WorkbenchHttpRequest";
-import Scripts from "../../Scripts";
+import WorkbenchRequest from "../../entities/requests/WorkbenchRequest";
+import WorkbenchHttpRequest from "../../entities/requests/WorkbenchHttpRequest";
+import Scripts from "../../instances/Scripts";
 import Script from "../../entities/scripts/TypescriptScript";
 import RequestPreviewUrlPanel from "./requests/RequestPreviewUrlPanel";
 import { outputChannel } from "../../extension";
 import RequestPreviewHeadersPanel from "./requests/RequestPreviewHeadersPanel";
-import Environments from "../../Environments";
+import Environments from "../../instances/Environments";
 
 export class RequestWebviewPanel {
   public readonly webviewPanel: WebviewPanel;

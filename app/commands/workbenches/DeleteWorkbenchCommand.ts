@@ -1,7 +1,7 @@
 import { ExtensionContext, commands, window } from "vscode";
-import { Workbench } from "../../workbenches/Workbench";
+import { Workbench } from "../../entities/workbenches/Workbench";
 import WorkbenchTreeItem from "../../views/trees/workbenches/items/WorkbenchTreeItem";
-import { scanForWorkbenches } from "../../Workbenches";
+import { scanForWorkbenches } from "../../instances/Workbenches";
 import Command from "../Command";
 
 export default class DeleteWorkbenchCommand extends Command {

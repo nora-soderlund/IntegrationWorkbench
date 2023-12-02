@@ -5,7 +5,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const vscode_1 = require("vscode");
 const ScriptTreeItem_1 = __importDefault(require("./items/ScriptTreeItem"));
-const Scripts_1 = __importDefault(require("../../../Scripts"));
+const Scripts_1 = __importDefault(require("../../../instances/Scripts"));
 class ScriptsTreeDataProvider {
     constructor(context) {
         this.context = context;

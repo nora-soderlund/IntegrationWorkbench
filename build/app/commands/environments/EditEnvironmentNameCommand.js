@@ -17,7 +17,7 @@ const GetRootPath_1 = __importDefault(require("../../utils/GetRootPath"));
 const GetUniqueFolderPath_1 = __importDefault(require("../../utils/GetUniqueFolderPath"));
 const GetCamelizedString_1 = __importDefault(require("../../utils/GetCamelizedString"));
 const EnvironmentTreeItem_1 = __importDefault(require("../../views/trees/environments/items/EnvironmentTreeItem"));
-const Environments_1 = __importDefault(require("../../Environments"));
+const Environments_1 = __importDefault(require("../../instances/Environments"));
 class EditEnvironmentNameCommand {
     constructor(context) {
         this.context = context;

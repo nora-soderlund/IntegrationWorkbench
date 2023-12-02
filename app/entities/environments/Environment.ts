@@ -3,7 +3,7 @@ import EnvironmentTreeItem from "../../views/trees/environments/items/Environmen
 import { EnvironmentData } from "~interfaces/entities/EnvironmentData";
 import { ExtensionContext, commands } from "vscode";
 import { EnvironmentWebviewPanel } from "../../views/webviews/environments/EnvironmentWebviewPanel";
-import Scripts from "../../Scripts";
+import Scripts from "../../instances/Scripts";
 import { parse } from "dotenv";
 
 export default class Environment {

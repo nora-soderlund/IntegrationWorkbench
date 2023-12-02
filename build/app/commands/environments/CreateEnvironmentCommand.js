@@ -17,7 +17,7 @@ const GetUniqueFolderPath_1 = __importDefault(require("../../utils/GetUniqueFold
 const GetCamelizedString_1 = __importDefault(require("../../utils/GetCamelizedString"));
 const GetRootPath_1 = __importDefault(require("../../utils/GetRootPath"));
 const fs_1 = require("fs");
-const Environments_1 = __importDefault(require("../../Environments"));
+const Environments_1 = __importDefault(require("../../instances/Environments"));
 const Environment_1 = __importDefault(require("../../entities/environments/Environment"));
 class CreateEnvironmentCommand {
     constructor(context) {

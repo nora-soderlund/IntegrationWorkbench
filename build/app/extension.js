@@ -31,41 +31,15 @@ exports.deactivate = exports.activate = exports.outputChannel = void 0;
 // Import the module and reference it with the alias vscode in your code below
 const vscode = __importStar(require("vscode"));
 const WorkbenchTreeDataProvider_1 = __importDefault(require("./views/trees/workbenches/WorkbenchTreeDataProvider"));
-const Workbenches_1 = require("./Workbenches");
-const CreateCollectionCommand_1 = __importDefault(require("./commands/collections/CreateCollectionCommand"));
-const CreateRequestCommand_1 = __importDefault(require("./commands/requests/CreateRequestCommand"));
-const OpenRequestCommand_1 = __importDefault(require("./commands/requests/OpenRequestCommand"));
-const CreateWorkbenchCommand_1 = __importDefault(require("./commands/workbenches/CreateWorkbenchCommand"));
-const OpenResponseCommand_1 = __importDefault(require("./commands/responses/OpenResponseCommand"));
+const Workbenches_1 = require("./instances/Workbenches");
 const WorkbenchesRequestsTreeDataProvider_1 = __importDefault(require("./views/trees/responses/WorkbenchesRequestsTreeDataProvider"));
-const EditCollectionNameCommand_1 = __importDefault(require("./commands/collections/EditCollectionNameCommand"));
-const EditCollectionDescriptionCommand_1 = __importDefault(require("./commands/collections/EditCollectionDescriptionCommand"));
-const EditRequestNameCommand_1 = __importDefault(require("./commands/requests/EditRequestNameCommand"));
-const RunCollectionCommand_1 = __importDefault(require("./commands/collections/RunCollectionCommand"));
-const RunRequestCommand_1 = __importDefault(require("./commands/requests/RunRequestCommand"));
 const WorkbenchResponseTreeItem_1 = __importDefault(require("./views/trees/responses/items/WorkbenchResponseTreeItem"));
-const DeleteRequestCommand_1 = __importDefault(require("./commands/requests/DeleteRequestCommand"));
-const DeleteCollectionCommand_1 = __importDefault(require("./commands/collections/DeleteCollectionCommand"));
-const DeleteWorkbenchCommand_1 = __importDefault(require("./commands/workbenches/DeleteWorkbenchCommand"));
 const ResponseWebviewPanel_1 = require("./views/webviews/ResponseWebviewPanel");
-const RunWorkbenchCommand_1 = __importDefault(require("./commands/workbenches/RunWorkbenchCommand"));
 const ScriptsTreeDataProvider_1 = __importDefault(require("./views/trees/scripts/ScriptsTreeDataProvider"));
-const Scripts_1 = __importDefault(require("./Scripts"));
-const CreateScriptCommand_1 = __importDefault(require("./commands/scripts/CreateScriptCommand"));
-const OpenScriptCommand_1 = __importDefault(require("./commands/scripts/OpenScriptCommand"));
-const EditScriptNameCommand_1 = __importDefault(require("./commands/scripts/EditScriptNameCommand"));
-const EditWorkbenchNameCommand_1 = __importDefault(require("./commands/workbenches/EditWorkbenchNameCommand"));
-const EditWorkbenchDescriptionCommand_1 = __importDefault(require("./commands/workbenches/EditWorkbenchDescriptionCommand"));
-const DeleteScriptCommand_1 = __importDefault(require("./commands/scripts/DeleteScriptCommand"));
-const CancelResponseCommand_1 = __importDefault(require("./commands/responses/CancelResponseCommand"));
-const Environments_1 = __importDefault(require("./Environments"));
-const CreateEnvironmentCommand_1 = __importDefault(require("./commands/environments/CreateEnvironmentCommand"));
+const Scripts_1 = __importDefault(require("./instances/Scripts"));
+const Environments_1 = __importDefault(require("./instances/Environments"));
 const EnvironmentsTreeDataProvider_1 = __importDefault(require("./views/trees/environments/EnvironmentsTreeDataProvider"));
-const DeleteEnvironmentCommand_1 = __importDefault(require("./commands/environments/DeleteEnvironmentCommand"));
-const EditEnvironmentNameCommand_1 = __importDefault(require("./commands/environments/EditEnvironmentNameCommand"));
-const EditEnvironmentDescriptionCommand_1 = __importDefault(require("./commands/environments/EditEnvironmentDescriptionCommand"));
-const SelectEnvironmentCommand_1 = __importDefault(require("./commands/environments/SelectEnvironmentCommand"));
-const OpenEnvironmentCommand_1 = __importDefault(require("./commands/environments/OpenEnvironmentCommand"));
+const Commands_1 = __importDefault(require("./instances/Commands"));
 exports.outputChannel = vscode.window.createOutputChannel("Integration Workbench", {
     log: true
 });
@@ -123,138 +97,6 @@ function activate(context) {
             }
         }
     }));
-    /*vscode.window.registerWebviewViewProvider("response", {
-        resolveWebviewView: (webviewView, _context, _token) => {
-            webviewView.webview.options = {
-                enableScripts: true,
-                
-        localResourceRoots: [
-          vscode.Uri.joinPath(context.extensionUri, 'build'),
-          vscode.Uri.joinPath(context.extensionUri, 'resources'),
-          vscode.Uri.joinPath(context.extensionUri, 'node_modules', '@vscode', 'codicons')
-        ]
-            };
-
-            const webviewUri = getWebviewUri(webviewView.webview, context.extensionUri, ["build", "webviews", "response.js"]);
-            const globalStyleUri = getWebviewUri(webviewView.webview, context.extensionUri, ["resources", "request", "styles", "global.css"]);
-            const styleUri = getWebviewUri(webviewView.webview, context.extensionUri, ["resources", "request", "styles", "response.css"]);
-            const shikiUri = getWebviewUri(webviewView.webview, context.extensionUri, ["resources", "shiki"]);
-            const codiconsUri = getWebviewUri(webviewView.webview, context.extensionUri, [ 'node_modules', '@vscode/codicons', 'dist', 'codicon.css' ]);
-
-            webviewView.webview.html = `
-                <!DOCTYPE html>
-                <html lang="en">
-                    <head>
-                        <meta charset="UTF-8"/>
-    
-                        <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-                        
-                        <title>Hello World!</title>
-    
-                        <link rel="stylesheet" href="${globalStyleUri}"/>
-                        <link rel="stylesheet" href="${styleUri}"/>
-                        <link rel="stylesheet" href="${codiconsUri}"/>
-                    </head>
-                    <body>
-                        ${readFileSync(
-                            path.join(__filename, "..", "..", "resources", "request", "response.html"),
-                            {
-                                encoding: "utf-8"
-                            }
-                        )}
-    
-                        <script type="text/javascript">
-                            window.shikiUri = "${shikiUri}";
-                            window.activeColorThemeKind = "${vscode.window.activeColorTheme.kind}";
-                        </script>
-    
-                        <script type="module" src="${webviewUri}"></script>
-                    </body>
-                </html>
-            `;
-
-            let currentWorkbenchResponse: WorkbenchResponse | undefined;
-
-            context.subscriptions.push(vscode.commands.registerCommand('integrationWorkbench.showResponse', (workbenchResponseTreeItem: WorkbenchResponseTreeItem) => {
-                currentWorkbenchResponse = workbenchResponseTreeItem.response;
-                
-                workbenchesResponsesTreeView.reveal(workbenchResponseTreeItem, {
-                    select: true
-                });
-
-                webviewView.webview.postMessage({
-                    command: "integrationWorkbench.showResponse",
-                    arguments: [ workbenchResponseTreeItem.response.getData() ]
-                });
-            }));
-
-            context.subscriptions.push(vscode.commands.registerCommand('integrationWorkbench.refreshResponses', (workbenchResponse: WorkbenchResponse) => {
-                const workbenchResponseTreeItem = workbenchesResponsesTreeDataProvider.workbenchResponses.find((workbenchTreeView) => workbenchTreeView.response.id === workbenchResponse.id);
-        
-                workbenchResponseTreeItem?.update();
-        
-                workbenchesResponsesTreeDataProvider.refresh();
-
-                if(currentWorkbenchResponse?.id === workbenchResponse.id) {
-                    webviewView.webview.postMessage({
-                        command: "integrationWorkbench.showResponse",
-                        arguments: [ currentWorkbenchResponse.getData() ]
-                    });
-                }
-            }));
-
-            context.subscriptions.push(vscode.commands.registerCommand('integrationWorkbench.deleteResponse', (reference: unknown) => {
-                if(reference instanceof WorkbenchResponseTreeItem) {
-                    const index = workbenchesResponsesTreeDataProvider.workbenchResponses.indexOf(reference);
-        
-                    if(index !== -1) {
-                        workbenchesResponsesTreeDataProvider.workbenchResponses.splice(index, 1);
-        
-                        workbenchesResponsesTreeDataProvider.refresh();
-
-                        if(currentWorkbenchResponse?.id === reference.response.id) {
-                            currentWorkbenchResponse = undefined;
-
-                            webviewView.webview.postMessage({
-                                command: "integrationWorkbench.showResponse",
-                                arguments: [ currentWorkbenchResponse ]
-                            });
-                        }
-                    }
-                    else {
-                        vscode.window.showWarningMessage("Failed to find request to delete.");
-                    }
-                }
-            }));
-        }
-    });*/
-    new CreateCollectionCommand_1.default(context);
-    new EditCollectionNameCommand_1.default(context);
-    new EditCollectionDescriptionCommand_1.default(context);
-    new RunCollectionCommand_1.default(context);
-    new DeleteCollectionCommand_1.default(context);
-    new CreateRequestCommand_1.default(context);
-    new OpenRequestCommand_1.default(context);
-    new EditRequestNameCommand_1.default(context);
-    new RunRequestCommand_1.default(context);
-    new DeleteRequestCommand_1.default(context);
-    new OpenResponseCommand_1.default(context);
-    new CancelResponseCommand_1.default(context);
-    new CreateWorkbenchCommand_1.default(context);
-    new DeleteWorkbenchCommand_1.default(context);
-    new RunWorkbenchCommand_1.default(context);
-    new EditWorkbenchNameCommand_1.default(context);
-    new EditWorkbenchDescriptionCommand_1.default(context);
-    new CreateScriptCommand_1.default(context);
-    new OpenScriptCommand_1.default(context);
-    new EditScriptNameCommand_1.default(context);
-    new DeleteScriptCommand_1.default(context);
-    new CreateEnvironmentCommand_1.default(context);
-    new EditEnvironmentNameCommand_1.default(context);
-    new EditEnvironmentDescriptionCommand_1.default(context);
-    new DeleteEnvironmentCommand_1.default(context);
-    new OpenEnvironmentCommand_1.default(context);
-    new SelectEnvironmentCommand_1.default(context);
     context.subscriptions.push(vscode.commands.registerCommand('integrationWorkbench.refreshWorkbenches', () => {
         workbenchesTreeDataProvider.refresh();
     }));
@@ -273,11 +115,12 @@ function activate(context) {
     context.subscriptions.push(vscode.commands.registerCommand('integrationWorkbench.openWalkthrough', () => {
         vscode.commands.executeCommand(`workbench.action.openWalkthrough`, `nora-soderlund.integrationWorkbench#workbenches.openWorkbenches`, false);
     }));
+    Commands_1.default.register(context);
     (0, Workbenches_1.scanForWorkbenches)(context);
     Scripts_1.default.scanForScripts();
     Scripts_1.default.buildScript("");
     Environments_1.default.scan();
-    Environments_1.default.createStatusBarItem(context);
+    Environments_1.default.register(context);
     //vscode.window.registerTreeDataProvider('workbenches', new WorkbenchTreeDataProvider(rootPath));
 }
 exports.activate = activate;

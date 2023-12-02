@@ -16,7 +16,7 @@ const vscode_1 = require("vscode");
 const fs_1 = require("fs");
 const path_1 = __importDefault(require("path"));
 const TypescriptScript_1 = __importDefault(require("../../entities/scripts/TypescriptScript"));
-const Scripts_1 = __importDefault(require("../../Scripts"));
+const Scripts_1 = __importDefault(require("../../instances/Scripts"));
 const GetRootPath_1 = __importDefault(require("../../utils/GetRootPath"));
 const Command_1 = __importDefault(require("../Command"));
 class EditScriptNameCommand extends Command_1.default {

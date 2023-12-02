@@ -2,10 +2,10 @@ import { ExtensionContext, commands, window } from "vscode";
 import WorkbenchTreeItem from "../../views/trees/workbenches/items/WorkbenchTreeItem";
 import { randomUUID } from "crypto";
 import WorkbenchRequestTreeItem from "../../views/trees/workbenches/items/WorkbenchRequestTreeItem";
-import WorkbenchRequest from "../../workbenches/requests/WorkbenchRequest";
+import WorkbenchRequest from "../../entities/requests/WorkbenchRequest";
 import Script from "../../entities/scripts/TypescriptScript";
 import ScriptTreeItem from "../../views/trees/scripts/items/ScriptTreeItem";
-import Scripts from "../../Scripts";
+import Scripts from "../../instances/Scripts";
 import Command from "../Command";
 
 export default class DeleteScriptCommand extends Command {

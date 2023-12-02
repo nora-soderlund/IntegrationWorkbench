@@ -19,10 +19,10 @@ const path_1 = __importDefault(require("path"));
 const fs_1 = require("fs");
 const GetUniqueFolderPath_1 = __importDefault(require("../../utils/GetUniqueFolderPath"));
 const GetCamelizedString_1 = __importDefault(require("../../utils/GetCamelizedString"));
-class EditWorkbenchNameCommand {
+const Command_1 = __importDefault(require("../Command"));
+class EditWorkbenchNameCommand extends Command_1.default {
     constructor(context) {
-        this.context = context;
-        context.subscriptions.push(vscode_1.commands.registerCommand('integrationWorkbench.editWorkbenchName', this.handle.bind(this)));
+        super(context, 'integrationWorkbench.editWorkbenchName');
     }
     handle(reference) {
         return __awaiter(this, void 0, void 0, function* () {

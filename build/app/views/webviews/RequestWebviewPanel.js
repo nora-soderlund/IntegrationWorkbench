@@ -17,12 +17,12 @@ const vscode_1 = require("vscode");
 const GetWebviewUri_1 = require("../../utils/GetWebviewUri");
 const fs_1 = require("fs");
 const path_1 = __importDefault(require("path"));
-const WorkbenchHttpRequest_1 = __importDefault(require("../../workbenches/requests/WorkbenchHttpRequest"));
-const Scripts_1 = __importDefault(require("../../Scripts"));
+const WorkbenchHttpRequest_1 = __importDefault(require("../../entities/requests/WorkbenchHttpRequest"));
+const Scripts_1 = __importDefault(require("../../instances/Scripts"));
 const RequestPreviewUrlPanel_1 = __importDefault(require("./requests/RequestPreviewUrlPanel"));
 const extension_1 = require("../../extension");
 const RequestPreviewHeadersPanel_1 = __importDefault(require("./requests/RequestPreviewHeadersPanel"));
-const Environments_1 = __importDefault(require("../../Environments"));
+const Environments_1 = __importDefault(require("../../instances/Environments"));
 class RequestWebviewPanel {
     constructor(context, request) {
         this.context = context;

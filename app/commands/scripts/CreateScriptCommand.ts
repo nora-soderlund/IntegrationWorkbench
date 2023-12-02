@@ -2,7 +2,7 @@ import { ExtensionContext, commands, window } from "vscode";
 import path from "path";
 import { existsSync, mkdirSync, writeFileSync } from "fs";
 import Script from "../../entities/scripts/TypescriptScript";
-import Scripts from "../../Scripts";
+import Scripts from "../../instances/Scripts";
 import getRootPath from "../../utils/GetRootPath";
 import OpenScriptCommand from "./OpenScriptCommand";
 import Command from "../Command";

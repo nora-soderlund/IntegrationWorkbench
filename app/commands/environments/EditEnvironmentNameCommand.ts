@@ -1,9 +1,9 @@
 import { ExtensionContext, commands, window } from "vscode";
 import WorkbenchTreeItem from "../../views/trees/workbenches/items/WorkbenchTreeItem";
-import { WorkbenchCollection } from "../../workbenches/collections/WorkbenchCollection";
+import { WorkbenchCollection } from "../../entities/collections/WorkbenchCollection";
 import { randomUUID } from "crypto";
 import WorkbenchCollectionTreeItem from "../../views/trees/workbenches/items/WorkbenchCollectionTreeItem";
-import { Workbench } from "../../workbenches/Workbench";
+import { Workbench } from "../../entities/workbenches/Workbench";
 import getRootPath from "../../utils/GetRootPath";
 import path from "path";
 import { existsSync, mkdirSync } from "fs";
@@ -11,7 +11,7 @@ import getUniqueFolderPath from "../../utils/GetUniqueFolderPath";
 import getCamelizedString from "../../utils/GetCamelizedString";
 import Environment from "../../entities/environments/Environment";
 import EnvironmentTreeItem from "../../views/trees/environments/items/EnvironmentTreeItem";
-import Environments from "../../Environments";
+import Environments from "../../instances/Environments";
 
 export default class EditEnvironmentNameCommand {
   constructor(private readonly context: ExtensionContext) {

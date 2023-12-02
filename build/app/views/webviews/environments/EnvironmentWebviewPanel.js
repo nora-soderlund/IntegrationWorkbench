@@ -19,8 +19,8 @@ const fs_1 = require("fs");
 const path_1 = __importDefault(require("path"));
 const GetWebviewUri_1 = require("../../../utils/GetWebviewUri");
 const extension_1 = require("../../../extension");
-const Scripts_1 = __importDefault(require("../../../Scripts"));
-const Environments_1 = __importDefault(require("../../../Environments"));
+const Scripts_1 = __importDefault(require("../../../instances/Scripts"));
+const Environments_1 = __importDefault(require("../../../instances/Environments"));
 class EnvironmentWebviewPanel {
     constructor(context, environment) {
         this.context = context;

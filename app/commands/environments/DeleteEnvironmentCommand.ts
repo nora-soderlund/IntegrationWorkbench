@@ -1,7 +1,7 @@
 import { ExtensionContext, commands, window } from "vscode";
 import Environment from "../../entities/environments/Environment";
 import EnvironmentTreeItem from "../../views/trees/environments/items/EnvironmentTreeItem";
-import Environments from "../../Environments";
+import Environments from "../../instances/Environments";
 
 export default class DeleteEnvironmentCommand {
   constructor(private readonly context: ExtensionContext) {

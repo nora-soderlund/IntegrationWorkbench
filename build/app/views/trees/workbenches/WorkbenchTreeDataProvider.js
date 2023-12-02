@@ -7,7 +7,7 @@ const vscode_1 = require("vscode");
 const WorkbenchTreeItem_1 = __importDefault(require("./items/WorkbenchTreeItem"));
 const WorkbenchRequestTreeItem_1 = __importDefault(require("./items/WorkbenchRequestTreeItem"));
 const WorkbenchCollectionTreeItem_1 = __importDefault(require("./items/WorkbenchCollectionTreeItem"));
-const Workbenches_1 = require("../../../Workbenches");
+const Workbenches_1 = require("../../../instances/Workbenches");
 class WorkbenchTreeDataProvider {
     constructor(context) {
         this.context = context;

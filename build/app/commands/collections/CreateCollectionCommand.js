@@ -14,7 +14,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const vscode_1 = require("vscode");
 const WorkbenchTreeItem_1 = __importDefault(require("../../views/trees/workbenches/items/WorkbenchTreeItem"));
-const WorkbenchCollection_1 = require("../../workbenches/collections/WorkbenchCollection");
+const WorkbenchCollection_1 = require("../../entities/collections/WorkbenchCollection");
 const crypto_1 = require("crypto");
 class CreateCollectionCommand {
     constructor(context) {

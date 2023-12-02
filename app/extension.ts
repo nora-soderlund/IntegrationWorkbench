@@ -2,7 +2,7 @@
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode';
 import WorkbenchTreeDataProvider from './views/trees/workbenches/WorkbenchTreeDataProvider';
-import { getAllRequestsWithWebviews, scanForWorkbenches, workbenches } from './Workbenches';
+import { getAllRequestsWithWebviews, scanForWorkbenches, workbenches } from './instances/Workbenches';
 import CreateCollectionCommand from './commands/collections/CreateCollectionCommand';
 import CreateRequestCommand from './commands/requests/CreateRequestCommand';
 import OpenRequestCommand from './commands/requests/OpenRequestCommand';
@@ -12,7 +12,7 @@ import { getWebviewUri } from './utils/GetWebviewUri';
 import { readFileSync } from 'fs';
 import path from 'path';
 import WorkbenchesRequestsTreeDataProvider from './views/trees/responses/WorkbenchesRequestsTreeDataProvider';
-import { WorkbenchResponse } from './workbenches/responses/WorkbenchResponse';
+import { WorkbenchResponse } from './entities/responses/WorkbenchResponse';
 import EditCollectionNameCommand from './commands/collections/EditCollectionNameCommand';
 import EditCollectionDescriptionCommand from './commands/collections/EditCollectionDescriptionCommand';
 import EditRequestNameCommand from './commands/requests/EditRequestNameCommand';
@@ -25,7 +25,7 @@ import DeleteWorkbenchCommand from './commands/workbenches/DeleteWorkbenchComman
 import { ResponseWebviewPanel } from './views/webviews/ResponseWebviewPanel';
 import RunWorkbenchCommand from './commands/workbenches/RunWorkbenchCommand';
 import ScriptsTreeDataProvider from './views/trees/scripts/ScriptsTreeDataProvider';
-import Scripts from './Scripts';
+import Scripts from './instances/Scripts';
 import CreateScriptCommand from './commands/scripts/CreateScriptCommand';
 import OpenScriptCommand from './commands/scripts/OpenScriptCommand';
 import EditScriptNameCommand from './commands/scripts/EditScriptNameCommand';
@@ -33,7 +33,7 @@ import EditWorkbenchNameCommand from './commands/workbenches/EditWorkbenchNameCo
 import EditWorkbenchDescriptionCommand from './commands/workbenches/EditWorkbenchDescriptionCommand';
 import DeleteScriptCommand from './commands/scripts/DeleteScriptCommand';
 import CancelResponseCommand from './commands/responses/CancelResponseCommand';
-import Environments from './Environments';
+import Environments from './instances/Environments';
 import CreateEnvironmentCommand from './commands/environments/CreateEnvironmentCommand';
 import EnvironmentsTreeDataProvider from './views/trees/environments/EnvironmentsTreeDataProvider';
 import DeleteEnvironmentCommand from './commands/environments/DeleteEnvironmentCommand';
@@ -41,6 +41,7 @@ import EditEnvironmentNameCommand from './commands/environments/EditEnvironmentN
 import EditEnvironmentDescriptionCommand from './commands/environments/EditEnvironmentDescriptionCommand';
 import SelectEnvironmentCommand from './commands/environments/SelectEnvironmentCommand';
 import OpenEnvironmentCommand from './commands/environments/OpenEnvironmentCommand';
+import Commands from './instances/Commands';
 
 export const outputChannel = vscode.window.createOutputChannel("Integration Workbench", {
 	log: true
@@ -118,39 +119,6 @@ export function activate(context: vscode.ExtensionContext) {
 		}
 	}));
 	
-	new CreateCollectionCommand(context);
-	new EditCollectionNameCommand(context);
-	new EditCollectionDescriptionCommand(context);
-	new RunCollectionCommand(context);
-	new DeleteCollectionCommand(context);
-	
-	new CreateRequestCommand(context);
-	new OpenRequestCommand(context);
-	new EditRequestNameCommand(context);
-	new RunRequestCommand(context);
-	new DeleteRequestCommand(context);
-
-	new OpenResponseCommand(context);
-	new CancelResponseCommand(context);
-
-	new CreateWorkbenchCommand(context);
-	new DeleteWorkbenchCommand(context);
-	new RunWorkbenchCommand(context);
-	new EditWorkbenchNameCommand(context);
-	new EditWorkbenchDescriptionCommand(context);
-
-	new CreateScriptCommand(context);
-	new OpenScriptCommand(context);
-	new EditScriptNameCommand(context);
-	new DeleteScriptCommand(context);
-
-	new CreateEnvironmentCommand(context);
-	new EditEnvironmentNameCommand(context);
-	new EditEnvironmentDescriptionCommand(context);
-	new DeleteEnvironmentCommand(context);
-	new OpenEnvironmentCommand(context);
-
-	new SelectEnvironmentCommand(context);
 
 	context.subscriptions.push(vscode.commands.registerCommand('integrationWorkbench.refreshWorkbenches', () => {
 		workbenchesTreeDataProvider.refresh();
@@ -177,13 +145,15 @@ export function activate(context: vscode.ExtensionContext) {
 		vscode.commands.executeCommand(`workbench.action.openWalkthrough`, `nora-soderlund.integrationWorkbench#workbenches.openWorkbenches`, false);
 	}));
 
+	Commands.register(context);
+
 	scanForWorkbenches(context);
 
 	Scripts.scanForScripts();
 	Scripts.buildScript("");
 
 	Environments.scan();
-	Environments.createStatusBarItem(context);
+	Environments.register(context);
 
 	//vscode.window.registerTreeDataProvider('workbenches', new WorkbenchTreeDataProvider(rootPath));
 }
