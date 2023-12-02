@@ -58,6 +58,13 @@ const EditWorkbenchNameCommand_1 = __importDefault(require("./commands/workbench
 const EditWorkbenchDescriptionCommand_1 = __importDefault(require("./commands/workbenches/EditWorkbenchDescriptionCommand"));
 const DeleteScriptCommand_1 = __importDefault(require("./commands/scripts/DeleteScriptCommand"));
 const CancelResponseCommand_1 = __importDefault(require("./commands/responses/CancelResponseCommand"));
+const Environments_1 = __importDefault(require("./Environments"));
+const CreateEnvironmentCommand_1 = __importDefault(require("./commands/environments/CreateEnvironmentCommand"));
+const EnvironmentsTreeDataProvider_1 = __importDefault(require("./views/trees/environments/EnvironmentsTreeDataProvider"));
+const DeleteEnvironmentCommand_1 = __importDefault(require("./commands/environments/DeleteEnvironmentCommand"));
+const EditEnvironmentNameCommand_1 = __importDefault(require("./commands/environments/EditEnvironmentNameCommand"));
+const EditEnvironmentDescriptionCommand_1 = __importDefault(require("./commands/environments/EditEnvironmentDescriptionCommand"));
+const SelectEnvironmentCommand_1 = __importDefault(require("./commands/environments/SelectEnvironmentCommand"));
 exports.outputChannel = vscode.window.createOutputChannel("Integration Workbench", {
     log: true
 });
@@ -78,6 +85,10 @@ function activate(context) {
     const scriptsTreeDataProvider = new ScriptsTreeDataProvider_1.default(context);
     const scriptsTreeView = vscode.window.createTreeView('scripts', {
         treeDataProvider: scriptsTreeDataProvider
+    });
+    const environmentsTreeDataProvider = new EnvironmentsTreeDataProvider_1.default(context);
+    const environmentsTreeView = vscode.window.createTreeView('environments', {
+        treeDataProvider: environmentsTreeDataProvider
     });
     const workbenchResponseWebviewPanel = new ResponseWebviewPanel_1.ResponseWebviewPanel(context);
     context.subscriptions.push(vscode.commands.registerCommand('integrationWorkbench.showResponse', (workbenchResponseTreeItem) => {
@@ -237,11 +248,19 @@ function activate(context) {
     new OpenScriptCommand_1.default(context);
     new EditScriptNameCommand_1.default(context);
     new DeleteScriptCommand_1.default(context);
+    new CreateEnvironmentCommand_1.default(context);
+    new EditEnvironmentNameCommand_1.default(context);
+    new EditEnvironmentDescriptionCommand_1.default(context);
+    new DeleteEnvironmentCommand_1.default(context);
+    new SelectEnvironmentCommand_1.default(context);
     context.subscriptions.push(vscode.commands.registerCommand('integrationWorkbench.refreshWorkbenches', () => {
         workbenchesTreeDataProvider.refresh();
     }));
     context.subscriptions.push(vscode.commands.registerCommand('integrationWorkbench.refreshScripts', () => {
         scriptsTreeDataProvider.refresh();
+    }));
+    context.subscriptions.push(vscode.commands.registerCommand('integrationWorkbench.refreshEnvironments', () => {
+        environmentsTreeDataProvider.refresh();
     }));
     context.subscriptions.push(vscode.commands.registerCommand('integrationWorkbench.addResponse', (workbenchResponse) => {
         const workbenchResponseTreeItem = new WorkbenchResponseTreeItem_1.default(workbenchResponse);
@@ -255,6 +274,8 @@ function activate(context) {
     (0, Workbenches_1.scanForWorkbenches)(context);
     Scripts_1.default.scanForScripts();
     Scripts_1.default.buildScript("");
+    Environments_1.default.createStatusBarItem(context);
+    Environments_1.default.scan();
     //vscode.window.registerTreeDataProvider('workbenches', new WorkbenchTreeDataProvider(rootPath));
 }
 exports.activate = activate;

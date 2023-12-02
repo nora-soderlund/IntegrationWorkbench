@@ -171,6 +171,30 @@
         "title": "Delete script",
         "shortTitle": "Delete",
         "icon": "$(trashcan)"
+      },
+
+      {
+        "command": "integrationWorkbench.createEnvironment",
+        "title": "Create an Environment",
+        "icon": "$(plus)"
+      },
+      {
+        "command": "integrationWorkbench.editEnvironmentName",
+        "title": "Edit environment name",
+        "shortTitle": "Edit name",
+        "icon": "$(pencil)"
+      },
+      {
+        "command": "integrationWorkbench.editEnvironmentDescription",
+        "title": "Edit environment description",
+        "shortTitle": "Edit description",
+        "icon": "$(pencil)"
+      },
+      {
+        "command": "integrationWorkbench.deleteEnvironment",
+        "title": "Delete environment",
+        "shortTitle": "Delete",
+        "icon": "$(trashcan)"
       }
     ],
     "viewsContainers": {
@@ -198,6 +222,10 @@
         {
           "id": "scripts",
           "name": "Scripts"
+        },
+        {
+          "id": "environments",
+          "name": "Environments"
         }
       ],
       "results": [
@@ -228,6 +256,10 @@
         "contents": "No scripts yet! Create your first one to get started.\n[Create a Script](command:integrationWorkbench.createScript)\n[Open the walkthrough](command:integrationWorkbench.openScriptsWalkthrough) to learn how scripts works."
       },
       {
+        "view": "environments",
+        "contents": "No environments yet! Create your first one to get started.\n[Create an Environment](command:integrationWorkbench.createEnvironment)\n[Open the walkthrough](command:integrationWorkbench.openEnvironmentsWalkthrough) to learn how environments works."
+      },
+      {
         "view": "requests",
         "contents": "No requests has been made in this session yet!"
       }
@@ -242,6 +274,11 @@
         {
           "command": "integrationWorkbench.createScript",
           "when": "view == scripts",
+          "group": "navigation"
+        },
+        {
+          "command": "integrationWorkbench.createEnvironment",
+          "when": "view == environments",
           "group": "navigation"
         }
       ],
@@ -335,6 +372,22 @@
           "command": "integrationWorkbench.deleteScript",
           "when": "view == scripts && (viewItem == script)",
           "group": "script@2"
+        },
+        
+        {
+          "command": "integrationWorkbench.editEnvironmentName",
+          "when": "view == environments && (viewItem == environment)",
+          "group": "environment@2"
+        },
+        {
+          "command": "integrationWorkbench.editEnvironmentDescription",
+          "when": "view == environments && (viewItem == environment)",
+          "group": "environment@3"
+        },
+        {
+          "command": "integrationWorkbench.deleteEnvironment",
+          "when": "view == environments && (viewItem == environment)",
+          "group": "environment@4"
         }
       ],
       "editor/title": [
