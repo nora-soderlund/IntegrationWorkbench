@@ -77,7 +77,7 @@ class Environments {
         }
         return this.loadedEnvironments;
     }
-    static getEnvironmentInjection(environment) {
+    static getEnvironmentInjection(environment, allowEnvironmentVariableUserInputs = true) {
         return __awaiter(this, void 0, void 0, function* () {
             if (!environment) {
                 if (!this.selectedEnvironment) {
@@ -85,7 +85,7 @@ class Environments {
                 }
                 environment = this.selectedEnvironment;
             }
-            const parsedVariables = yield environment.getParsedVariables(new AbortController());
+            const parsedVariables = yield environment.getParsedVariables(new AbortController(), allowEnvironmentVariableUserInputs);
             return `const process = { env: { ${parsedVariables.map((parsedVariable) => `${parsedVariable.key}: ${JSON.stringify(parsedVariable.value)}`).join(', ')} } };`;
         });
     }

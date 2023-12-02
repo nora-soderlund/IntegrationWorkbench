@@ -91,7 +91,7 @@ export default class Environments {
     return this.loadedEnvironments;
   }
 
-  public static async getEnvironmentInjection(environment?: Environment) {
+  public static async getEnvironmentInjection(environment?: Environment, allowEnvironmentVariableUserInputs: boolean = true) {
     if(!environment) {
       if(!this.selectedEnvironment) {
         return "";
@@ -100,7 +100,7 @@ export default class Environments {
       environment = this.selectedEnvironment;
     }
 
-    const parsedVariables = await environment.getParsedVariables(new AbortController());
+    const parsedVariables = await environment.getParsedVariables(new AbortController(), allowEnvironmentVariableUserInputs);
 
     return `const process = { env: { ${parsedVariables.map((parsedVariable) => `${parsedVariable.key}: ${JSON.stringify(parsedVariable.value)}`).join(', ')} } };`;
   }

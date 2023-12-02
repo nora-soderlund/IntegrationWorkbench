@@ -59,10 +59,10 @@ class Scripts {
         }
         return this.loadedScripts;
     }
-    static buildScript(input) {
+    static buildScript(input, allowEnvironmentVariableUserInputs = true) {
         return __awaiter(this, void 0, void 0, function* () {
             const inject = this.loadedScripts.map((script) => script.filePath);
-            const environmentInjection = yield Environments_1.default.getEnvironmentInjection();
+            const environmentInjection = yield Environments_1.default.getEnvironmentInjection(undefined, allowEnvironmentVariableUserInputs);
             const contents = environmentInjection.concat(input);
             console.log("Building script", { input, contents, inject });
             const result = yield esbuild_1.default.build({
@@ -146,7 +146,7 @@ class Scripts {
             });
         });
     }
-    static evaluateUserInput(userInput) {
+    static evaluateUserInput(userInput, allowEnvironmentVariableUserInputs = true) {
         return __awaiter(this, void 0, void 0, function* () {
             return new Promise((resolve, reject) => __awaiter(this, void 0, void 0, function* () {
                 switch (userInput.type) {
@@ -156,7 +156,7 @@ class Scripts {
                     }
                     case "typescript": {
                         // TODO: add ability to view the entire script that's being evaluated for debugging purposes?
-                        const script = yield Scripts.buildScript(userInput.value);
+                        const script = yield Scripts.buildScript(userInput.value, allowEnvironmentVariableUserInputs);
                         try {
                             const value = yield eval(script);
                             resolve(value);

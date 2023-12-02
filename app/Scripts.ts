@@ -67,10 +67,10 @@ export default class Scripts {
     return this.loadedScripts;
   }
 
-  static async buildScript(input: string) {
+  static async buildScript(input: string, allowEnvironmentVariableUserInputs: boolean = true) {
     const inject = this.loadedScripts.map((script) => script.filePath);
 
-    const environmentInjection = await Environments.getEnvironmentInjection();
+    const environmentInjection = await Environments.getEnvironmentInjection(undefined, allowEnvironmentVariableUserInputs);
 
     const contents = environmentInjection.concat(input);
 
@@ -181,7 +181,7 @@ export default class Scripts {
     });
   }
 
-  static async evaluateUserInput(userInput: UserInput) {
+  static async evaluateUserInput(userInput: UserInput, allowEnvironmentVariableUserInputs: boolean = true) {
     return new Promise<string>(async (resolve, reject) => {
       switch(userInput.type) {
         case "raw": {
@@ -192,7 +192,7 @@ export default class Scripts {
 
         case "typescript": {
           // TODO: add ability to view the entire script that's being evaluated for debugging purposes?
-          const script = await Scripts.buildScript(userInput.value);
+          const script = await Scripts.buildScript(userInput.value, allowEnvironmentVariableUserInputs);
 
           try {
             const value = await eval(script);

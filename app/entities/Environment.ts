@@ -54,7 +54,7 @@ export default class Environment {
     return variables;
   }
 
-  async getParsedVariables(abortController: AbortController) {
+  async getParsedVariables(abortController: AbortController, allowEnvironmentVariableUserInputs: boolean = true) {
     return new Promise<{
       key: string;
       value: string
@@ -84,17 +84,19 @@ export default class Environment {
         }
       }
 
-      for(let header of this.data.variables) {
-        try {
-          const value = await Scripts.evaluateUserInput(header);
+      if(allowEnvironmentVariableUserInputs) {
+        for(let header of this.data.variables) {
+          try {
+            const value = await Scripts.evaluateUserInput(header, false);
 
-          variables.push({
-            key: header.key,
-            value
-          });
-        }
-        catch(error) {
-          reject(error);
+            variables.push({
+              key: header.key,
+              value
+            });
+          }
+          catch(error) {
+            reject(error);
+          }
         }
       }
 

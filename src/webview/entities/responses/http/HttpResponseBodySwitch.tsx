@@ -21,7 +21,7 @@ export default function HttpResponseBodySwitch({ responseData }: HttpResponsePro
 
           return (
             <React.Fragment>
-              <HttpResponseEditorBody body={JSON.stringify(parsedJson, undefined, 4)} language="json"/>
+              <HttpResponseEditorBody body={JSON.stringify(parsedJson, undefined, 2)} language="json"/>
             </React.Fragment>
           );
         }
