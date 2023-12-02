@@ -73,7 +73,7 @@ export default function HttpRequestHeaders({ requestData }: HttpRequestProps) {
 
         {(!previewHeaderData)?(
           <div>
-            <p><i>No preview available yet.</i></p>
+            <i>No preview available yet.</i>
           </div>
         ):(
           (previewHeaderData.success)?(
@@ -118,7 +118,9 @@ export default function HttpRequestHeaders({ requestData }: HttpRequestProps) {
                 </VSCodeButton>
               </React.Fragment>
             ):(
-              <p>This request has no headers.</p>
+              <div>
+                This request has no headers.
+              </div>
             )
           ):(
             <div className="infobox infobox-error">
