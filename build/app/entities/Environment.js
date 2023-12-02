@@ -43,7 +43,7 @@ class Environment {
         }
         return variables;
     }
-    getParsedVariables(abortController, allowEnvironmentUserInputs = true) {
+    getParsedVariables(abortController) {
         return __awaiter(this, void 0, void 0, function* () {
             return new Promise((resolve, reject) => __awaiter(this, void 0, void 0, function* () {
                 const abortListener = () => reject("Aborted.");
@@ -63,18 +63,16 @@ class Environment {
                         }
                     }
                 }
-                if (allowEnvironmentUserInputs) {
-                    for (let header of this.data.variables) {
-                        try {
-                            const value = yield Scripts_1.default.evaluateUserInput(header);
-                            variables.push({
-                                key: header.key,
-                                value
-                            });
-                        }
-                        catch (error) {
-                            reject(error);
-                        }
+                for (let header of this.data.variables) {
+                    try {
+                        const value = yield Scripts_1.default.evaluateUserInput(header);
+                        variables.push({
+                            key: header.key,
+                            value
+                        });
+                    }
+                    catch (error) {
+                        reject(error);
                     }
                 }
                 abortController.signal.removeEventListener("abort", abortListener);

@@ -97,6 +97,7 @@ class Environments {
                 }
                 environment = this.selectedEnvironment;
             }
+            const parsedVariables = environment.getVariables();
             return `declare const process: { env: { ${environment.getVariables().map((key) => `${key}: any;`).join(' ')} }; };`;
         });
     }
