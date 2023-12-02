@@ -4,7 +4,7 @@ import Environment from "../../entities/environments/Environment";
 export default class OpenEnvironmentCommand {
   constructor(private readonly context: ExtensionContext) {
     context.subscriptions.push(
-      commands.registerCommand('integrationWorkbench.openEnvironment', this.handle.bind(this))
+      commands.registerCommand('norasoderlund.integrationworkbench.openEnvironment', this.handle.bind(this))
     );
   }
   

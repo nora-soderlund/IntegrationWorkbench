@@ -13,7 +13,7 @@ export default function EnvironmentVariables({ environmentData }: EnvironmentPro
       const { command } = event.data;
 
       switch (command) {
-        case 'integrationWorkbench.updateEnvironmentPreviewVariables': {
+        case 'norasoderlund.integrationworkbench.updateEnvironmentPreviewVariables': {
           const [ previewVariablesData ]: [ EnvironmentPreviewVariablesData ] = event.data.arguments;
 
           setPreviewVariablesData(previewVariablesData);
@@ -25,7 +25,7 @@ export default function EnvironmentVariables({ environmentData }: EnvironmentPro
 
     if(environmentData.variablesAutoRefresh) {
       window.vscode.postMessage({
-        command: "integrationWorkbench.getEnvironmentPreviewVariables",
+        command: "norasoderlund.integrationworkbench.getEnvironmentPreviewVariables",
         arguments: []
       });
     }
@@ -54,7 +54,7 @@ export default function EnvironmentVariables({ environmentData }: EnvironmentPro
           }}>
             <VSCodeCheckbox checked={environmentData.variablesAutoRefresh} onClick={(event) => {
               window.vscode.postMessage({
-                command: "integrationWorkbench.setEnvironmentVariablesAutoRefresh",
+                command: "norasoderlund.integrationworkbench.setEnvironmentVariablesAutoRefresh",
                 arguments: [ (event.target as HTMLInputElement).checked ]
               });
             }}>
@@ -63,7 +63,7 @@ export default function EnvironmentVariables({ environmentData }: EnvironmentPro
 
             <VSCodeButton appearance="icon" aria-label="Delete" onClick={() => {
               window.vscode.postMessage({
-                command: "integrationWorkbench.getEnvironmentVariablesPreview",
+                command: "norasoderlund.integrationworkbench.getEnvironmentVariablesPreview",
                 arguments: [ environmentData.variables ]
               });
             }}>
@@ -135,7 +135,7 @@ export default function EnvironmentVariables({ environmentData }: EnvironmentPro
 
               <VSCodeButton onClick={(() => 
                 window.vscode.postMessage({
-                  command: "integrationWorkbench.showOutputLogs",
+                  command: "norasoderlund.integrationworkbench.showOutputLogs",
                   arguments: []
                 })
               )} style={{
@@ -174,7 +174,7 @@ export default function EnvironmentVariables({ environmentData }: EnvironmentPro
             <React.Fragment>
               <VSCodeButton style={{ margin: "auto 0" }} appearance="secondary" onClick={() => 
                 window.vscode.postMessage({
-                  command: "integrationWorkbench.removeEnvironmentVariablesFile",
+                  command: "norasoderlund.integrationworkbench.removeEnvironmentVariablesFile",
                   arguments: []
                 })
               }>
@@ -185,7 +185,7 @@ export default function EnvironmentVariables({ environmentData }: EnvironmentPro
               
               <VSCodeLink onClick={() => 
                 window.vscode.postMessage({
-                  command: "integrationWorkbench.openEnvironmentVariablesFile",
+                  command: "norasoderlund.integrationworkbench.openEnvironmentVariablesFile",
                   arguments: []
                 })
               }>
@@ -196,7 +196,7 @@ export default function EnvironmentVariables({ environmentData }: EnvironmentPro
             <React.Fragment>
               <VSCodeButton onClick={() => 
                 window.vscode.postMessage({
-                  command: "integrationWorkbench.changeEnvironmentVariablesFile",
+                  command: "norasoderlund.integrationworkbench.changeEnvironmentVariablesFile",
                   arguments: []
                 })
               }>
@@ -216,7 +216,7 @@ export default function EnvironmentVariables({ environmentData }: EnvironmentPro
       {(!environmentData.variables.length)?(
         <p>This request has no parameters, <VSCodeLink onClick={() => (
           window.vscode.postMessage({
-            command: "integrationWorkbench.changeEnvironmentVariables",
+            command: "norasoderlund.integrationworkbench.changeEnvironmentVariables",
             arguments: [
               [
                 ...environmentData.variables,
@@ -234,7 +234,7 @@ export default function EnvironmentVariables({ environmentData }: EnvironmentPro
           items={environmentData.variables}
           onAdd={() => (
             window.vscode.postMessage({
-              command: "integrationWorkbench.changeEnvironmentVariables",
+              command: "norasoderlund.integrationworkbench.changeEnvironmentVariables",
               arguments: [
                 [
                   ...environmentData.variables,
@@ -249,7 +249,7 @@ export default function EnvironmentVariables({ environmentData }: EnvironmentPro
           )}
           onChange={(item) => {
             window.vscode.postMessage({
-              command: "integrationWorkbench.changeEnvironmentVariables",
+              command: "norasoderlund.integrationworkbench.changeEnvironmentVariables",
               arguments: [ environmentData.variables ]
             })
           }}
@@ -259,7 +259,7 @@ export default function EnvironmentVariables({ environmentData }: EnvironmentPro
             environmentData.variables.splice(index, 1);
 
             window.vscode.postMessage({
-              command: "integrationWorkbench.changeEnvironmentVariables",
+              command: "norasoderlund.integrationworkbench.changeEnvironmentVariables",
               arguments: [ environmentData.variables ]
             });
           }}

@@ -13,7 +13,7 @@ import Command from "../Command";
 
 export default class EditWorkbenchNameCommand extends Command {
   constructor(context: ExtensionContext) {
-    super(context, 'integrationWorkbench.editWorkbenchName');
+    super(context, 'norasoderlund.integrationworkbench.editWorkbenchName');
   }
   
   async handle(reference: unknown) {
@@ -85,7 +85,7 @@ export default class EditWorkbenchNameCommand extends Command {
 
       workbench.save();
 
-      commands.executeCommand("integrationWorkbench.refreshWorkbenches");
+      commands.executeCommand("norasoderlund.integrationworkbench.refreshWorkbenches");
     });
   }
 }

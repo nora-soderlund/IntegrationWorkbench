@@ -12,7 +12,7 @@ export default function HttpRequestHeaders({ requestData }: HttpRequestProps) {
       const { command } = event.data;
 
       switch (command) {
-        case 'integrationWorkbench.updateHttpRequestPreviewHeaders': {
+        case 'norasoderlund.integrationworkbench.updateHttpRequestPreviewHeaders': {
           const [ previewHeaderData ]: [ WorkbenchHttpRequestPreviewHeadersData ] = event.data.arguments;
 
           setPreviewHeaderData(previewHeaderData);
@@ -24,7 +24,7 @@ export default function HttpRequestHeaders({ requestData }: HttpRequestProps) {
 
     if(requestData.data.parametersAutoRefresh) {
       window.vscode.postMessage({
-        command: "integrationWorkbench.getHttpRequestPreviewHeaders",
+        command: "norasoderlund.integrationworkbench.getHttpRequestPreviewHeaders",
         arguments: []
       });
     }
@@ -53,7 +53,7 @@ export default function HttpRequestHeaders({ requestData }: HttpRequestProps) {
           }}>
             <VSCodeCheckbox checked={requestData.data.headersAutoRefresh} onClick={(event) => {
               window.vscode.postMessage({
-                command: "integrationWorkbench.setHttpRequestHeadersAutoRefresh",
+                command: "norasoderlund.integrationworkbench.setHttpRequestHeadersAutoRefresh",
                 arguments: [ (event.target as HTMLInputElement).checked ]
               });
             }}>
@@ -62,7 +62,7 @@ export default function HttpRequestHeaders({ requestData }: HttpRequestProps) {
 
             <VSCodeButton appearance="icon" aria-label="Delete" onClick={() => {
               window.vscode.postMessage({
-                command: "integrationWorkbench.getHttpRequestPreviewHeaders",
+                command: "norasoderlund.integrationworkbench.getHttpRequestPreviewHeaders",
                 arguments: [ requestData.data.headers ]
               });
             }}>
@@ -136,7 +136,7 @@ export default function HttpRequestHeaders({ requestData }: HttpRequestProps) {
 
               <VSCodeButton onClick={(() => 
                 window.vscode.postMessage({
-                  command: "integrationWorkbench.showOutputLogs",
+                  command: "norasoderlund.integrationworkbench.showOutputLogs",
                   arguments: []
                 })
               )} style={{
@@ -156,7 +156,7 @@ export default function HttpRequestHeaders({ requestData }: HttpRequestProps) {
       {(!requestData.data.headers.length)?(
         <p>This request has no headers, <VSCodeLink onClick={() => (
           window.vscode.postMessage({
-            command: "integrationWorkbench.changeHttpRequestHeaders",
+            command: "norasoderlund.integrationworkbench.changeHttpRequestHeaders",
             arguments: [
               [
                 ...requestData.data.headers,
@@ -174,7 +174,7 @@ export default function HttpRequestHeaders({ requestData }: HttpRequestProps) {
           items={requestData.data.headers}
           onAdd={() => (
             window.vscode.postMessage({
-              command: "integrationWorkbench.changeHttpRequestHeaders",
+              command: "norasoderlund.integrationworkbench.changeHttpRequestHeaders",
               arguments: [
                 [
                   ...requestData.data.headers,
@@ -189,7 +189,7 @@ export default function HttpRequestHeaders({ requestData }: HttpRequestProps) {
           )}
           onChange={(item) => {
             window.vscode.postMessage({
-              command: "integrationWorkbench.changeHttpRequestHeaders",
+              command: "norasoderlund.integrationworkbench.changeHttpRequestHeaders",
               arguments: [ requestData.data.headers ]
             })
           }}
@@ -199,7 +199,7 @@ export default function HttpRequestHeaders({ requestData }: HttpRequestProps) {
             requestData.data.headers.splice(index, 1);
 
             window.vscode.postMessage({
-              command: "integrationWorkbench.changeHttpRequestHeaders",
+              command: "norasoderlund.integrationworkbench.changeHttpRequestHeaders",
               arguments: [ requestData.data.headers ]
             });
           }}

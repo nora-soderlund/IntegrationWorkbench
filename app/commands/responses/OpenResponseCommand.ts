@@ -6,7 +6,7 @@ import { WorkbenchCollection } from "../../entities/collections/WorkbenchCollect
 export default class OpenResponseCommand {
   constructor(private readonly context: ExtensionContext) {
     context.subscriptions.push(
-      commands.registerCommand('integrationWorkbench.openResponse', this.handle.bind(this))
+      commands.registerCommand('norasoderlund.integrationworkbench.openResponse', this.handle.bind(this))
     );
   }
   

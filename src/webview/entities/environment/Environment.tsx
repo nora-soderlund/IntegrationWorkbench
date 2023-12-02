@@ -17,7 +17,7 @@ export default function Environment() {
       const { command } = event.data;
 
       switch (command) {
-        case 'integrationWorkbench.updateEnvironment': {
+        case 'norasoderlund.integrationworkbench.updateEnvironment': {
           const [ environmentData ] = event.data.arguments;
 
           console.log("set environment", environmentData);
@@ -30,7 +30,7 @@ export default function Environment() {
     });
 
     window.vscode.postMessage({
-      command: "integrationWorkbench.getEnvironment",
+      command: "norasoderlund.integrationworkbench.getEnvironment",
       arguments: []
     });
   }, []);

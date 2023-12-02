@@ -118,7 +118,7 @@ export default class Environment {
       this.requestWebviewPanel.reveal();
     }
 		
-    //commands.executeCommand("integrationWorkbench.openEnvironment", this);
+    //commands.executeCommand("norasoderlund.integrationworkbench.openEnvironment", this);
   }
 
   deleteWebviewPanel() {

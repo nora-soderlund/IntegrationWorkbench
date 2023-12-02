@@ -12,7 +12,7 @@ export default function HttpRequestParameters({ requestData }: HttpRequestProps)
       const { command } = event.data;
 
       switch (command) {
-        case 'integrationWorkbench.updateHttpRequestPreviewUrl': {
+        case 'norasoderlund.integrationworkbench.updateHttpRequestPreviewUrl': {
           const [ previewUrlData ]: [ WorkbenchHttpRequestPreviewUrlData ] = event.data.arguments;
 
           setPreviewUrlData(previewUrlData);
@@ -24,7 +24,7 @@ export default function HttpRequestParameters({ requestData }: HttpRequestProps)
 
     if(requestData.data.parametersAutoRefresh) {
       window.vscode.postMessage({
-        command: "integrationWorkbench.getHttpRequestPreviewUrl",
+        command: "norasoderlund.integrationworkbench.getHttpRequestPreviewUrl",
         arguments: []
       });
     }
@@ -53,7 +53,7 @@ export default function HttpRequestParameters({ requestData }: HttpRequestProps)
           }}>
             <VSCodeCheckbox checked={requestData.data.parametersAutoRefresh} onClick={(event) => {
               window.vscode.postMessage({
-                command: "integrationWorkbench.setHttpRequestParameterAutoRefresh",
+                command: "norasoderlund.integrationworkbench.setHttpRequestParameterAutoRefresh",
                 arguments: [ (event.target as HTMLInputElement).checked ]
               });
             }}>
@@ -62,7 +62,7 @@ export default function HttpRequestParameters({ requestData }: HttpRequestProps)
 
             <VSCodeButton appearance="icon" aria-label="Delete" onClick={() => {
               window.vscode.postMessage({
-                command: "integrationWorkbench.getHttpRequestPreviewUrl",
+                command: "norasoderlund.integrationworkbench.getHttpRequestPreviewUrl",
                 arguments: [ requestData.data.parameters ]
               });
             }}>
@@ -92,7 +92,7 @@ export default function HttpRequestParameters({ requestData }: HttpRequestProps)
 
               <VSCodeButton onClick={(() => 
                 window.vscode.postMessage({
-                  command: "integrationWorkbench.showOutputLogs",
+                  command: "norasoderlund.integrationworkbench.showOutputLogs",
                   arguments: []
                 })
               )} style={{
@@ -112,7 +112,7 @@ export default function HttpRequestParameters({ requestData }: HttpRequestProps)
       {(!requestData.data.parameters.length)?(
         <p>This request has no parameters, <VSCodeLink onClick={() => (
           window.vscode.postMessage({
-            command: "integrationWorkbench.changeHttpRequestParameters",
+            command: "norasoderlund.integrationworkbench.changeHttpRequestParameters",
             arguments: [
               [
                 ...requestData.data.parameters,
@@ -130,7 +130,7 @@ export default function HttpRequestParameters({ requestData }: HttpRequestProps)
           items={requestData.data.parameters}
           onAdd={() => (
             window.vscode.postMessage({
-              command: "integrationWorkbench.changeHttpRequestParameters",
+              command: "norasoderlund.integrationworkbench.changeHttpRequestParameters",
               arguments: [
                 [
                   ...requestData.data.parameters,
@@ -145,7 +145,7 @@ export default function HttpRequestParameters({ requestData }: HttpRequestProps)
           )}
           onChange={(item) => {
             window.vscode.postMessage({
-              command: "integrationWorkbench.changeHttpRequestParameters",
+              command: "norasoderlund.integrationworkbench.changeHttpRequestParameters",
               arguments: [ requestData.data.parameters ]
             })
           }}
@@ -155,7 +155,7 @@ export default function HttpRequestParameters({ requestData }: HttpRequestProps)
             requestData.data.parameters.splice(index, 1);
 
             window.vscode.postMessage({
-              command: "integrationWorkbench.changeHttpRequestParameters",
+              command: "norasoderlund.integrationworkbench.changeHttpRequestParameters",
               arguments: [ requestData.data.parameters ]
             });
           }}

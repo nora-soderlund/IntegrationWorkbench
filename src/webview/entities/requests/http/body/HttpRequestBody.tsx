@@ -21,7 +21,7 @@ export default function HttpRequestBody({ requestData }: HttpRequestProps) {
             };
 
             window.vscode.postMessage({
-              command: "integrationWorkbench.changeHttpRequestBody",
+              command: "norasoderlund.integrationworkbench.changeHttpRequestBody",
               arguments: [ requestBodyData ]
             });
 
@@ -35,7 +35,7 @@ export default function HttpRequestBody({ requestData }: HttpRequestProps) {
             };
 
             window.vscode.postMessage({
-              command: "integrationWorkbench.changeHttpRequestBody",
+              command: "norasoderlund.integrationworkbench.changeHttpRequestBody",
               arguments: [ requestBodyData ]
             });
 
@@ -55,7 +55,7 @@ export default function HttpRequestBody({ requestData }: HttpRequestProps) {
             };
 
             window.vscode.postMessage({
-              command: "integrationWorkbench.changeHttpRequestBody",
+              command: "norasoderlund.integrationworkbench.changeHttpRequestBody",
               arguments: [ requestBodyData ]
             });
 

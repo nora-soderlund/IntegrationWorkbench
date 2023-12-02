@@ -10,7 +10,7 @@ import { WorkbenchCollection } from "../../entities/collections/WorkbenchCollect
 export default class CreateRequestCommand {
   constructor(private readonly context: ExtensionContext) {
     context.subscriptions.push(
-      commands.registerCommand('integrationWorkbench.createRequest', this.handle.bind(this))
+      commands.registerCommand('norasoderlund.integrationworkbench.createRequest', this.handle.bind(this))
     );
   }
   
@@ -60,7 +60,7 @@ export default class CreateRequestCommand {
 
         workbenchItem.save();
 
-        commands.executeCommand("integrationWorkbench.refreshWorkbenches");
+        commands.executeCommand("norasoderlund.integrationworkbench.refreshWorkbenches");
       }
     });
   }

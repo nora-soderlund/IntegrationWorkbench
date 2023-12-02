@@ -6,7 +6,7 @@ import Command from "../Command";
 
 export default class DeleteWorkbenchCommand extends Command {
   constructor(context: ExtensionContext) {
-    super(context, 'integrationWorkbench.deleteWorkbench');
+    super(context, 'norasoderlund.integrationworkbench.deleteWorkbench');
   }
   
   async handle(reference: unknown) {

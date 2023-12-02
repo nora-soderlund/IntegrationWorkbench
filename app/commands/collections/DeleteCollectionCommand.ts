@@ -9,7 +9,7 @@ import { WorkbenchCollection } from "../../entities/collections/WorkbenchCollect
 export default class DeleteCollectionCommand {
   constructor(private readonly context: ExtensionContext) {
     context.subscriptions.push(
-      commands.registerCommand('integrationWorkbench.deleteCollection', this.handle.bind(this))
+      commands.registerCommand('norasoderlund.integrationworkbench.deleteCollection', this.handle.bind(this))
     );
   }
   

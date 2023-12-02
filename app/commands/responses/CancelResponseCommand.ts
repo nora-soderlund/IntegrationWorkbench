@@ -8,7 +8,7 @@ import { WorkbenchResponse } from "../../entities/responses/WorkbenchResponse";
 export default class CancelResponseCommand {
   constructor(private readonly context: ExtensionContext) {
     context.subscriptions.push(
-      commands.registerCommand('integrationWorkbench.cancelResponse', this.handle.bind(this))
+      commands.registerCommand('norasoderlund.integrationworkbench.cancelResponse', this.handle.bind(this))
     );
   }
   

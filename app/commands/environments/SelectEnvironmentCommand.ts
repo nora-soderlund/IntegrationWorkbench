@@ -4,7 +4,7 @@ import Environments from "../../instances/Environments";
 export default class SelectEnvironmentCommand {
   constructor(private readonly context: ExtensionContext) {
     context.subscriptions.push(
-      commands.registerCommand('integrationWorkbench.selectEnvironment', this.handle.bind(this))
+      commands.registerCommand('norasoderlund.integrationworkbench.selectEnvironment', this.handle.bind(this))
     );
   }
   
@@ -12,7 +12,7 @@ export default class SelectEnvironmentCommand {
     if(!Environments.loadedEnvironments.length) {
       window.showInformationMessage("There's no environments, create an environment to get started.", "Create an Environment").then((selection) => {
         if(selection) {
-          commands.executeCommand("integrationWorkbench.createEnvironment");
+          commands.executeCommand("norasoderlund.integrationworkbench.createEnvironment");
         }
       });
 

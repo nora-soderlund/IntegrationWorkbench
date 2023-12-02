@@ -29,14 +29,14 @@ export default function HttpRequesBasicAuthorization({ requestData, authorizatio
               authorizationData.username.value = value;
 
               window.vscode.postMessage({
-                command: "integrationWorkbench.changeHttpRequestAuthorization",
+                command: "norasoderlund.integrationworkbench.changeHttpRequestAuthorization",
                 arguments: [ authorizationData ]
               });
             }} onChangeType={(type) => {
               authorizationData.username.type = type;
 
               window.vscode.postMessage({
-                command: "integrationWorkbench.changeHttpRequestAuthorization",
+                command: "norasoderlund.integrationworkbench.changeHttpRequestAuthorization",
                 arguments: [ authorizationData ]
               });
             }}/>
@@ -47,14 +47,14 @@ export default function HttpRequesBasicAuthorization({ requestData, authorizatio
               authorizationData.password.value = value;
 
               window.vscode.postMessage({
-                command: "integrationWorkbench.changeHttpRequestAuthorization",
+                command: "norasoderlund.integrationworkbench.changeHttpRequestAuthorization",
                 arguments: [ authorizationData ]
               });
             }} onChangeType={(type) => {
               authorizationData.password.type = type;
 
               window.vscode.postMessage({
-                command: "integrationWorkbench.changeHttpRequestAuthorization",
+                command: "norasoderlund.integrationworkbench.changeHttpRequestAuthorization",
                 arguments: [ authorizationData ]
               });
             }}/>

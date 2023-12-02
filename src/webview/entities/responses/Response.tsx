@@ -13,7 +13,7 @@ export default function Response() {
       const { command } = event.data;
 
       switch (command) {
-        case 'integrationWorkbench.showResponse': {
+        case 'norasoderlund.integrationworkbench.showResponse': {
           const [ responseData ] = event.data.arguments;
 
           setResponseData(responseData);

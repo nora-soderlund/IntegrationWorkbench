@@ -47,7 +47,7 @@ export class WorkbenchCollection {
       this.requests.splice(index, 1);
       this.save();
 
-      commands.executeCommand(`integrationWorkbench.refreshWorkbenches`);
+      commands.executeCommand(`norasoderlund.integrationworkbench.refreshWorkbenches`);
     }
   }
 }

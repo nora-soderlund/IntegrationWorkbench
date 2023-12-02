@@ -6,7 +6,7 @@ import Command from "../Command";
 
 export default class RunWorkbenchCommand extends Command {
   constructor(context: ExtensionContext) {
-    super(context, 'integrationWorkbench.runWorkbench');
+    super(context, 'norasoderlund.integrationworkbench.runWorkbench');
   }
   
   async handle(reference: unknown) {

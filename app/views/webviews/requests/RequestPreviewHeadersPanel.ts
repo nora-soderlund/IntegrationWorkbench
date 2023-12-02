@@ -29,7 +29,7 @@ export default class RequestPreviewHeadersPanel {
       async ({ command }: any) => {
         switch (command) {
 
-          case "integrationWorkbench.getHttpRequestPreviewHeaders": {
+          case "norasoderlund.integrationworkbench.getHttpRequestPreviewHeaders": {
             this.updatePreviewHeaders();
 
             return;
@@ -84,7 +84,7 @@ export default class RequestPreviewHeadersPanel {
     }
 
     this.requestWebviewPanel.webviewPanel.webview.postMessage({
-      command: "integrationWorkbench.updateHttpRequestPreviewHeaders",
+      command: "norasoderlund.integrationworkbench.updateHttpRequestPreviewHeaders",
       arguments: [ previewHeadersData ]
     });
 

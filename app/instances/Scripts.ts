@@ -61,7 +61,7 @@ export default class Scripts {
     }
   
     if(sendRefreshScriptsCommand) {
-      commands.executeCommand(`integrationWorkbench.refreshScripts`);
+      commands.executeCommand(`norasoderlund.integrationworkbench.refreshScripts`);
     }
   
     return this.loadedScripts;

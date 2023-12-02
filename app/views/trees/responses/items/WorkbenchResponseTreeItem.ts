@@ -16,7 +16,7 @@ export default class WorkbenchResponseTreeItem extends TreeItem {
 
     this.command = {
       title: "Show response",
-      command: "integrationWorkbench.showResponse",
+      command: "norasoderlund.integrationworkbench.showResponse",
       arguments: [this]
     };
   }

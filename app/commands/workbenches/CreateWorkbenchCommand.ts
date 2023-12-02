@@ -11,7 +11,7 @@ import Command from "../Command";
 
 export default class CreateWorkbenchCommand extends Command {
   constructor(context: ExtensionContext) {
-    super(context, 'integrationWorkbench.createWorkbench');
+    super(context, 'norasoderlund.integrationworkbench.createWorkbench');
   }
   
   async handle() {
@@ -76,6 +76,6 @@ export default class CreateWorkbenchCommand extends Command {
   
     workbenches.push(workbench);
   
-    commands.executeCommand("integrationWorkbench.refreshWorkbenches");
+    commands.executeCommand("norasoderlund.integrationworkbench.refreshWorkbenches");
   };
 }

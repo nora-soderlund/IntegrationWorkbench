@@ -15,7 +15,7 @@ export default class EnvironmentTreeItem extends TreeItem {
 
     this.command = {
       title: "Edit script",
-      command: "integrationWorkbench.openEnvironment",
+      command: "norasoderlund.integrationworkbench.openEnvironment",
       arguments: [this.environment]
     };
   }

@@ -7,7 +7,7 @@ import WorkbenchRequest from "../../entities/requests/WorkbenchRequest";
 export default class RunRequestCommand {
   constructor(private readonly context: ExtensionContext) {
     context.subscriptions.push(
-      commands.registerCommand('integrationWorkbench.runRequest', this.handle.bind(this))
+      commands.registerCommand('norasoderlund.integrationworkbench.runRequest', this.handle.bind(this))
     );
   }
   

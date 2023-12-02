@@ -29,7 +29,7 @@ export default class RequestPreviewUrlPanel {
       async ({ command }: any) => {
         switch (command) {
 
-          case "integrationWorkbench.getHttpRequestPreviewUrl": {
+          case "norasoderlund.integrationworkbench.getHttpRequestPreviewUrl": {
             this.updatePreviewUrl();
 
             return;
@@ -79,7 +79,7 @@ export default class RequestPreviewUrlPanel {
     }
 
     this.requestWebviewPanel.webviewPanel.webview.postMessage({
-      command: "integrationWorkbench.updateHttpRequestPreviewUrl",
+      command: "norasoderlund.integrationworkbench.updateHttpRequestPreviewUrl",
       arguments: [ previewUrlData ]
     });
 

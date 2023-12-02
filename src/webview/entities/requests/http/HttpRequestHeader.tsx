@@ -22,7 +22,7 @@ export default function HttpRequestHeader({ requestData }: HttpRequestProps) {
       }}>
         <VSCodeDropdown value={requestData.data.method} onChange={(event) => (
           window.vscode.postMessage({
-            command: "integrationWorkbench.changeHttpRequestMethod",
+            command: "norasoderlund.integrationworkbench.changeHttpRequestMethod",
             arguments: [ (event.target as HTMLInputElement).value ]
           })
         )}>
@@ -37,7 +37,7 @@ export default function HttpRequestHeader({ requestData }: HttpRequestProps) {
           flex: 1
         }} onChange={(event) => (
           window.vscode.postMessage({
-            command: "integrationWorkbench.changeHttpRequestUrl",
+            command: "norasoderlund.integrationworkbench.changeHttpRequestUrl",
             arguments: [ (event.target as HTMLInputElement).value ]
           })
         )}/>
@@ -45,7 +45,7 @@ export default function HttpRequestHeader({ requestData }: HttpRequestProps) {
 
       <VSCodeButton className="header-send" onClick={() => (
         window.vscode.postMessage({
-          command: "integrationWorkbench.sendHttpRequest",
+          command: "norasoderlund.integrationworkbench.sendHttpRequest",
           arguments: []
         })
       )}>

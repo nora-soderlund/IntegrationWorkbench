@@ -13,7 +13,7 @@ import Command from "../Command";
 
 export default class EditWorkbenchDescriptionCommand extends Command {
   constructor(context: ExtensionContext) {
-    super(context, 'integrationWorkbench.editWorkbenchDescription');
+    super(context, 'norasoderlund.integrationworkbench.editWorkbenchDescription');
   }
   
   async handle(reference: unknown) {
@@ -34,7 +34,7 @@ export default class EditWorkbenchDescriptionCommand extends Command {
 
       workbench.save();
 
-      commands.executeCommand("integrationWorkbench.refreshWorkbenches");
+      commands.executeCommand("norasoderlund.integrationworkbench.refreshWorkbenches");
     });
   }
 }

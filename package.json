@@ -2,10 +2,11 @@
   "name": "integrationworkbench",
   "displayName": "Integration Workbench",
   "description": "A workbench tool to work with API integrations.",
-  "version": "0.9.0",
+  "version": "0.9.1",
   "license": "GPL-3.0",
+  "publisher": "norasoderlund",
   "engines": {
-    "vscode": "^1.84.0"
+    "vscode": "^1.82.0"
   },
   "categories": [
     "Other"
@@ -25,17 +26,17 @@
     "configuration": {
       "title": "Integration Workbenches",
       "properties": {
-        "integrationWorkbench.allowRequestsInWorkbench": {
+        "norasoderlund.integrationworkbench.allowRequestsInWorkbench": {
           "type": "boolean",
           "default": false,
           "description": "Allow requests to be created in the root level of a workbench, outside of any collections."
         },
-        "integrationWorkbench.retainResponsesAmount": {
+        "norasoderlund.integrationworkbench.retainResponsesAmount": {
           "type": "number",
           "default": 50,
           "description": "How many responses to retain in the responses panel, excluding saved responses."
         },
-        "integrationWorkbench.retainResponsesDuration": {
+        "norasoderlund.integrationworkbench.retainResponsesDuration": {
           "type": [
             "number",
             "null"
@@ -43,7 +44,7 @@
           "default": null,
           "description": "How long a response should be kept in the editor before clearing it out on the next refresh."
         },
-        "integrationWorkbench.showRunRequestButton": {
+        "norasoderlund.integrationworkbench.showRunRequestButton": {
           "type": "boolean",
           "default": true,
           "description": "If a run button should be shown inline with each request within a workbench."
@@ -52,155 +53,155 @@
     },
     "commands": [
       {
-        "command": "integrationWorkbench.openWalkthrough",
+        "command": "norasoderlund.integrationworkbench.openWalkthrough",
         "title": "Open Walkthrough"
       },
       {
-        "command": "integrationWorkbench.createWorkbench",
+        "command": "norasoderlund.integrationworkbench.createWorkbench",
         "title": "Create a Workbench",
         "icon": "$(plus)"
       },
       {
-        "command": "integrationWorkbench.editWorkbenchName",
+        "command": "norasoderlund.integrationworkbench.editWorkbenchName",
         "title": "Edit workbench name",
         "shortTitle": "Edit name",
         "icon": "$(pencil)"
       },
       {
-        "command": "integrationWorkbench.editWorkbenchDescription",
+        "command": "norasoderlund.integrationworkbench.editWorkbenchDescription",
         "title": "Edit workbench description",
         "shortTitle": "Edit description",
         "icon": "$(pencil)"
       },
       {
-        "command": "integrationWorkbench.deleteWorkbench",
+        "command": "norasoderlund.integrationworkbench.deleteWorkbench",
         "title": "Delete workbench",
         "shortTitle": "Delete",
         "icon": "$(trashcan)"
       },
       {
-        "command": "integrationWorkbench.createCollection",
+        "command": "norasoderlund.integrationworkbench.createCollection",
         "title": "Create a Collection",
         "icon": "$(new-folder)"
       },
       {
-        "command": "integrationWorkbench.editCollectionName",
+        "command": "norasoderlund.integrationworkbench.editCollectionName",
         "title": "Edit collection name",
         "shortTitle": "Edit name",
         "icon": "$(pencil)"
       },
       {
-        "command": "integrationWorkbench.editCollectionDescription",
+        "command": "norasoderlund.integrationworkbench.editCollectionDescription",
         "title": "Edit collection description",
         "shortTitle": "Edit description",
         "icon": "$(pencil)"
       },
       {
-        "command": "integrationWorkbench.runWorkbench",
+        "command": "norasoderlund.integrationworkbench.runWorkbench",
         "title": "Run all",
         "icon": "$(run)"
       },
       {
-        "command": "integrationWorkbench.runCollection",
+        "command": "norasoderlund.integrationworkbench.runCollection",
         "title": "Run all",
         "icon": "$(run)"
       },
       {
-        "command": "integrationWorkbench.deleteCollection",
+        "command": "norasoderlund.integrationworkbench.deleteCollection",
         "title": "Delete collection",
         "shortTitle": "Delete",
         "icon": "$(trashcan)"
       },
       {
-        "command": "integrationWorkbench.createRequest",
+        "command": "norasoderlund.integrationworkbench.createRequest",
         "title": "Create a Request",
         "icon": "$(new-file)"
       },
       {
-        "command": "integrationWorkbench.editRequestName",
+        "command": "norasoderlund.integrationworkbench.editRequestName",
         "title": "Edit request name",
         "shortTitle": "Edit name",
         "icon": "$(pencil)"
       },
       {
-        "command": "integrationWorkbench.deleteRequest",
+        "command": "norasoderlund.integrationworkbench.deleteRequest",
         "title": "Delete request",
         "shortTitle": "Delete",
         "icon": "$(trashcan)"
       },
       {
-        "command": "integrationWorkbench.runRequest",
+        "command": "norasoderlund.integrationworkbench.runRequest",
         "title": "Run",
         "icon": "$(run)"
       },
       {
-        "command": "integrationWorkbench.deleteResponse",
+        "command": "norasoderlund.integrationworkbench.deleteResponse",
         "title": "Delete Response",
         "icon": "$(trashcan)"
       },
       {
-        "command": "integrationWorkbench.cancelResponse",
+        "command": "norasoderlund.integrationworkbench.cancelResponse",
         "title": "Cancel Request",
         "icon": "$(chrome-close)"
       },
       {
-        "command": "integrationWorkbench.editRequest",
+        "command": "norasoderlund.integrationworkbench.editRequest",
         "title": "Edit Request",
         "icon": "$(gear)"
       },
       {
-        "command": "integrationWorkbench.refreshWorkbenches",
+        "command": "norasoderlund.integrationworkbench.refreshWorkbenches",
         "title": "Refresh the integration workbench"
       },
       {
-        "command": "integrationWorkbench.dev.createWorkbenches",
+        "command": "norasoderlund.integrationworkbench.dev.createWorkbenches",
         "title": "(Dev) Create workbenches"
       },
       {
-        "command": "integrationWorkbench.dev.removeWorkbenches",
+        "command": "norasoderlund.integrationworkbench.dev.removeWorkbenches",
         "title": "(Dev) Remove workbenches"
       },
       {
-        "command": "integrationWorkbench.createScript",
+        "command": "norasoderlund.integrationworkbench.createScript",
         "title": "Create a Script",
         "icon": "$(new-file)"
       },
       {
-        "command": "integrationWorkbench.editScriptName",
+        "command": "norasoderlund.integrationworkbench.editScriptName",
         "title": "Edit script name",
         "shortTitle": "Edit name",
         "icon": "$(pencil)"
       },
       {
-        "command": "integrationWorkbench.deleteScriptDeclarations",
+        "command": "norasoderlund.integrationworkbench.deleteScriptDeclarations",
         "title": "Delete all script declarations",
         "icon": "$(trashcan)"
       },
       {
-        "command": "integrationWorkbench.deleteScript",
+        "command": "norasoderlund.integrationworkbench.deleteScript",
         "title": "Delete script",
         "shortTitle": "Delete",
         "icon": "$(trashcan)"
       },
       {
-        "command": "integrationWorkbench.createEnvironment",
+        "command": "norasoderlund.integrationworkbench.createEnvironment",
         "title": "Create an Environment",
         "icon": "$(plus)"
       },
       {
-        "command": "integrationWorkbench.editEnvironmentName",
+        "command": "norasoderlund.integrationworkbench.editEnvironmentName",
         "title": "Edit environment name",
         "shortTitle": "Edit name",
         "icon": "$(pencil)"
       },
       {
-        "command": "integrationWorkbench.editEnvironmentDescription",
+        "command": "norasoderlund.integrationworkbench.editEnvironmentDescription",
         "title": "Edit environment description",
         "shortTitle": "Edit description",
         "icon": "$(pencil)"
       },
       {
-        "command": "integrationWorkbench.deleteEnvironment",
+        "command": "norasoderlund.integrationworkbench.deleteEnvironment",
         "title": "Delete environment",
         "shortTitle": "Delete",
         "icon": "$(trashcan)"
@@ -258,15 +259,15 @@
     "viewsWelcome": [
       {
         "view": "workbenches",
-        "contents": "No workbenches yet! Create your first one to get started.\n[Create a Workbench](command:integrationWorkbench.createWorkbench)\n[Open the walkthrough](command:integrationWorkbench.openWalkthrough) to learn how Integration Workbench works."
+        "contents": "No workbenches yet! Create your first one to get started.\n[Create a Workbench](command:norasoderlund.integrationworkbench.createWorkbench)\n[Open the walkthrough](command:norasoderlund.integrationworkbench.openWalkthrough) to learn how Integration Workbench works."
       },
       {
         "view": "scripts",
-        "contents": "No scripts yet! Create your first one to get started.\n[Create a Script](command:integrationWorkbench.createScript)\n[Open the walkthrough](command:integrationWorkbench.openScriptsWalkthrough) to learn how scripts works."
+        "contents": "No scripts yet! Create your first one to get started.\n[Create a Script](command:norasoderlund.integrationworkbench.createScript)\n[Open the walkthrough](command:norasoderlund.integrationworkbench.openScriptsWalkthrough) to learn how scripts works."
       },
       {
         "view": "environments",
-        "contents": "No environments yet! Create your first one to get started.\n[Create an Environment](command:integrationWorkbench.createEnvironment)\n[Open the walkthrough](command:integrationWorkbench.openEnvironmentsWalkthrough) to learn how environments works."
+        "contents": "No environments yet! Create your first one to get started.\n[Create an Environment](command:norasoderlund.integrationworkbench.createEnvironment)\n[Open the walkthrough](command:norasoderlund.integrationworkbench.openEnvironmentsWalkthrough) to learn how environments works."
       },
       {
         "view": "requests",
@@ -276,132 +277,132 @@
     "menus": {
       "view/title": [
         {
-          "command": "integrationWorkbench.createWorkbench",
+          "command": "norasoderlund.integrationworkbench.createWorkbench",
           "when": "view == workbenches",
           "group": "navigation"
         },
         {
-          "command": "integrationWorkbench.createScript",
+          "command": "norasoderlund.integrationworkbench.createScript",
           "when": "view == scripts",
           "group": "navigation"
         },
         {
-          "command": "integrationWorkbench.createEnvironment",
+          "command": "norasoderlund.integrationworkbench.createEnvironment",
           "when": "view == environments",
           "group": "navigation"
         }
       ],
       "view/item/context": [
         {
-          "command": "integrationWorkbench.runWorkbench",
+          "command": "norasoderlund.integrationworkbench.runWorkbench",
           "when": "view == workbenches && (viewItem == workbench)",
           "group": "workbench@1"
         },
         {
-          "command": "integrationWorkbench.editWorkbenchName",
+          "command": "norasoderlund.integrationworkbench.editWorkbenchName",
           "when": "view == workbenches && (viewItem == workbench)",
           "group": "workbench@2"
         },
         {
-          "command": "integrationWorkbench.editWorkbenchDescription",
+          "command": "norasoderlund.integrationworkbench.editWorkbenchDescription",
           "when": "view == workbenches && (viewItem == workbench)",
           "group": "workbench@3"
         },
         {
-          "command": "integrationWorkbench.deleteWorkbench",
+          "command": "norasoderlund.integrationworkbench.deleteWorkbench",
           "when": "view == workbenches && (viewItem == workbench)",
           "group": "workbench@4"
         },
         {
-          "command": "integrationWorkbench.createCollection",
+          "command": "norasoderlund.integrationworkbench.createCollection",
           "when": "view == workbenches && viewItem == workbench",
           "group": "inline"
         },
         {
-          "command": "integrationWorkbench.runCollection",
+          "command": "norasoderlund.integrationworkbench.runCollection",
           "when": "view == workbenches && (viewItem == collection)",
           "group": "collection@1"
         },
         {
-          "command": "integrationWorkbench.editCollectionName",
+          "command": "norasoderlund.integrationworkbench.editCollectionName",
           "when": "view == workbenches && (viewItem == collection)",
           "group": "collection@2"
         },
         {
-          "command": "integrationWorkbench.editCollectionDescription",
+          "command": "norasoderlund.integrationworkbench.editCollectionDescription",
           "when": "view == workbenches && (viewItem == collection)",
           "group": "collection@3"
         },
         {
-          "command": "integrationWorkbench.deleteCollection",
+          "command": "norasoderlund.integrationworkbench.deleteCollection",
           "when": "view == workbenches && (viewItem == collection)",
           "group": "collection@4"
         },
         {
-          "command": "integrationWorkbench.createRequest",
-          "when": "view == workbenches && ((config.integrationWorkbench.allowRequestsInWorkbench && viewItem == workbench) || viewItem == collection)",
+          "command": "norasoderlund.integrationworkbench.createRequest",
+          "when": "view == workbenches && ((config.norasoderlund.integrationworkbench.allowRequestsInWorkbench && viewItem == workbench) || viewItem == collection)",
           "group": "inline"
         },
         {
-          "command": "integrationWorkbench.runRequest",
-          "when": "view == workbenches && (viewItem == request) && config.integrationWorkbench.showRunRequestButton",
+          "command": "norasoderlund.integrationworkbench.runRequest",
+          "when": "view == workbenches && (viewItem == request) && config.norasoderlund.integrationworkbench.showRunRequestButton",
           "group": "inline"
         },
         {
-          "command": "integrationWorkbench.runRequest",
-          "when": "view == workbenches && (viewItem == request) && !config.integrationWorkbench.showRunRequestButton",
+          "command": "norasoderlund.integrationworkbench.runRequest",
+          "when": "view == workbenches && (viewItem == request) && !config.norasoderlund.integrationworkbench.showRunRequestButton",
           "group": "request@1"
         },
         {
-          "command": "integrationWorkbench.editRequestName",
+          "command": "norasoderlund.integrationworkbench.editRequestName",
           "when": "view == workbenches && (viewItem == request)",
           "group": "request@2"
         },
         {
-          "command": "integrationWorkbench.deleteRequest",
+          "command": "norasoderlund.integrationworkbench.deleteRequest",
           "when": "view == workbenches && (viewItem == request)",
           "group": "request@3"
         },
         {
-          "command": "integrationWorkbench.cancelResponse",
+          "command": "norasoderlund.integrationworkbench.cancelResponse",
           "when": "view == requests && viewItem == response-loading",
           "group": "inline"
         },
         {
-          "command": "integrationWorkbench.deleteResponse",
+          "command": "norasoderlund.integrationworkbench.deleteResponse",
           "when": "view == requests && (viewItem == response-done || viewItem == response-failed)",
           "group": "inline"
         },
         {
-          "command": "integrationWorkbench.editScriptName",
+          "command": "norasoderlund.integrationworkbench.editScriptName",
           "when": "view == scripts && (viewItem == script)",
           "group": "script@1"
         },
         {
-          "command": "integrationWorkbench.deleteScript",
+          "command": "norasoderlund.integrationworkbench.deleteScript",
           "when": "view == scripts && (viewItem == script)",
           "group": "script@2"
         },
         {
-          "command": "integrationWorkbench.editEnvironmentName",
+          "command": "norasoderlund.integrationworkbench.editEnvironmentName",
           "when": "view == environments && (viewItem == environment)",
           "group": "environment@2"
         },
         {
-          "command": "integrationWorkbench.editEnvironmentDescription",
+          "command": "norasoderlund.integrationworkbench.editEnvironmentDescription",
           "when": "view == environments && (viewItem == environment)",
           "group": "environment@3"
         },
         {
-          "command": "integrationWorkbench.deleteEnvironment",
+          "command": "norasoderlund.integrationworkbench.deleteEnvironment",
           "when": "view == environments && (viewItem == environment)",
           "group": "environment@4"
         }
       ],
       "editor/title": [
         {
-          "command": "integrationWorkbench.editRequest",
-          "when": "activeWebviewPanelId == integrationWorkbench.request",
+          "command": "norasoderlund.integrationworkbench.editRequest",
+          "when": "activeWebviewPanelId == norasoderlund.integrationworkbench.request",
           "group": "navigation"
         }
       ]
@@ -427,25 +428,25 @@
           {
             "id": "createWorkbench",
             "title": "Create a workbench",
-            "description": "Create your first workbench for your repository or project.\n[Create a Workbench](command:integrationWorkbench.createWorkbench)",
+            "description": "Create your first workbench for your repository or project.\n[Create a Workbench](command:norasoderlund.integrationworkbench.createWorkbench)",
             "media": {
               "image": "resources/walkthrough/test.png",
               "altText": "Empty image"
             },
             "completionEvents": [
-              "onCommand:integrationWorkbench.createWorkbench"
+              "onCommand:norasoderlund.integrationworkbench.createWorkbench"
             ]
           },
           {
             "id": "createCollection",
             "title": "Create a collection",
-            "description": "Create your first collection of requests to divide your workbench into several parts.\n[Create a Collection](command:integrationWorkbench.createCollection)",
+            "description": "Create your first collection of requests to divide your workbench into several parts.\n[Create a Collection](command:norasoderlund.integrationworkbench.createCollection)",
             "media": {
               "image": "resources/walkthrough/test.png",
               "altText": "Empty image"
             },
             "completionEvents": [
-              "onCommand:integrationWorkbench.createCollection"
+              "onCommand:norasoderlund.integrationworkbench.createCollection"
             ]
           }
         ]
@@ -462,7 +463,7 @@
     "@types/node": "18.x",
     "@types/react": "^18.2.36",
     "@types/react-dom": "^18.2.14",
-    "@types/vscode": "^1.84.0",
+    "@types/vscode": "^1.82.0",
     "@types/vscode-webview": "^1.57.3",
     "@typescript-eslint/eslint-plugin": "^6.9.0",
     "@typescript-eslint/parser": "^6.9.0",

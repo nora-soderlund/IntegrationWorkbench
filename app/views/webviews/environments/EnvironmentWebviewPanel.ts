@@ -20,7 +20,7 @@ export class EnvironmentWebviewPanel {
 		public readonly environment: Environment
   ) {
     this.webviewPanel = window.createWebviewPanel(
-      "integrationWorkbench.request",
+      "norasoderlund.integrationworkbench.request",
       environment.data.name,
       ViewColumn.One,
       {
@@ -82,19 +82,19 @@ export class EnvironmentWebviewPanel {
         console.debug("Received event from request webview:", command);
 
         switch (command) {
-          case "integrationWorkbench.showOutputLogs": {
+          case "norasoderlund.integrationworkbench.showOutputLogs": {
             outputChannel.show();
 
             break;
           }
 
-          case "integrationWorkbench.getEnvironment": {
+          case "norasoderlund.integrationworkbench.getEnvironment": {
             this.updateEnvironment();
 
             return;
           }
 
-          case "integrationWorkbench.changeEnvironmentVariables": {
+          case "norasoderlund.integrationworkbench.changeEnvironmentVariables": {
             const [ variables ] = message.arguments;
 
             this.environment.data.variables = variables;
@@ -109,7 +109,7 @@ export class EnvironmentWebviewPanel {
             return;
           }
 
-          case "integrationWorkbench.getScriptDeclarations": {
+          case "norasoderlund.integrationworkbench.getScriptDeclarations": {
             type ScriptBuildResult = {
               script: TypescriptScript,
               build: {
@@ -148,14 +148,14 @@ export class EnvironmentWebviewPanel {
             console.log({ argument });
 
             this.webviewPanel.webview.postMessage({
-              command: "integrationWorkbench.updateScriptDeclarations",
+              command: "norasoderlund.integrationworkbench.updateScriptDeclarations",
               arguments: [ argument ]
             });
 
             return;
           }
 
-          case "integrationWorkbench.changeEnvironmentVariablesFile": {
+          case "norasoderlund.integrationworkbench.changeEnvironmentVariablesFile": {
             const selections = await window.showOpenDialog({
               canSelectFiles: true,
               canSelectFolders: false,
@@ -179,7 +179,7 @@ export class EnvironmentWebviewPanel {
             break;
           }
 
-          case "integrationWorkbench.removeEnvironmentVariablesFile": {
+          case "norasoderlund.integrationworkbench.removeEnvironmentVariablesFile": {
             delete this.environment.data.variablesFilePath;
 
             this.environment.save();
@@ -189,7 +189,7 @@ export class EnvironmentWebviewPanel {
             break;
           }
 
-          case "integrationWorkbench.openEnvironmentVariablesFile": {
+          case "norasoderlund.integrationworkbench.openEnvironmentVariablesFile": {
             if(this.environment.data.variablesFilePath) {
               const file = Uri.file(this.environment.data.variablesFilePath);
         
@@ -211,7 +211,7 @@ export class EnvironmentWebviewPanel {
 
   private updateEnvironment() {
     this.webviewPanel.webview.postMessage({
-      command: "integrationWorkbench.updateEnvironment",
+      command: "norasoderlund.integrationworkbench.updateEnvironment",
       arguments: [ this.environment.data ]
     });
   }

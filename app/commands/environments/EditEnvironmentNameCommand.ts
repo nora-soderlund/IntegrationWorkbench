@@ -16,7 +16,7 @@ import Environments from "../../instances/Environments";
 export default class EditEnvironmentNameCommand {
   constructor(private readonly context: ExtensionContext) {
     context.subscriptions.push(
-      commands.registerCommand('integrationWorkbench.editEnvironmentName', this.handle.bind(this))
+      commands.registerCommand('norasoderlund.integrationworkbench.editEnvironmentName', this.handle.bind(this))
     );
   }
   
@@ -70,7 +70,7 @@ export default class EditEnvironmentNameCommand {
 
       environment.save();
 
-      commands.executeCommand("integrationWorkbench.refreshEnvironments");
+      commands.executeCommand("norasoderlund.integrationworkbench.refreshEnvironments");
     });
   }
 }

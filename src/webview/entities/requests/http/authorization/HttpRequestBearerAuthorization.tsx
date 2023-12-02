@@ -24,14 +24,14 @@ export default function HttpRequesBearerAuthorization({ requestData, authorizati
               authorizationData.token.value = value;
 
               window.vscode.postMessage({
-                command: "integrationWorkbench.changeHttpRequestAuthorization",
+                command: "norasoderlund.integrationworkbench.changeHttpRequestAuthorization",
                 arguments: [ authorizationData ]
               });
             }} onChangeType={(type) => {
               authorizationData.token.type = type;
 
               window.vscode.postMessage({
-                command: "integrationWorkbench.changeHttpRequestAuthorization",
+                command: "norasoderlund.integrationworkbench.changeHttpRequestAuthorization",
                 arguments: [ authorizationData ]
               });
             }}/>

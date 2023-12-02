@@ -25,7 +25,7 @@ export default class WorkbenchesRequestsTreeDataProvider implements TreeDataProv
 
   getChildren(element?: WorkbenchResponseTreeItems): Thenable<WorkbenchResponseTreeItems[]> {
     if(this.selectAfterRefresh) {
-      commands.executeCommand("integrationWorkbench.showResponse", this.selectAfterRefresh);
+      commands.executeCommand("norasoderlund.integrationworkbench.showResponse", this.selectAfterRefresh);
 
       delete this.selectAfterRefresh;
     }

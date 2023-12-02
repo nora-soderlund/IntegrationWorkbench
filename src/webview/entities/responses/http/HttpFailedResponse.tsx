@@ -22,7 +22,7 @@ export default function HttpFailedResponse({ responseData }: HttpResponseProps) 
 
         <VSCodeButton onClick={(() => 
           window.vscode.postMessage({
-            command: "integrationWorkbench.showOutputLogs",
+            command: "norasoderlund.integrationworkbench.showOutputLogs",
             arguments: []
           })
         )} style={{

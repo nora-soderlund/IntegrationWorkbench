@@ -9,7 +9,7 @@ import Command from "../Command";
 
 export default class CreateScriptCommand extends Command {
   constructor(context: ExtensionContext) {
-    super(context, 'integrationWorkbench.createScript');
+    super(context, 'norasoderlund.integrationworkbench.createScript');
   }
   
   async handle() {
@@ -74,7 +74,7 @@ export default class CreateScriptCommand extends Command {
 
     Scripts.loadedScripts.push(script);
 
-    commands.executeCommand("integrationWorkbench.refreshScripts");
-    commands.executeCommand("integrationWorkbench.openScript", script);
+    commands.executeCommand("norasoderlund.integrationworkbench.refreshScripts");
+    commands.executeCommand("norasoderlund.integrationworkbench.openScript", script);
   };
 }

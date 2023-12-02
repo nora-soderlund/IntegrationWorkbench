@@ -75,7 +75,7 @@ export class Workbench {
       this.collections.splice(index, 1);
       this.save();
 
-      commands.executeCommand(`integrationWorkbench.refreshWorkbenches`);
+      commands.executeCommand(`norasoderlund.integrationworkbench.refreshWorkbenches`);
     }
   }
 
@@ -88,7 +88,7 @@ export class Workbench {
       this.requests.splice(index, 1);
       this.save();
 
-      commands.executeCommand(`integrationWorkbench.refreshWorkbenches`);
+      commands.executeCommand(`norasoderlund.integrationworkbench.refreshWorkbenches`);
     }
   }
 };

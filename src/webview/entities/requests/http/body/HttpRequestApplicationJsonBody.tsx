@@ -21,7 +21,7 @@ export default function HttpRequestApplicationJsonBody({ requestData, requestBod
         }
       }} onChange={(value) => (
         window.vscode.postMessage({
-          command: "integrationWorkbench.changeHttpRequestBody",
+          command: "norasoderlund.integrationworkbench.changeHttpRequestBody",
           arguments: [
             {
               type: "application/json",

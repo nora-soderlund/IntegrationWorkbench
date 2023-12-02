@@ -20,7 +20,7 @@ export default class WorkbenchRequestTreeItem extends TreeItem implements Workbe
 
     this.command = {
       title: "Open request",
-      command: "integrationWorkbench.openRequest",
+      command: "norasoderlund.integrationworkbench.openRequest",
       arguments: [workbench, request, collection]
     };
 

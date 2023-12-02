@@ -47,7 +47,7 @@ export function scanForWorkbenches(context: ExtensionContext, refresh: boolean =
   }
 
   if(refresh) {
-    commands.executeCommand(`integrationWorkbench.refreshWorkbenches`);
+    commands.executeCommand(`norasoderlund.integrationworkbench.refreshWorkbenches`);
   }
 
   return workbenches;

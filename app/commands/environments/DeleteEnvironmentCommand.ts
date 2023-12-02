@@ -6,7 +6,7 @@ import Environments from "../../instances/Environments";
 export default class DeleteEnvironmentCommand {
   constructor(private readonly context: ExtensionContext) {
     context.subscriptions.push(
-      commands.registerCommand('integrationWorkbench.deleteEnvironment', this.handle.bind(this))
+      commands.registerCommand('norasoderlund.integrationworkbench.deleteEnvironment', this.handle.bind(this))
     );
   }
   

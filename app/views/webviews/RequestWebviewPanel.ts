@@ -23,7 +23,7 @@ export class RequestWebviewPanel {
 		public readonly request: WorkbenchRequest
   ) {
     this.webviewPanel = window.createWebviewPanel(
-      "integrationWorkbench.request",
+      "norasoderlund.integrationworkbench.request",
       request.name,
       ViewColumn.One,
       {
@@ -85,13 +85,13 @@ export class RequestWebviewPanel {
         console.debug("Received event from request webview:", command);
 
         switch (command) {
-          case "integrationWorkbench.showOutputLogs": {
+          case "norasoderlund.integrationworkbench.showOutputLogs": {
             outputChannel.show();
 
             break;
           }
 
-          case "integrationWorkbench.changeHttpRequestMethod": {
+          case "norasoderlund.integrationworkbench.changeHttpRequestMethod": {
             const [ method ] = message.arguments;
 
             if(this.request instanceof WorkbenchHttpRequest) {
@@ -103,7 +103,7 @@ export class RequestWebviewPanel {
             return;
           }
 
-          case "integrationWorkbench.changeHttpRequestUrl": {
+          case "norasoderlund.integrationworkbench.changeHttpRequestUrl": {
             const [ url ] = message.arguments;
 
             if(this.request instanceof WorkbenchHttpRequest) {
@@ -115,7 +115,7 @@ export class RequestWebviewPanel {
             return;
           }
 
-          case "integrationWorkbench.changeHttpRequestHeaders": {
+          case "norasoderlund.integrationworkbench.changeHttpRequestHeaders": {
             const [ headers ] = message.arguments;
 
             if(this.request instanceof WorkbenchHttpRequest) {
@@ -127,7 +127,7 @@ export class RequestWebviewPanel {
             return;
           }
 
-          case "integrationWorkbench.changeHttpRequestParameters": {
+          case "norasoderlund.integrationworkbench.changeHttpRequestParameters": {
             const [ parameters ] = message.arguments;
 
             if(this.request instanceof WorkbenchHttpRequest) {
@@ -143,7 +143,7 @@ export class RequestWebviewPanel {
             return;
           }
 
-          case "integrationWorkbench.changeHttpRequestBody": {
+          case "norasoderlund.integrationworkbench.changeHttpRequestBody": {
             const [ bodyData ] = message.arguments;
 
             console.log(bodyData);
@@ -157,7 +157,7 @@ export class RequestWebviewPanel {
             return;
           }
 
-          case "integrationWorkbench.changeHttpRequestAuthorization": {
+          case "norasoderlund.integrationworkbench.changeHttpRequestAuthorization": {
             const [ authorizationData ] = message.arguments;
 
             if(this.request instanceof WorkbenchHttpRequest) {
@@ -169,19 +169,19 @@ export class RequestWebviewPanel {
             return;
           }
 
-          case "integrationWorkbench.sendHttpRequest": {
+          case "norasoderlund.integrationworkbench.sendHttpRequest": {
             this.request.send();
 
             return;
           }
 
-          case "integrationWorkbench.getRequest": {
+          case "norasoderlund.integrationworkbench.getRequest": {
             this.updateRequest();
 
             return;
           }
 
-          case "integrationWorkbench.getScriptDeclarations": {
+          case "norasoderlund.integrationworkbench.getScriptDeclarations": {
             type ScriptBuildResult = {
               script: Script,
               build: {
@@ -220,14 +220,14 @@ export class RequestWebviewPanel {
             console.log({ argument });
 
             this.webviewPanel.webview.postMessage({
-              command: "integrationWorkbench.updateScriptDeclarations",
+              command: "norasoderlund.integrationworkbench.updateScriptDeclarations",
               arguments: [ argument ]
             });
 
             return;
           }
 
-          case "integrationWorkbench.setHttpRequestParameterAutoRefresh": {
+          case "norasoderlund.integrationworkbench.setHttpRequestParameterAutoRefresh": {
             if(this.request instanceof WorkbenchHttpRequest) {
               const [ enabled ] = message.arguments;
 
@@ -241,7 +241,7 @@ export class RequestWebviewPanel {
             return;
           }
 
-          case "integrationWorkbench.setHttpRequestHeadersAutoRefresh": {
+          case "norasoderlund.integrationworkbench.setHttpRequestHeadersAutoRefresh": {
             if(this.request instanceof WorkbenchHttpRequest) {
               const [ enabled ] = message.arguments;
 
@@ -268,7 +268,7 @@ export class RequestWebviewPanel {
 
   private updateRequest() {
     this.webviewPanel.webview.postMessage({
-      command: "integrationWorkbench.updateRequest",
+      command: "norasoderlund.integrationworkbench.updateRequest",
       arguments: [ this.request.getData() ]
     });
   }

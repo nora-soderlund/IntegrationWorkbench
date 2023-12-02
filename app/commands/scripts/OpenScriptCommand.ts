@@ -8,7 +8,7 @@ import Command from "../Command";
 
 export default class OpenScriptCommand extends Command {
   constructor(context: ExtensionContext) {
-    super(context, 'integrationWorkbench.openScript');
+    super(context, 'norasoderlund.integrationworkbench.openScript');
   }
   
   async handle(script: Script) {

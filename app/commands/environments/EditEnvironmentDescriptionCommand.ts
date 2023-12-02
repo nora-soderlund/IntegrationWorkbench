@@ -5,7 +5,7 @@ import EnvironmentTreeItem from "../../views/trees/environments/items/Environmen
 export default class EditEnvironmentDescriptionCommand {
   constructor(private readonly context: ExtensionContext) {
     context.subscriptions.push(
-      commands.registerCommand('integrationWorkbench.editEnvironmentDescription', this.handle.bind(this))
+      commands.registerCommand('norasoderlund.integrationworkbench.editEnvironmentDescription', this.handle.bind(this))
     );
   }
   
@@ -27,7 +27,7 @@ export default class EditEnvironmentDescriptionCommand {
 
       environment.save();
 
-      commands.executeCommand("integrationWorkbench.refreshEnvironments");
+      commands.executeCommand("norasoderlund.integrationworkbench.refreshEnvironments");
     });
   }
 }

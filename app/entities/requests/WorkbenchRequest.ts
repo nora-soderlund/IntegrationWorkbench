@@ -70,7 +70,7 @@ export default class WorkbenchRequest {
       this.requestWebviewPanel.reveal();
     }
 		
-    commands.executeCommand("integrationWorkbench.openResponse", this);
+    commands.executeCommand("norasoderlund.integrationworkbench.openResponse", this);
   }
 
   setWebviewPanelIcon(icon: Uri) {

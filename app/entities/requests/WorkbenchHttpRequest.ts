@@ -136,7 +136,7 @@ export default class WorkbenchHttpRequest extends WorkbenchRequest {
   }
 
   send(): void {
-    commands.executeCommand("integrationWorkbench.addResponse", new WorkbenchHttpResponse(
+    commands.executeCommand("norasoderlund.integrationworkbench.addResponse", new WorkbenchHttpResponse(
       randomUUID(),
       this.getData(),
       new Date()
@@ -148,7 +148,7 @@ export default class WorkbenchHttpRequest extends WorkbenchRequest {
 
     this.treeDataViewItem?.setIconPath();
 
-    commands.executeCommand("integrationWorkbench.refreshWorkbenches");
+    commands.executeCommand("norasoderlund.integrationworkbench.refreshWorkbenches");
 
     this.parent?.save();
   }

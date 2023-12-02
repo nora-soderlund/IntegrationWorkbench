@@ -7,7 +7,7 @@ import WorkbenchRequest from "../../entities/requests/WorkbenchRequest";
 export default class EditRequestNameCommand {
   constructor(private readonly context: ExtensionContext) {
     context.subscriptions.push(
-      commands.registerCommand('integrationWorkbench.editRequestName', this.handle.bind(this))
+      commands.registerCommand('norasoderlund.integrationworkbench.editRequestName', this.handle.bind(this))
     );
   }
   
@@ -38,7 +38,7 @@ export default class EditRequestNameCommand {
 
       request.setName(value);
 
-      commands.executeCommand("integrationWorkbench.refreshWorkbenches");
+      commands.executeCommand("norasoderlund.integrationworkbench.refreshWorkbenches");
     });
   }
 }

@@ -6,7 +6,7 @@ import { randomUUID } from "crypto";
 export default class CreateCollectionCommand {
   constructor(private readonly context: ExtensionContext) {
     context.subscriptions.push(
-      commands.registerCommand('integrationWorkbench.createCollection', this.handle.bind(this))
+      commands.registerCommand('norasoderlund.integrationworkbench.createCollection', this.handle.bind(this))
     );
   }
   
@@ -34,7 +34,7 @@ export default class CreateCollectionCommand {
 
         reference.workbench.save();
 
-        commands.executeCommand("integrationWorkbench.refreshWorkbenches");
+        commands.executeCommand("norasoderlund.integrationworkbench.refreshWorkbenches");
       }
     });
   }

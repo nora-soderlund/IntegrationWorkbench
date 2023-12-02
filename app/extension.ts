@@ -80,7 +80,7 @@ export function activate(context: vscode.ExtensionContext) {
 
 	const workbenchResponseWebviewPanel = new ResponseWebviewPanel(context);
 
-	context.subscriptions.push(vscode.commands.registerCommand('integrationWorkbench.showResponse', (workbenchResponseTreeItem: WorkbenchResponseTreeItem) => {
+	context.subscriptions.push(vscode.commands.registerCommand('norasoderlund.integrationworkbench.showResponse', (workbenchResponseTreeItem: WorkbenchResponseTreeItem) => {
 		workbenchesResponsesTreeView.reveal(workbenchResponseTreeItem, {
 			select: true
 		});
@@ -88,7 +88,7 @@ export function activate(context: vscode.ExtensionContext) {
 		workbenchResponseWebviewPanel.showResponse(workbenchResponseTreeItem.response);
 	}));
 
-	context.subscriptions.push(vscode.commands.registerCommand('integrationWorkbench.refreshResponses', (workbenchResponse: WorkbenchResponse) => {
+	context.subscriptions.push(vscode.commands.registerCommand('norasoderlund.integrationworkbench.refreshResponses', (workbenchResponse: WorkbenchResponse) => {
 		const workbenchResponseTreeItem = workbenchesResponsesTreeDataProvider.workbenchResponses.find((workbenchTreeView) => workbenchTreeView.response.id === workbenchResponse.id);
 
 		workbenchResponseTreeItem?.update();
@@ -100,7 +100,7 @@ export function activate(context: vscode.ExtensionContext) {
 		}
 	}));
 
-	context.subscriptions.push(vscode.commands.registerCommand('integrationWorkbench.deleteResponse', (reference: unknown) => {
+	context.subscriptions.push(vscode.commands.registerCommand('norasoderlund.integrationworkbench.deleteResponse', (reference: unknown) => {
 		if(reference instanceof WorkbenchResponseTreeItem) {
 			const index = workbenchesResponsesTreeDataProvider.workbenchResponses.indexOf(reference);
 
@@ -120,19 +120,19 @@ export function activate(context: vscode.ExtensionContext) {
 	}));
 	
 
-	context.subscriptions.push(vscode.commands.registerCommand('integrationWorkbench.refreshWorkbenches', () => {
+	context.subscriptions.push(vscode.commands.registerCommand('norasoderlund.integrationworkbench.refreshWorkbenches', () => {
 		workbenchesTreeDataProvider.refresh();
 	}));
 
-	context.subscriptions.push(vscode.commands.registerCommand('integrationWorkbench.refreshScripts', () => {
+	context.subscriptions.push(vscode.commands.registerCommand('norasoderlund.integrationworkbench.refreshScripts', () => {
 		scriptsTreeDataProvider.refresh();
 	}));
 
-	context.subscriptions.push(vscode.commands.registerCommand('integrationWorkbench.refreshEnvironments', () => {
+	context.subscriptions.push(vscode.commands.registerCommand('norasoderlund.integrationworkbench.refreshEnvironments', () => {
 		environmentsTreeDataProvider.refresh();
 	}));
 
-	context.subscriptions.push(vscode.commands.registerCommand('integrationWorkbench.addResponse', (workbenchResponse: WorkbenchResponse) => {
+	context.subscriptions.push(vscode.commands.registerCommand('norasoderlund.integrationworkbench.addResponse', (workbenchResponse: WorkbenchResponse) => {
 		const workbenchResponseTreeItem = new WorkbenchResponseTreeItem(workbenchResponse);
 
 		workbenchesResponsesTreeDataProvider.workbenchResponses.unshift(workbenchResponseTreeItem);
@@ -141,7 +141,7 @@ export function activate(context: vscode.ExtensionContext) {
 		workbenchesResponsesTreeDataProvider.refresh();
 	}));
 
-	context.subscriptions.push(vscode.commands.registerCommand('integrationWorkbench.openWalkthrough', () => {
+	context.subscriptions.push(vscode.commands.registerCommand('norasoderlund.integrationworkbench.openWalkthrough', () => {
 		vscode.commands.executeCommand(`workbench.action.openWalkthrough`, `norasoderlund.integrationWorkbench#workbenches.openWorkbenches`, false);
 	}));
 

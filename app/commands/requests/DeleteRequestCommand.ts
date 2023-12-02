@@ -7,7 +7,7 @@ import WorkbenchRequest from "../../entities/requests/WorkbenchRequest";
 export default class DeleteRequestCommand {
   constructor(private readonly context: ExtensionContext) {
     context.subscriptions.push(
-      commands.registerCommand('integrationWorkbench.deleteRequest', this.handle.bind(this))
+      commands.registerCommand('norasoderlund.integrationworkbench.deleteRequest', this.handle.bind(this))
     );
   }
   

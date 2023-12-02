@@ -13,7 +13,7 @@ import Command from "../Command";
 
 export default class EditScriptNameCommand extends Command {
   constructor(context: ExtensionContext) {
-    super(context, 'integrationWorkbench.editScriptName');
+    super(context, 'norasoderlund.integrationworkbench.editScriptName');
   }
   
   async handle(reference: ScriptTreeItem) {

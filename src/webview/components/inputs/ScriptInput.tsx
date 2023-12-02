@@ -19,7 +19,7 @@ export default function ScriptInput({ value, onChange }: ScriptInputProps) {
       console.log(event.data);
 
       switch (command) {
-        case 'integrationWorkbench.updateScriptDeclarations': {
+        case 'norasoderlund.integrationworkbench.updateScriptDeclarations': {
           const [ scriptDeclarations ] = event.data.arguments;
 
           console.log("Setting script declarations", scriptDeclarations);
@@ -32,7 +32,7 @@ export default function ScriptInput({ value, onChange }: ScriptInputProps) {
     });
 
     window.vscode.postMessage({
-      command: "integrationWorkbench.getScriptDeclarations",
+      command: "norasoderlund.integrationworkbench.getScriptDeclarations",
       arguments: []
     });
   }, []);

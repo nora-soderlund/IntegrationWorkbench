@@ -22,7 +22,7 @@ export default function HttpRequestAuthorization({ requestData }: HttpRequestPro
             };
 
             window.vscode.postMessage({
-              command: "integrationWorkbench.changeHttpRequestAuthorization",
+              command: "norasoderlund.integrationworkbench.changeHttpRequestAuthorization",
               arguments: [ authorizationData ]
             });
 
@@ -46,7 +46,7 @@ export default function HttpRequestAuthorization({ requestData }: HttpRequestPro
             };
 
             window.vscode.postMessage({
-              command: "integrationWorkbench.changeHttpRequestAuthorization",
+              command: "norasoderlund.integrationworkbench.changeHttpRequestAuthorization",
               arguments: [ authorizationData ]
             });
 
@@ -65,7 +65,7 @@ export default function HttpRequestAuthorization({ requestData }: HttpRequestPro
             };
 
             window.vscode.postMessage({
-              command: "integrationWorkbench.changeHttpRequestAuthorization",
+              command: "norasoderlund.integrationworkbench.changeHttpRequestAuthorization",
               arguments: [ authorizationData ]
             });
 

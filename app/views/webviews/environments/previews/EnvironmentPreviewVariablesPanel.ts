@@ -29,7 +29,7 @@ export default class EnvironmentPreviewVariablesPanel {
       async ({ command }: any) => {
         switch (command) {
 
-          case "integrationWorkbench.getEnvironmentVariablesPreview": {
+          case "norasoderlund.integrationworkbench.getEnvironmentVariablesPreview": {
             this.updatePreviewVariables();
 
             return;
@@ -84,7 +84,7 @@ export default class EnvironmentPreviewVariablesPanel {
     }
 
     this.environmentWebviewPanel.webviewPanel.webview.postMessage({
-      command: "integrationWorkbench.updateEnvironmentPreviewVariables",
+      command: "norasoderlund.integrationworkbench.updateEnvironmentPreviewVariables",
       arguments: [ previewHeadersData ]
     });
 

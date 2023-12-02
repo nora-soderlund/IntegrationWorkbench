@@ -23,7 +23,7 @@ export default function HttpRequestRawBody({ requestData, requestBodyData }: Htt
         }
       }} onChange={(value) => (
         window.vscode.postMessage({
-          command: "integrationWorkbench.changeHttpRequestBody",
+          command: "norasoderlund.integrationworkbench.changeHttpRequestBody",
           arguments: [
             {
               type: "raw",

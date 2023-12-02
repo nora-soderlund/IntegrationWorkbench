@@ -19,7 +19,7 @@ export default class ScriptTreeItem extends TreeItem {
 
     this.command = {
       title: "Edit script",
-      command: "integrationWorkbench.openScript",
+      command: "norasoderlund.integrationworkbench.openScript",
       arguments: [this.script]
     };
   }

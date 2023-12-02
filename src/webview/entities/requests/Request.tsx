@@ -11,7 +11,7 @@ export default function Request() {
       const { command } = event.data;
 
       switch (command) {
-        case 'integrationWorkbench.updateRequest': {
+        case 'norasoderlund.integrationworkbench.updateRequest': {
           const [ requestData ] = event.data.arguments;
 
           setRequestData(requestData);
@@ -22,7 +22,7 @@ export default function Request() {
     });
 
     window.vscode.postMessage({
-      command: "integrationWorkbench.getRequest",
+      command: "norasoderlund.integrationworkbench.getRequest",
       arguments: []
     });
   }, []);

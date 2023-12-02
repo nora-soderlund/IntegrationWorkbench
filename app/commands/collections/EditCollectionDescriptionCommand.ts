@@ -7,7 +7,7 @@ import WorkbenchCollectionTreeItem from "../../views/trees/workbenches/items/Wor
 export default class EditCollectionDescriptionCommand {
   constructor(private readonly context: ExtensionContext) {
     context.subscriptions.push(
-      commands.registerCommand('integrationWorkbench.editCollectionDescription', this.handle.bind(this))
+      commands.registerCommand('norasoderlund.integrationworkbench.editCollectionDescription', this.handle.bind(this))
     );
   }
   
@@ -34,7 +34,7 @@ export default class EditCollectionDescriptionCommand {
 
       collection.save();
       
-      commands.executeCommand("integrationWorkbench.refreshWorkbenches");
+      commands.executeCommand("norasoderlund.integrationworkbench.refreshWorkbenches");
     });
   }
 }

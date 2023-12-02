@@ -7,7 +7,7 @@ import WorkbenchCollectionTreeItem from "../../views/trees/workbenches/items/Wor
 export default class RunCollectionCommand {
   constructor(private readonly context: ExtensionContext) {
     context.subscriptions.push(
-      commands.registerCommand('integrationWorkbench.runCollection', this.handle.bind(this))
+      commands.registerCommand('norasoderlund.integrationworkbench.runCollection', this.handle.bind(this))
     );
   }
   

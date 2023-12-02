@@ -29,7 +29,7 @@ export default class Environments {
 
   public static register(context: ExtensionContext) {    
     this.statusBarItem.command = {
-      command: "integrationWorkbench.selectEnvironment",
+      command: "norasoderlund.integrationworkbench.selectEnvironment",
       title: "Select environment"
     };
 
@@ -85,7 +85,7 @@ export default class Environments {
     }
   
     if(sendRefreshCommand) {
-      commands.executeCommand(`integrationWorkbench.refreshEnvironments`);
+      commands.executeCommand(`norasoderlund.integrationworkbench.refreshEnvironments`);
     }
   
     return this.loadedEnvironments;

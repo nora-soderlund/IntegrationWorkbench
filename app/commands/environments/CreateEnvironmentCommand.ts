@@ -14,7 +14,7 @@ import Environment from "../../entities/environments/Environment";
 export default class CreateEnvironmentCommand {
   constructor(private readonly context: ExtensionContext) {
     context.subscriptions.push(
-      commands.registerCommand('integrationWorkbench.createEnvironment', this.handle.bind(this))
+      commands.registerCommand('norasoderlund.integrationworkbench.createEnvironment', this.handle.bind(this))
     );
   }
   
@@ -67,6 +67,6 @@ export default class CreateEnvironmentCommand {
   
     Environments.loadedEnvironments.push(environment);
   
-    commands.executeCommand("integrationWorkbench.refreshEnvironments");
+    commands.executeCommand("norasoderlund.integrationworkbench.refreshEnvironments");
   };
 }

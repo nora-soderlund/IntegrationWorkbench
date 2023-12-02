@@ -23,7 +23,7 @@ export default class ScriptsTreeDataProvider implements TreeDataProvider<ScriptT
 
   getChildren(element?: ScriptTreeItem): Thenable<ScriptTreeItem[]> {
     if(this.selectAfterRefresh) {
-      commands.executeCommand("integrationWorkbench.editScript", this.selectAfterRefresh);
+      commands.executeCommand("norasoderlund.integrationworkbench.editScript", this.selectAfterRefresh);
 
       delete this.selectAfterRefresh;
     }

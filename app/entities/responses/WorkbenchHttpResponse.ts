@@ -120,7 +120,7 @@ export default class WorkbenchHttpResponse {
       statusText: response.statusText
     };
 
-    commands.executeCommand("integrationWorkbench.refreshResponses", this);
+    commands.executeCommand("norasoderlund.integrationworkbench.refreshResponses", this);
   }
 
   async handleResponseError(reason: unknown) {
@@ -133,6 +133,6 @@ export default class WorkbenchHttpResponse {
       this.error = reason;
     }
 
-    commands.executeCommand("integrationWorkbench.refreshResponses", this);
+    commands.executeCommand("norasoderlund.integrationworkbench.refreshResponses", this);
   }
 }

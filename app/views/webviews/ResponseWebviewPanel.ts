@@ -75,13 +75,13 @@ export class ResponseWebviewPanel {
             console.debug("Received event from response webview:", command);
 
             switch (command) {
-              case "integrationWorkbench.changeHttpRequestMethod": {
+              case "norasoderlund.integrationworkbench.changeHttpRequestMethod": {
                 const [] = message.arguments;
 
                 return;
               }
 
-              case "integrationWorkbench.showOutputLogs": {
+              case "norasoderlund.integrationworkbench.showOutputLogs": {
                 outputChannel.show();
     
                 break;
@@ -107,7 +107,7 @@ export class ResponseWebviewPanel {
     }
 
     this.webviewView.webview.postMessage({
-      command: "integrationWorkbench.showResponse",
+      command: "norasoderlund.integrationworkbench.showResponse",
       arguments: [ this.currentResponse.getData() ]
     });
   }
@@ -120,7 +120,7 @@ export class ResponseWebviewPanel {
     }
 
     this.webviewView.webview.postMessage({
-      command: "integrationWorkbench.showResponse",
+      command: "norasoderlund.integrationworkbench.showResponse",
       arguments: [ null ]
     });
   }

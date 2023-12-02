@@ -10,7 +10,7 @@ import Command from "../Command";
 
 export default class DeleteScriptCommand extends Command {
   constructor(context: ExtensionContext) {
-    super(context, 'integrationWorkbench.deleteScript');
+    super(context, 'norasoderlund.integrationworkbench.deleteScript');
   }
   
   async handle(reference: unknown) {
@@ -31,6 +31,6 @@ export default class DeleteScriptCommand extends Command {
       Scripts.loadedScripts.splice(index, 1);
     }
 
-    commands.executeCommand("integrationWorkbench.refreshScripts");
+    commands.executeCommand("norasoderlund.integrationworkbench.refreshScripts");
   }
 }
