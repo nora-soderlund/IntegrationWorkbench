@@ -2,7 +2,7 @@ import { ExtensionContext, commands } from "vscode";
 import { Workbench } from "../../workbenches/Workbench";
 import WorkbenchRequest from "../../workbenches/requests/WorkbenchRequest";
 import { WorkbenchCollection } from "../../workbenches/collections/WorkbenchCollection";
-import WorkbenchResponseTreeItem from "../../workbenches/trees/responses/items/WorkbenchResponseTreeItem";
+import WorkbenchResponseTreeItem from "../../views/trees/responses/items/WorkbenchResponseTreeItem";
 import { WorkbenchResponse } from "../../workbenches/responses/WorkbenchResponse";
 
 export default class CancelResponseCommand {

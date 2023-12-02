@@ -1,6 +1,6 @@
 import { Command, ExtensionContext, Uri, commands, window, workspace } from "vscode";
 import { Workbench } from "../../workbenches/Workbench";
-import { RequestWebviewPanel } from "../../panels/RequestWebviewPanel";
+import { RequestWebviewPanel } from "../../views/webviews/RequestWebviewPanel";
 import WorkbenchRequest from "../../workbenches/requests/WorkbenchRequest";
 import { WorkbenchCollection } from "../../workbenches/collections/WorkbenchCollection";
 import Script from "../../scripts/TypescriptScript";

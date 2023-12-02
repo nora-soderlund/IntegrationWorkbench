@@ -1,8 +1,8 @@
 import { ExtensionContext, commands, window } from "vscode";
-import WorkbenchTreeItem from "../../workbenches/trees/workbenches/items/WorkbenchTreeItem";
+import WorkbenchTreeItem from "../../views/trees/workbenches/items/WorkbenchTreeItem";
 import { WorkbenchCollection } from "../../workbenches/collections/WorkbenchCollection";
 import { randomUUID } from "crypto";
-import WorkbenchCollectionTreeItem from "../../workbenches/trees/workbenches/items/WorkbenchCollectionTreeItem";
+import WorkbenchCollectionTreeItem from "../../views/trees/workbenches/items/WorkbenchCollectionTreeItem";
 
 export default class RunCollectionCommand {
   constructor(private readonly context: ExtensionContext) {

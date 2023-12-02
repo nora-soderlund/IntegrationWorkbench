@@ -1,9 +1,9 @@
 import { ExtensionContext, commands, window } from "vscode";
-import WorkbenchCollectionTreeItem from "../../workbenches/trees/workbenches/items/WorkbenchCollectionTreeItem";
+import WorkbenchCollectionTreeItem from "../../views/trees/workbenches/items/WorkbenchCollectionTreeItem";
 import { randomUUID } from "crypto";
 import WorkbenchRequest from "../../workbenches/requests/WorkbenchRequest";
 import WorkbenchHttpRequest from "../../workbenches/requests/WorkbenchHttpRequest";
-import WorkbenchTreeItem from "../../workbenches/trees/workbenches/items/WorkbenchTreeItem";
+import WorkbenchTreeItem from "../../views/trees/workbenches/items/WorkbenchTreeItem";
 import { Workbench } from "../../workbenches/Workbench";
 import { WorkbenchCollection } from "../../workbenches/collections/WorkbenchCollection";
 

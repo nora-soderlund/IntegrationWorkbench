@@ -2,7 +2,7 @@ import { ThemeColor, ThemeIcon, TreeItem, TreeItemCollapsibleState } from "vscod
 import path from "path";
 import { existsSync } from "fs";
 import { isHttpRequestData } from "../../../../../src/interfaces/workbenches/requests/utils/WorkbenchRequestDataTypeValidations";
-import WorkbenchResponse from "../../../responses/WorkbenchHttpResponse";
+import WorkbenchResponse from "../../../../workbenches/responses/WorkbenchHttpResponse";
 
 export default class WorkbenchResponseTreeItem extends TreeItem {
   constructor(

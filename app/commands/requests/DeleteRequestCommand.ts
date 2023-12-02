@@ -1,7 +1,7 @@
 import { ExtensionContext, commands, window } from "vscode";
-import WorkbenchTreeItem from "../../workbenches/trees/workbenches/items/WorkbenchTreeItem";
+import WorkbenchTreeItem from "../../views/trees/workbenches/items/WorkbenchTreeItem";
 import { randomUUID } from "crypto";
-import WorkbenchRequestTreeItem from "../../workbenches/trees/workbenches/items/WorkbenchRequestTreeItem";
+import WorkbenchRequestTreeItem from "../../views/trees/workbenches/items/WorkbenchRequestTreeItem";
 import WorkbenchRequest from "../../workbenches/requests/WorkbenchRequest";
 
 export default class DeleteRequestCommand {

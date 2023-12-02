@@ -2,7 +2,7 @@ import { ThemeColor, ThemeIcon, TreeItem, TreeItemCollapsibleState, Uri } from "
 import path from "path";
 import { existsSync } from "fs";
 import { isHttpRequestData } from "../../../../../src/interfaces/workbenches/requests/utils/WorkbenchRequestDataTypeValidations";
-import WorkbenchResponse from "../../../responses/WorkbenchHttpResponse";
+import WorkbenchResponse from "../../../../workbenches/responses/WorkbenchHttpResponse";
 import Script from "../../../../scripts/TypescriptScript";
 import ScriptsTreeDataProvider from "../ScriptsTreeDataProvider";
 

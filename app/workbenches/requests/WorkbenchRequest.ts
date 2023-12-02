@@ -1,11 +1,11 @@
 import { ExtensionContext, ThemeIcon, Uri, commands } from "vscode";
 import { WorkbenchRequestData } from "~interfaces/workbenches/requests/WorkbenchRequestData";
 import { isHttpRequestData } from "~interfaces/workbenches/requests/utils/WorkbenchRequestDataTypeValidations";
-import { RequestWebviewPanel } from "../../panels/RequestWebviewPanel";
+import { RequestWebviewPanel } from "../../views/webviews/RequestWebviewPanel";
 import HttpRequest from "./WorkbenchHttpRequest";
 import { Workbench } from "../Workbench";
 import { WorkbenchCollection } from "../collections/WorkbenchCollection";
-import WorkbenchRequestTreeItem from "../trees/workbenches/items/WorkbenchRequestTreeItem";
+import WorkbenchRequestTreeItem from "../../views/trees/workbenches/items/WorkbenchRequestTreeItem";
 
 export default class WorkbenchRequest {
   id: string;

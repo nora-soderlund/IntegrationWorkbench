@@ -1,8 +1,8 @@
 import { ExtensionContext, commands, window } from "vscode";
-import WorkbenchTreeItem from "../../workbenches/trees/workbenches/items/WorkbenchTreeItem";
+import WorkbenchTreeItem from "../../views/trees/workbenches/items/WorkbenchTreeItem";
 import { WorkbenchCollection } from "../../workbenches/collections/WorkbenchCollection";
 import { randomUUID } from "crypto";
-import WorkbenchCollectionTreeItem from "../../workbenches/trees/workbenches/items/WorkbenchCollectionTreeItem";
+import WorkbenchCollectionTreeItem from "../../views/trees/workbenches/items/WorkbenchCollectionTreeItem";
 import { Workbench } from "../../workbenches/Workbench";
 import getRootPath from "../../utils/GetRootPath";
 import path from "path";

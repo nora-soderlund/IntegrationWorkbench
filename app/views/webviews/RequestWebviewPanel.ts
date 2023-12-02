@@ -1,14 +1,14 @@
 import { Disposable, ExtensionContext, Uri, ViewColumn, WebviewPanel, TextDocument, window, workspace, commands, ThemeIcon, StatusBarAlignment, StatusBarItem, ThemeColor } from "vscode";
-import { getWebviewUri } from "../utils/GetWebviewUri";
+import { getWebviewUri } from "../../utils/GetWebviewUri";
 import { readFileSync } from "fs";
 import path from "path";
-import WorkbenchRequest from "../workbenches/requests/WorkbenchRequest";
-import WorkbenchHttpRequest from "../workbenches/requests/WorkbenchHttpRequest";
-import Scripts from "../Scripts";
-import Script from "../scripts/TypescriptScript";
+import WorkbenchRequest from "../../workbenches/requests/WorkbenchRequest";
+import WorkbenchHttpRequest from "../../workbenches/requests/WorkbenchHttpRequest";
+import Scripts from "../../Scripts";
+import Script from "../../scripts/TypescriptScript";
 import { ScriptDeclarationData } from "~interfaces/scripts/ScriptDeclarationData";
 import RequestPreviewUrlPanel from "./requests/RequestPreviewUrlPanel";
-import { outputChannel } from "../extension";
+import { outputChannel } from "../../extension";
 import RequestPreviewHeadersPanel from "./requests/RequestPreviewHeadersPanel";
 
 export class RequestWebviewPanel {

@@ -1,8 +1,8 @@
 import { ThemeIcon, TreeItem, TreeItemCollapsibleState } from "vscode";
 import WorkbenchTreeItem from "./WorkbenchTreeItem";
-import { Workbench } from "../../../Workbench";
-import { WorkbenchCollection } from "../../../collections/WorkbenchCollection";
-import WorkbenchRequest from "../../../requests/WorkbenchRequest";
+import { Workbench } from "../../../../workbenches/Workbench";
+import { WorkbenchCollection } from "../../../../workbenches/collections/WorkbenchCollection";
+import WorkbenchRequest from "../../../../workbenches/requests/WorkbenchRequest";
 
 export default class WorkbenchCollectionTreeItem extends TreeItem implements WorkbenchTreeItem {
   constructor(

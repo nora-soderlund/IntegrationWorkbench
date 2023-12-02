@@ -3,7 +3,7 @@ import path from "path";
 import { window } from "vscode";
 import ts from "typescript";
 import { ScriptDeclarationData } from "~interfaces/scripts/ScriptDeclarationData";
-import ScriptTreeItem from "../workbenches/trees/scripts/items/ScriptTreeItem";
+import ScriptTreeItem from "../views/trees/scripts/items/ScriptTreeItem";
 
 export default class TypescriptScript {
   public treeDataViewItem?: ScriptTreeItem;

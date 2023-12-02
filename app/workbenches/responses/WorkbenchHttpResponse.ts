@@ -4,7 +4,7 @@ import { WorkbenchHttpResponseData } from "~interfaces/workbenches/responses/Wor
 import WorkbenchRequest from "../requests/WorkbenchRequest";
 import { isHttpRequestApplicationJsonBodyData } from "~interfaces/workbenches/requests/utils/WorkbenchRequestDataTypeValidations";
 import { WorkbenchResponseStatus } from "~interfaces/workbenches/responses/WorkbenchResponseStatus";
-import WorkbenchResponseTreeItem from "../trees/responses/items/WorkbenchResponseTreeItem";
+import WorkbenchResponseTreeItem from "../../views/trees/responses/items/WorkbenchResponseTreeItem";
 import WorkbenchHttpRequest from "../requests/WorkbenchHttpRequest";
 import Scripts from "../../Scripts";
 

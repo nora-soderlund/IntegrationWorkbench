@@ -1,7 +1,7 @@
 import { StatusBarAlignment, StatusBarItem, ThemeColor, window } from "vscode";
 import { RequestWebviewPanel } from "../RequestWebviewPanel";
-import WorkbenchHttpRequest from "../../workbenches/requests/WorkbenchHttpRequest";
-import { outputChannel } from "../../extension";
+import WorkbenchHttpRequest from "../../../workbenches/requests/WorkbenchHttpRequest";
+import { outputChannel } from "../../../extension";
 import { WorkbenchHttpRequestPreviewUrlData } from "~interfaces/workbenches/requests/WorkbenchHttpRequestPreviewUrlData";
 
 

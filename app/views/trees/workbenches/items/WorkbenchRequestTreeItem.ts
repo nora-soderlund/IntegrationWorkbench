@@ -1,11 +1,11 @@
 import { ThemeIcon, TreeItem, TreeItemCollapsibleState, Uri } from "vscode";
 import WorkbenchTreeItem from "./WorkbenchTreeItem";
-import { Workbench } from "../../../Workbench";
+import { Workbench } from "../../../../workbenches/Workbench";
 import path from "path";
 import { existsSync } from "fs";
-import WorkbenchRequest from "../../../requests/WorkbenchRequest";
-import { WorkbenchCollection } from "../../../collections/WorkbenchCollection";
-import WorkbenchHttpRequest from "../../../requests/WorkbenchHttpRequest";
+import WorkbenchRequest from "../../../../workbenches/requests/WorkbenchRequest";
+import { WorkbenchCollection } from "../../../../workbenches/collections/WorkbenchCollection";
+import WorkbenchHttpRequest from "../../../../workbenches/requests/WorkbenchHttpRequest";
 
 export default class WorkbenchRequestTreeItem extends TreeItem implements WorkbenchTreeItem {
   constructor(

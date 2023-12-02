@@ -1,7 +1,7 @@
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode';
-import WorkbenchTreeDataProvider from './workbenches/trees/workbenches/WorkbenchTreeDataProvider';
+import WorkbenchTreeDataProvider from './views/trees/workbenches/WorkbenchTreeDataProvider';
 import { getAllRequestsWithWebviews, scanForWorkbenches, workbenches } from './Workbenches';
 import CreateCollectionCommand from './commands/collections/CreateCollectionCommand';
 import CreateRequestCommand from './commands/requests/CreateRequestCommand';
@@ -11,23 +11,23 @@ import OpenResponseCommand from './commands/responses/OpenResponseCommand';
 import { getWebviewUri } from './utils/GetWebviewUri';
 import { readFileSync } from 'fs';
 import path from 'path';
-import WorkbenchesRequestsTreeDataProvider from './workbenches/trees/responses/WorkbenchesRequestsTreeDataProvider';
+import WorkbenchesRequestsTreeDataProvider from './views/trees/responses/WorkbenchesRequestsTreeDataProvider';
 import { WorkbenchResponse } from './workbenches/responses/WorkbenchResponse';
 import EditCollectionNameCommand from './commands/collections/EditCollectionNameCommand';
 import EditCollectionDescriptionCommand from './commands/collections/EditCollectionDescriptionCommand';
 import EditRequestNameCommand from './commands/requests/EditRequestNameCommand';
 import RunCollectionCommand from './commands/collections/RunCollectionCommand';
 import RunRequestCommand from './commands/requests/RunRequestCommand';
-import WorkbenchResponseTreeItem from './workbenches/trees/responses/items/WorkbenchResponseTreeItem';
+import WorkbenchResponseTreeItem from './views/trees/responses/items/WorkbenchResponseTreeItem';
 import DeleteRequestCommand from './commands/requests/DeleteRequestCommand';
 import DeleteCollectionCommand from './commands/collections/DeleteCollectionCommand';
 import DeleteWorkbenchCommand from './commands/workbenches/DeleteWorkbenchCommand';
-import { ResponseWebviewPanel } from './panels/ResponseWebviewPanel';
+import { ResponseWebviewPanel } from './views/webviews/ResponseWebviewPanel';
 import RunWorkbenchCommand from './commands/workbenches/RunWorkbenchCommand';
-import ScriptsTreeDataProvider from './workbenches/trees/scripts/ScriptsTreeDataProvider';
+import ScriptsTreeDataProvider from './views/trees/scripts/ScriptsTreeDataProvider';
 import Scripts from './Scripts';
 import CreateScriptCommand from './commands/scripts/CreateScriptCommand';
-import ScriptTreeItem from './workbenches/trees/scripts/items/ScriptTreeItem';
+import ScriptTreeItem from './views/trees/scripts/items/ScriptTreeItem';
 import OpenScriptCommand from './commands/scripts/OpenScriptCommand';
 import EditScriptNameCommand from './commands/scripts/EditScriptNameCommand';
 import EditWorkbenchNameCommand from './commands/workbenches/EditWorkbenchNameCommand';

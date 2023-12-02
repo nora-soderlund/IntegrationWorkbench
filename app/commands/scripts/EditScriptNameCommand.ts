@@ -1,9 +1,9 @@
 import { ExtensionContext, commands, window } from "vscode";
-import WorkbenchTreeItem from "../../workbenches/trees/workbenches/items/WorkbenchTreeItem";
+import WorkbenchTreeItem from "../../views/trees/workbenches/items/WorkbenchTreeItem";
 import { randomUUID } from "crypto";
-import WorkbenchRequestTreeItem from "../../workbenches/trees/workbenches/items/WorkbenchRequestTreeItem";
+import WorkbenchRequestTreeItem from "../../views/trees/workbenches/items/WorkbenchRequestTreeItem";
 import WorkbenchRequest from "../../workbenches/requests/WorkbenchRequest";
-import ScriptTreeItem from "../../workbenches/trees/scripts/items/ScriptTreeItem";
+import ScriptTreeItem from "../../views/trees/scripts/items/ScriptTreeItem";
 import { existsSync } from "fs";
 import path from "path";
 import TypescriptScript from "../../scripts/TypescriptScript";

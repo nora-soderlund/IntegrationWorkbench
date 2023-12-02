@@ -1,11 +1,11 @@
 import { Disposable, ExtensionContext, Uri, ViewColumn, WebviewPanel, TextDocument, window, workspace, commands, ThemeIcon, WebviewView } from "vscode";
-import { getWebviewUri } from "../utils/GetWebviewUri";
+import { getWebviewUri } from "../../utils/GetWebviewUri";
 import { readFileSync } from "fs";
 import path from "path";
-import WorkbenchRequest from "../workbenches/requests/WorkbenchRequest";
-import WorkbenchHttpRequest from "../workbenches/requests/WorkbenchHttpRequest";
-import { WorkbenchResponse } from "../workbenches/responses/WorkbenchResponse";
-import { outputChannel } from "../extension";
+import WorkbenchRequest from "../../workbenches/requests/WorkbenchRequest";
+import WorkbenchHttpRequest from "../../workbenches/requests/WorkbenchHttpRequest";
+import { WorkbenchResponse } from "../../workbenches/responses/WorkbenchResponse";
+import { outputChannel } from "../../extension";
 
 export class ResponseWebviewPanel {
   private readonly disposables: Disposable[] = [];
