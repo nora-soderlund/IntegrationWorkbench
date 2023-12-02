@@ -10,6 +10,7 @@ import { randomUUID } from "crypto";
 import Scripts from "../../instances/Scripts";
 import { UserInput } from "~interfaces/UserInput";
 import { WorkbenchHttpRequestPreviewHeadersData } from "~interfaces/workbenches/requests/WorkbenchHttpRequestPreviewHeadersData";
+import Environments from "../../instances/Environments";
 
 export default class WorkbenchHttpRequest extends WorkbenchRequest {
   constructor(
@@ -70,10 +71,18 @@ export default class WorkbenchHttpRequest extends WorkbenchRequest {
 
       let parsedUrl = this.data.url;
 
+      const environmentVariables = await Environments.selectedEnvironment?.getParsedVariables(new AbortController());
+
       for(let key of uniqueKeys) {
         const parameter = this.data.parameters.find((parameter) => parameter.key === key);
 
         if(!parameter) {
+          const environmentVariable = environmentVariables?.find((environmentVariable) => environmentVariable.key === key);
+
+          if(environmentVariable) {
+            parsedUrl = parsedUrl?.replace('{' + key + '}', environmentVariable.value);
+          }
+
           continue;
         }
 
