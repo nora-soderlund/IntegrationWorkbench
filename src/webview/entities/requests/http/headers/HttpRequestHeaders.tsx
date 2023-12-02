@@ -73,7 +73,7 @@ export default function HttpRequestHeaders({ requestData }: HttpRequestProps) {
 
         {(!previewHeaderData)?(
           <div>
-            <p><i>This preview available yet.</i></p>
+            <p><i>No preview available yet.</i></p>
           </div>
         ):(
           (previewHeaderData.success)?(

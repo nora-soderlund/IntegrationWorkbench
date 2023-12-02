@@ -73,7 +73,7 @@ export default function HttpRequestParameters({ requestData }: HttpRequestProps)
 
         {(!previewUrlData)?(
           <div>
-            <i>No preview available yet...</i>
+            <i>No preview available yet.</i>
           </div>
         ):(
           (previewUrlData.success)?(
