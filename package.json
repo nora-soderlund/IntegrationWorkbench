@@ -2,7 +2,7 @@
   "name": "integrationworkbench",
   "displayName": "Integration Workbench",
   "description": "A workbench tool to work with API integrations.",
-  "version": "0.9.1",
+  "version": "0.9.3",
   "license": "GPL-3.0",
   "publisher": "norasoderlund",
   "engines": {
@@ -20,7 +20,7 @@
     "type": "git",
     "url": "https://github.com/nora-soderlund/IntegrationWorkbench"
   },
-  "activationEvents": [],
+  "activationEvents": ["onStartupFinished"],
   "main": "./build/app/extension.js",
   "contributes": {
     "configuration": {
@@ -467,11 +467,8 @@
     "@types/vscode-webview": "^1.57.3",
     "@typescript-eslint/eslint-plugin": "^6.9.0",
     "@typescript-eslint/parser": "^6.9.0",
-    "@vscode/codicons": "^0.0.35",
     "@vscode/test-electron": "^2.3.6",
     "@vscode/vsce": "^2.22.0",
-    "@vscode/webview-ui-toolkit": "^1.2.2",
-    "esbuild": "^0.19.8",
     "eslint": "^8.52.0",
     "glob": "^10.3.10",
     "mocha": "^10.2.0",
@@ -479,14 +476,17 @@
     "monaco-editor-webpack-plugin": "^7.1.0",
     "react-scripts": "^5.0.1",
     "rewire": "^7.0.0",
-    "tsc-alias": "^1.8.8",
-    "typescript": "^5.2.2"
+    "tsc-alias": "^1.8.8"
   },
   "dependencies": {
     "@monaco-editor/react": "^4.6.0",
+    "@vscode/codicons": "^0.0.35",
+    "@vscode/webview-ui-toolkit": "^1.2.2",
     "dotenv": "^16.3.1",
+    "esbuild": "^0.19.8",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "typescript": "^5.2.2",
     "typescript-bundle": "^1.0.18"
   },
   "browserslist": {
