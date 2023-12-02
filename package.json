@@ -1,11 +1,11 @@
 {
-  "name": "integration-workbench",
+  "name": "integrationworkbench",
   "displayName": "Integration Workbench",
   "description": "A workbench tool to work with API integrations.",
   "version": "0.9.0",
   "license": "GPL-3.0",
   "engines": {
-    "vscode": "^1.82.0"
+    "vscode": "^1.84.0"
   },
   "categories": [
     "Other"
@@ -211,14 +211,14 @@
         {
           "id": "workbench",
           "title": "Integration Workbench",
-          "icon": "media/workbench.svg"
+          "icon": "media/workbench.png"
         }
       ],
       "panel": [
         {
           "id": "results",
           "title": "Responses",
-          "icon": "media/workbench.svg"
+          "icon": "media/workbench.png"
         }
       ]
     },
@@ -241,14 +241,14 @@
         {
           "id": "requests",
           "name": "Requests",
-          "icon": "media/workbench.svg",
+          "icon": "media/workbench.png",
           "contextualTitle": "Requests",
           "initialSize": 0
         },
         {
           "id": "response",
           "name": "Response",
-          "icon": "media/workbench.svg",
+          "icon": "media/workbench.png",
           "contextualTitle": "Response",
           "type": "webview",
           "initialSize": 1
@@ -417,7 +417,7 @@
             "title": "Open your workbenches",
             "description": "A workbench is where you construct your collections of requests and configure shared configurations such as authentications.\n[Focus on Workbenches](command:workbenches.focus)",
             "media": {
-              "image": "resources/walkthrough/test.svg",
+              "image": "resources/walkthrough/test.png",
               "altText": "Empty image"
             },
             "completionEvents": [
@@ -429,7 +429,7 @@
             "title": "Create a workbench",
             "description": "Create your first workbench for your repository or project.\n[Create a Workbench](command:integrationWorkbench.createWorkbench)",
             "media": {
-              "image": "resources/walkthrough/test.svg",
+              "image": "resources/walkthrough/test.png",
               "altText": "Empty image"
             },
             "completionEvents": [
@@ -441,7 +441,7 @@
             "title": "Create a collection",
             "description": "Create your first collection of requests to divide your workbench into several parts.\n[Create a Collection](command:integrationWorkbench.createCollection)",
             "media": {
-              "image": "resources/walkthrough/test.svg",
+              "image": "resources/walkthrough/test.png",
               "altText": "Empty image"
             },
             "completionEvents": [
@@ -468,6 +468,7 @@
     "@typescript-eslint/parser": "^6.9.0",
     "@vscode/codicons": "^0.0.35",
     "@vscode/test-electron": "^2.3.6",
+    "@vscode/vsce": "^2.22.0",
     "@vscode/webview-ui-toolkit": "^1.2.2",
     "esbuild": "^0.19.8",
     "eslint": "^8.52.0",

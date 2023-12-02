@@ -142,7 +142,7 @@ export function activate(context: vscode.ExtensionContext) {
 	}));
 
 	context.subscriptions.push(vscode.commands.registerCommand('integrationWorkbench.openWalkthrough', () => {
-		vscode.commands.executeCommand(`workbench.action.openWalkthrough`, `nora-soderlund.integrationWorkbench#workbenches.openWorkbenches`, false);
+		vscode.commands.executeCommand(`workbench.action.openWalkthrough`, `norasoderlund.integrationWorkbench#workbenches.openWorkbenches`, false);
 	}));
 
 	Commands.register(context);

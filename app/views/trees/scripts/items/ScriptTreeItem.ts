@@ -32,7 +32,7 @@ export default class ScriptTreeItem extends TreeItem {
   }
 
   getIconPath() {
-    const iconPath = path.join(__filename, '..', '..', '..', '..', '..', '..', '..', 'resources', 'icons', 'typescript.svg');
+    const iconPath = path.join(__filename, '..', '..', '..', '..', '..', '..', '..', 'resources', 'icons', 'typescript.png');
 
     if (existsSync(iconPath)) {
       return Uri.file(iconPath);
