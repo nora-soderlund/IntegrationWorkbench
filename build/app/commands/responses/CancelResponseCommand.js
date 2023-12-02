@@ -13,7 +13,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const vscode_1 = require("vscode");
-const WorkbenchResponseTreeItem_1 = __importDefault(require("../../workbenches/trees/responses/items/WorkbenchResponseTreeItem"));
+const WorkbenchResponseTreeItem_1 = __importDefault(require("../../views/trees/responses/items/WorkbenchResponseTreeItem"));
 class CancelResponseCommand {
     constructor(context) {
         this.context = context;

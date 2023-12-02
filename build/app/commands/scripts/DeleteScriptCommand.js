@@ -13,7 +13,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const vscode_1 = require("vscode");
-const ScriptTreeItem_1 = __importDefault(require("../../workbenches/trees/scripts/items/ScriptTreeItem"));
+const ScriptTreeItem_1 = __importDefault(require("../../views/trees/scripts/items/ScriptTreeItem"));
 const Scripts_1 = __importDefault(require("../../Scripts"));
 class DeleteScriptCommand {
     constructor(context) {

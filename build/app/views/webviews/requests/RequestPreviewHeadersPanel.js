@@ -10,8 +10,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const vscode_1 = require("vscode");
-const extension_1 = require("../../extension");
-class RequestPreviewUrlPanel {
+const extension_1 = require("../../../extension");
+class RequestPreviewHeadersPanel {
     constructor(requestWebviewPanel, request) {
         this.requestWebviewPanel = requestWebviewPanel;
         this.request = request;
@@ -27,25 +27,28 @@ class RequestPreviewUrlPanel {
         this.requestWebviewPanel.disposables.push(this.statusBarItem);
         this.requestWebviewPanel.webviewPanel.webview.onDidReceiveMessage(({ command }) => __awaiter(this, void 0, void 0, function* () {
             switch (command) {
-                case "integrationWorkbench.getHttpRequestPreviewUrl": {
-                    this.updatePreviewUrl();
+                case "integrationWorkbench.getHttpRequestPreviewHeaders": {
+                    this.updatePreviewHeaders();
                     return;
                 }
             }
         }));
     }
-    updatePreviewUrl() {
+    updatePreviewHeaders() {
         return __awaiter(this, void 0, void 0, function* () {
-            this.statusBarItem.text = "$(loading~spin) Building preview...";
+            this.statusBarItem.text = "$(loading~spin) Building preview headers...";
             this.statusBarItem.show();
-            let previewUrlData;
+            let previewHeadersData;
             const timestamp = performance.now();
+            console.log("try");
             try {
-                const url = yield this.request.getParsedUrl(new AbortController());
-                previewUrlData = {
+                console.log("get parsed headers");
+                const headers = yield this.request.getParsedHeaders(new AbortController());
+                console.log("succeed");
+                previewHeadersData = {
                     success: true,
                     duration: performance.now() - timestamp,
-                    url
+                    headers
                 };
             }
             catch (error) {
@@ -54,27 +57,28 @@ class RequestPreviewUrlPanel {
                     //this.statusBarItem.text = "$(error) Failed to build preview";
                     //this.statusBarItem.backgroundColor = new ThemeColor("statusBarItem.errorBackground");
                     //this.statusBarItem.color = new ThemeColor("statusBarItem.errorForeground");
-                    previewUrlData = {
+                    previewHeadersData = {
                         success: false,
                         error: error.message,
                         duration: performance.now() - timestamp
                     };
                 }
                 else {
-                    previewUrlData = {
+                    previewHeadersData = {
                         success: false,
                         duration: performance.now() - timestamp
                     };
                 }
             }
             this.requestWebviewPanel.webviewPanel.webview.postMessage({
-                command: "integrationWorkbench.updateHttpRequestPreviewUrl",
-                arguments: [previewUrlData]
+                command: "integrationWorkbench.updateHttpRequestPreviewHeaders",
+                arguments: [previewHeadersData]
             });
+            console.log("send update");
             this.statusBarItem.text = "";
             this.statusBarItem.hide();
         });
     }
 }
-exports.default = RequestPreviewUrlPanel;
-//# sourceMappingURL=RequestPreviewUrlPanel.js.map
+exports.default = RequestPreviewHeadersPanel;
+//# sourceMappingURL=RequestPreviewHeadersPanel.js.map

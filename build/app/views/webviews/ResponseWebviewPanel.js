@@ -5,10 +5,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ResponseWebviewPanel = void 0;
 const vscode_1 = require("vscode");
-const GetWebviewUri_1 = require("../utils/GetWebviewUri");
+const GetWebviewUri_1 = require("../../utils/GetWebviewUri");
 const fs_1 = require("fs");
 const path_1 = __importDefault(require("path"));
-const extension_1 = require("../extension");
+const extension_1 = require("../../extension");
 class ResponseWebviewPanel {
     constructor(context) {
         this.context = context;

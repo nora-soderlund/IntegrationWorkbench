@@ -14,13 +14,13 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.RequestWebviewPanel = void 0;
 const vscode_1 = require("vscode");
-const GetWebviewUri_1 = require("../utils/GetWebviewUri");
+const GetWebviewUri_1 = require("../../utils/GetWebviewUri");
 const fs_1 = require("fs");
 const path_1 = __importDefault(require("path"));
-const WorkbenchHttpRequest_1 = __importDefault(require("../workbenches/requests/WorkbenchHttpRequest"));
-const Scripts_1 = __importDefault(require("../Scripts"));
+const WorkbenchHttpRequest_1 = __importDefault(require("../../workbenches/requests/WorkbenchHttpRequest"));
+const Scripts_1 = __importDefault(require("../../Scripts"));
 const RequestPreviewUrlPanel_1 = __importDefault(require("./requests/RequestPreviewUrlPanel"));
-const extension_1 = require("../extension");
+const extension_1 = require("../../extension");
 const RequestPreviewHeadersPanel_1 = __importDefault(require("./requests/RequestPreviewHeadersPanel"));
 class RequestWebviewPanel {
     constructor(context, request) {

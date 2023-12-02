@@ -13,10 +13,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const vscode_1 = require("vscode");
-const WorkbenchCollectionTreeItem_1 = __importDefault(require("../../workbenches/trees/workbenches/items/WorkbenchCollectionTreeItem"));
+const WorkbenchCollectionTreeItem_1 = __importDefault(require("../../views/trees/workbenches/items/WorkbenchCollectionTreeItem"));
 const crypto_1 = require("crypto");
 const WorkbenchHttpRequest_1 = __importDefault(require("../../workbenches/requests/WorkbenchHttpRequest"));
-const WorkbenchTreeItem_1 = __importDefault(require("../../workbenches/trees/workbenches/items/WorkbenchTreeItem"));
+const WorkbenchTreeItem_1 = __importDefault(require("../../views/trees/workbenches/items/WorkbenchTreeItem"));
 class CreateRequestCommand {
     constructor(context) {
         this.context = context;

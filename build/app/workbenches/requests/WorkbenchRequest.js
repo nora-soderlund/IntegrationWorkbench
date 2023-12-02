@@ -5,7 +5,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const vscode_1 = require("vscode");
 const WorkbenchRequestDataTypeValidations_1 = require("../../../src/interfaces/workbenches/requests/utils/WorkbenchRequestDataTypeValidations");
-const RequestWebviewPanel_1 = require("../../panels/RequestWebviewPanel");
+const RequestWebviewPanel_1 = require("../../views/webviews/RequestWebviewPanel");
 const WorkbenchHttpRequest_1 = __importDefault(require("./WorkbenchHttpRequest"));
 class WorkbenchRequest {
     constructor(parent, id, name) {

@@ -13,7 +13,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const vscode_1 = require("vscode");
-const WorkbenchRequestTreeItem_1 = __importDefault(require("../../workbenches/trees/workbenches/items/WorkbenchRequestTreeItem"));
+const WorkbenchRequestTreeItem_1 = __importDefault(require("../../views/trees/workbenches/items/WorkbenchRequestTreeItem"));
 class RunRequestCommand {
     constructor(context) {
         this.context = context;

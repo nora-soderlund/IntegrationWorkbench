@@ -13,7 +13,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const vscode_1 = require("vscode");
-const WorkbenchCollectionTreeItem_1 = __importDefault(require("../../workbenches/trees/workbenches/items/WorkbenchCollectionTreeItem"));
+const WorkbenchCollectionTreeItem_1 = __importDefault(require("../../views/trees/workbenches/items/WorkbenchCollectionTreeItem"));
 class EditCollectionNameCommand {
     constructor(context) {
         this.context = context;

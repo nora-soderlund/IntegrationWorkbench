@@ -13,7 +13,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const vscode_1 = require("vscode");
-const WorkbenchTreeItem_1 = __importDefault(require("../../workbenches/trees/workbenches/items/WorkbenchTreeItem"));
+const WorkbenchTreeItem_1 = __importDefault(require("../../views/trees/workbenches/items/WorkbenchTreeItem"));
 const Workbenches_1 = require("../../Workbenches");
 class DeleteWorkbenchCommand {
     constructor(context) {
