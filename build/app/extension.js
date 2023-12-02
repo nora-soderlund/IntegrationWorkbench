@@ -276,8 +276,8 @@ function activate(context) {
     (0, Workbenches_1.scanForWorkbenches)(context);
     Scripts_1.default.scanForScripts();
     Scripts_1.default.buildScript("");
-    Environments_1.default.createStatusBarItem(context);
     Environments_1.default.scan();
+    Environments_1.default.createStatusBarItem(context);
     //vscode.window.registerTreeDataProvider('workbenches', new WorkbenchTreeDataProvider(rootPath));
 }
 exports.activate = activate;

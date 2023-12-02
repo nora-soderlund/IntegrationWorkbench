@@ -288,8 +288,8 @@ export function activate(context: vscode.ExtensionContext) {
 	Scripts.scanForScripts();
 	Scripts.buildScript("");
 
-	Environments.createStatusBarItem(context);
 	Environments.scan();
+	Environments.createStatusBarItem(context);
 
 	//vscode.window.registerTreeDataProvider('workbenches', new WorkbenchTreeDataProvider(rootPath));
 }
