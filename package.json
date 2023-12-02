@@ -2,7 +2,7 @@
   "name": "integrationworkbench",
   "displayName": "Integration Workbench",
   "description": "A workbench tool to work with API integrations.",
-  "version": "0.9.3",
+  "version": "0.9.4",
   "license": "GPL-3.0",
   "publisher": "norasoderlund",
   "engines": {
@@ -20,6 +20,7 @@
     "type": "git",
     "url": "https://github.com/nora-soderlund/IntegrationWorkbench"
   },
+  "icon": "media/icon.png",
   "activationEvents": ["onStartupFinished"],
   "main": "./build/app/extension.js",
   "contributes": {
@@ -212,14 +213,14 @@
         {
           "id": "workbench",
           "title": "Integration Workbench",
-          "icon": "media/workbench.png"
+          "icon": "media/icon.png"
         }
       ],
       "panel": [
         {
           "id": "results",
           "title": "Responses",
-          "icon": "media/workbench.png"
+          "icon": "media/icon.png"
         }
       ]
     },
@@ -242,14 +243,14 @@
         {
           "id": "requests",
           "name": "Requests",
-          "icon": "media/workbench.png",
+          "icon": "media/icon.png",
           "contextualTitle": "Requests",
           "initialSize": 0
         },
         {
           "id": "response",
           "name": "Response",
-          "icon": "media/workbench.png",
+          "icon": "media/icon.png",
           "contextualTitle": "Response",
           "type": "webview",
           "initialSize": 1
