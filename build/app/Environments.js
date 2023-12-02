@@ -13,7 +13,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const path_1 = __importDefault(require("path"));
-const Environment_1 = __importDefault(require("./entities/Environment"));
+const Environment_1 = __importDefault(require("./entities/environments/Environment"));
 const fs_1 = require("fs");
 const GetRootPath_1 = __importDefault(require("./utils/GetRootPath"));
 const vscode_1 = require("vscode");

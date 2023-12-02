@@ -1,5 +1,5 @@
 import { ExtensionContext, commands, window } from "vscode";
-import Environment from "../../entities/Environment";
+import Environment from "../../entities/environments/Environment";
 import EnvironmentTreeItem from "../../views/trees/environments/items/EnvironmentTreeItem";
 import Environments from "../../Environments";
 

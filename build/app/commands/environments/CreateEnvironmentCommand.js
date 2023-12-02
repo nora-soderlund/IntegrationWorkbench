@@ -18,7 +18,7 @@ const GetCamelizedString_1 = __importDefault(require("../../utils/GetCamelizedSt
 const GetRootPath_1 = __importDefault(require("../../utils/GetRootPath"));
 const fs_1 = require("fs");
 const Environments_1 = __importDefault(require("../../Environments"));
-const Environment_1 = __importDefault(require("../../entities/Environment"));
+const Environment_1 = __importDefault(require("../../entities/environments/Environment"));
 class CreateEnvironmentCommand {
     constructor(context) {
         this.context = context;

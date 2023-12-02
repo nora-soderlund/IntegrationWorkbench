@@ -1,9 +1,9 @@
 import { existsSync, readFileSync, rmSync, writeFileSync } from "fs";
-import EnvironmentTreeItem from "../views/trees/environments/items/EnvironmentTreeItem";
+import EnvironmentTreeItem from "../../views/trees/environments/items/EnvironmentTreeItem";
 import { EnvironmentData } from "~interfaces/entities/EnvironmentData";
 import { ExtensionContext, commands } from "vscode";
-import { EnvironmentWebviewPanel } from "../views/webviews/environments/EnvironmentWebviewPanel";
-import Scripts from "../Scripts";
+import { EnvironmentWebviewPanel } from "../../views/webviews/environments/EnvironmentWebviewPanel";
+import Scripts from "../../Scripts";
 import { parse } from "dotenv";
 
 export default class Environment {

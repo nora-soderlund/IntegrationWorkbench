@@ -9,7 +9,7 @@ import path from "path";
 import { existsSync, mkdirSync } from "fs";
 import getUniqueFolderPath from "../../utils/GetUniqueFolderPath";
 import getCamelizedString from "../../utils/GetCamelizedString";
-import Environment from "../../entities/Environment";
+import Environment from "../../entities/environments/Environment";
 import EnvironmentTreeItem from "../../views/trees/environments/items/EnvironmentTreeItem";
 import Environments from "../../Environments";
 

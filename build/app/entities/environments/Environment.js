@@ -13,8 +13,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const fs_1 = require("fs");
-const EnvironmentWebviewPanel_1 = require("../views/webviews/environments/EnvironmentWebviewPanel");
-const Scripts_1 = __importDefault(require("../Scripts"));
+const EnvironmentWebviewPanel_1 = require("../../views/webviews/environments/EnvironmentWebviewPanel");
+const Scripts_1 = __importDefault(require("../../Scripts"));
 const dotenv_1 = require("dotenv");
 class Environment {
     constructor(filePath) {

@@ -2,13 +2,13 @@ import { ExtensionContext, TaskPanelKind, commands, window } from "vscode";
 import { existsSync, mkdir, mkdirSync, readFileSync, readdirSync, rmdirSync, writeFileSync } from "fs";
 import path from "path";
 import getRootPath from "./utils/GetRootPath";
-import Script from "./entities/TypescriptScript";
+import Script from "./entities/scripts/TypescriptScript";
 import { ScriptDeclarationData } from "~interfaces/scripts/ScriptDeclarationData";
-import TypescriptScript from "./entities/TypescriptScript";
+import TypescriptScript from "./entities/scripts/TypescriptScript";
 import { CompilerOptions, ModuleKind, ScriptKind, ScriptTarget, createProgram, createSourceFile, formatDiagnosticsWithColorAndContext, getPreEmitDiagnostics, sys } from "typescript";
 import esbuild from "esbuild";
 import { UserInput } from "~interfaces/UserInput";
-import Environment from "./entities/Environment";
+import Environment from "./entities/environments/Environment";
 import Environments from "./Environments";
 
 export default class Scripts {

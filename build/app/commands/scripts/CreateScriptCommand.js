@@ -15,7 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const vscode_1 = require("vscode");
 const path_1 = __importDefault(require("path"));
 const fs_1 = require("fs");
-const TypescriptScript_1 = __importDefault(require("../../scripts/TypescriptScript"));
+const TypescriptScript_1 = __importDefault(require("../../entities/scripts/TypescriptScript"));
 const Scripts_1 = __importDefault(require("../../Scripts"));
 const GetRootPath_1 = __importDefault(require("../../utils/GetRootPath"));
 class CreateScriptCommand {

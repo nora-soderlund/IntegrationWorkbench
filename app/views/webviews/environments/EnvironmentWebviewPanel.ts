@@ -1,11 +1,11 @@
 import { Disposable, ExtensionContext, ThemeIcon, Uri, ViewColumn, WebviewPanel, window, workspace } from "vscode";
 import EnvironmentPreviewVariablesPanel from "./previews/EnvironmentPreviewVariablesPanel";
-import Environment from "../../../entities/Environment";
+import Environment from "../../../entities/environments/Environment";
 import { readFileSync } from "fs";
 import path from "path";
 import { getWebviewUri } from "../../../utils/GetWebviewUri";
 import { outputChannel } from "../../../extension";
-import TypescriptScript from "../../../entities/TypescriptScript";
+import TypescriptScript from "../../../entities/scripts/TypescriptScript";
 import Scripts from "../../../Scripts";
 import Environments from "../../../Environments";
 

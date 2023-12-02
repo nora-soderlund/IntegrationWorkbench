@@ -3,7 +3,7 @@ import path from "path";
 import { existsSync } from "fs";
 import { isHttpRequestData } from "../../../../../src/interfaces/workbenches/requests/utils/WorkbenchRequestDataTypeValidations";
 import WorkbenchResponse from "../../../../workbenches/responses/WorkbenchHttpResponse";
-import Script from "../../../../entities/TypescriptScript";
+import Script from "../../../../entities/scripts/TypescriptScript";
 import ScriptsTreeDataProvider from "../ScriptsTreeDataProvider";
 
 export default class ScriptTreeItem extends TreeItem {

@@ -1,5 +1,5 @@
 import { ExtensionContext, commands } from "vscode";
-import Environment from "../../entities/Environment";
+import Environment from "../../entities/environments/Environment";
 
 export default class OpenEnvironmentCommand {
   constructor(private readonly context: ExtensionContext) {

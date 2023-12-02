@@ -1,7 +1,7 @@
 import { StatusBarAlignment, StatusBarItem, ThemeColor, window } from "vscode";
 import { WorkbenchHttpRequestPreviewHeadersData } from "~interfaces/workbenches/requests/WorkbenchHttpRequestPreviewHeadersData";
 import { EnvironmentWebviewPanel } from "../EnvironmentWebviewPanel";
-import Environment from "../../../../entities/Environment";
+import Environment from "../../../../entities/environments/Environment";
 import { outputChannel } from "../../../../extension";
 import { EnvironmentPreviewVariablesData } from "~interfaces/entities/EnvironmentPreviewVariablesData";
 

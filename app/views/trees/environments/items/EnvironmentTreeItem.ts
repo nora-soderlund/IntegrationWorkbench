@@ -1,5 +1,5 @@
 import { ThemeIcon, TreeItem, TreeItemCollapsibleState } from "vscode";
-import Environment from "../../../../entities/Environment";
+import Environment from "../../../../entities/environments/Environment";
 import EnvironmentsTreeDataProvider from "../EnvironmentsTreeDataProvider";
 
 export default class EnvironmentTreeItem extends TreeItem {

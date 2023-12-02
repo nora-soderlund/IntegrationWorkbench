@@ -9,7 +9,7 @@ import { randomUUID } from "crypto";
 import { existsSync, mkdirSync, writeFileSync } from "fs";
 import Environments from "../../Environments";
 import { EnvironmentData } from "~interfaces/entities/EnvironmentData";
-import Environment from "../../entities/Environment";
+import Environment from "../../entities/environments/Environment";
 
 export default class CreateEnvironmentCommand {
   constructor(private readonly context: ExtensionContext) {
