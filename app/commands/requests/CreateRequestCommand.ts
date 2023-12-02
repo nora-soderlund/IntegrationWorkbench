@@ -44,7 +44,7 @@ export default class CreateRequestCommand {
         workbenchItem.requests.push(
           new WorkbenchHttpRequest(workbenchItem, randomUUID(), value, {
             method: "GET",
-            url: "https://httpbin.org/get",
+            url: "https://api.integrationbench.com/",
             parameters: [],
             parametersAutoRefresh: false,
             authorization: {
