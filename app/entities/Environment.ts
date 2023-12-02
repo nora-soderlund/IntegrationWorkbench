@@ -34,6 +34,26 @@ export default class Environment {
     );
   }
 
+  getVariables() {
+    const variables: string[] = [];
+
+    if(this.data.variablesFilePath) {
+      if(existsSync(this.data.variablesFilePath)) {
+        const content = readFileSync(this.data.variablesFilePath, {
+          encoding: "utf-8"
+        });
+
+        variables.push(...Object.keys(parse(content)));
+      }
+    }
+
+    for(let header of this.data.variables) {
+      variables.push(header.key);
+    }
+    
+    return variables;
+  }
+
   async getParsedVariables(abortController: AbortController) {
     return new Promise<{
       key: string;

@@ -97,8 +97,7 @@ class Environments {
                 }
                 environment = this.selectedEnvironment;
             }
-            const parsedVariables = yield environment.getParsedVariables(new AbortController());
-            return `declare const process: { env: { ${parsedVariables.map((parsedVariable) => `${parsedVariable.key}: any;`).join(' ')} }; };`;
+            return `declare const process: { env: { ${environment.getVariables().map((key) => `${key}: any;`).join(' ')} }; };`;
         });
     }
 }

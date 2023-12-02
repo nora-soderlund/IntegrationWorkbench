@@ -28,7 +28,22 @@ class Environment {
             encoding: "utf-8"
         });
     }
-    getParsedVariables(abortController) {
+    getVariables() {
+        const variables = [];
+        if (this.data.variablesFilePath) {
+            if ((0, fs_1.existsSync)(this.data.variablesFilePath)) {
+                const content = (0, fs_1.readFileSync)(this.data.variablesFilePath, {
+                    encoding: "utf-8"
+                });
+                variables.push(...Object.keys((0, dotenv_1.parse)(content)));
+            }
+        }
+        for (let header of this.data.variables) {
+            variables.push(header.key);
+        }
+        return variables;
+    }
+    getParsedVariables(abortController, allowEnvironmentUserInputs = true) {
         return __awaiter(this, void 0, void 0, function* () {
             return new Promise((resolve, reject) => __awaiter(this, void 0, void 0, function* () {
                 const abortListener = () => reject("Aborted.");
@@ -48,16 +63,18 @@ class Environment {
                         }
                     }
                 }
-                for (let header of this.data.variables) {
-                    try {
-                        const value = yield Scripts_1.default.evaluateUserInput(header);
-                        variables.push({
-                            key: header.key,
-                            value
-                        });
-                    }
-                    catch (error) {
-                        reject(error);
+                if (allowEnvironmentUserInputs) {
+                    for (let header of this.data.variables) {
+                        try {
+                            const value = yield Scripts_1.default.evaluateUserInput(header);
+                            variables.push({
+                                key: header.key,
+                                value
+                            });
+                        }
+                        catch (error) {
+                            reject(error);
+                        }
                     }
                 }
                 abortController.signal.removeEventListener("abort", abortListener);

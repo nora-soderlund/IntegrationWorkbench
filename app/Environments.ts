@@ -114,8 +114,8 @@ export default class Environments {
       environment = this.selectedEnvironment;
     }
 
-    const parsedVariables = await environment.getParsedVariables(new AbortController());
+    const parsedVariables = environment.getVariables();
 
-    return `declare const process: { env: { ${parsedVariables.map((parsedVariable) => `${parsedVariable.key}: any;`).join(' ')} }; };`;
+    return `declare const process: { env: { ${environment.getVariables().map((key) => `${key}: any;`).join(' ')} }; };`;
   }
 }

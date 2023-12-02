@@ -43,7 +43,7 @@ class EnvironmentPreviewVariablesPanel {
             console.log("try");
             try {
                 console.log("get parsed headers");
-                const items = yield this.environment.getParsedVariables(new AbortController());
+                const items = yield this.environment.getParsedVariables(new AbortController(), false);
                 console.log("succeed");
                 previewHeadersData = {
                     success: true,
