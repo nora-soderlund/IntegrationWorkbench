@@ -10,6 +10,11 @@ Available features:
 
 [![Extension preview](https://i.imgur.com/sfKeBBD.gif)](https://i.imgur.com/sfKeBBD.mp4)
 
-## Known Issues
-
-- Inline editors does not respect the theme (pending partial fix)
+In-scope to be implemented:
+ - Creating requests from OpenAPI schemas
+ - Creating AWS EventBridge/SNS Topic events
+ - Creating events using AsyncAPI schemas
+ - Templates for commonly used APIs
+ - Alternative to use cURL instead of the Fetch API
+ - Exporting requests as fetch or cURL commands
+ - Exporting requests as Jest or Node tests
