@@ -2,7 +2,7 @@ import { TreeDataProvider, TreeItem, Event, EventEmitter, ExtensionContext } fro
 import WorkbenchTreeItem from './items/WorkbenchTreeItem';
 import WorkbenchRequestTreeItem from './items/WorkbenchRequestTreeItem';
 import WorkbenchCollectionTreeItem from './items/WorkbenchCollectionTreeItem';
-import { scanForWorkbenches } from '../../../instances/Workbenches';
+import { scanForWorkbenches, workbenches } from '../../../instances/Workbenches';
 
 export default class WorkbenchTreeDataProvider implements TreeDataProvider<WorkbenchTreeItem> {
   constructor(
@@ -18,7 +18,7 @@ export default class WorkbenchTreeDataProvider implements TreeDataProvider<Workb
   getChildren(element?: WorkbenchTreeItem): Thenable<WorkbenchTreeItem[]> {
     if (!element) {
       return Promise.resolve(
-        scanForWorkbenches(this.context, false).map((workbench) =>
+        workbenches.map((workbench) =>
           new WorkbenchTreeItem(workbench)
         )
       );
