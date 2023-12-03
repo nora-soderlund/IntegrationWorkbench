@@ -24,7 +24,9 @@
     },
     "ignorePatterns": [
         "out",
+        "build",
         "dist",
+        "node_modules",
         "**/*.d.ts"
     ]
 }

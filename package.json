@@ -465,7 +465,8 @@
   "scripts": {
     "start": "react-scripts start",
     "vscode:prepublish": "node ./scripts/build-non-split.js && tsc -p tsconfig.extension.json && tsc-alias -p tsconfig.extension.json",
-    "build": "node ./scripts/build-non-split.js && tsc -p tsconfig.extension.json && tsc-alias -p tsconfig.extension.json"
+    "build": "node ./scripts/build-non-split.js && tsc -p tsconfig.extension.json && tsc-alias -p tsconfig.extension.json",
+    "lint": "yarn eslint ./"
   },
   "devDependencies": {
     "@types/mocha": "^10.0.3",
