@@ -376,7 +376,7 @@ function getHexFromRGBA(rgba: string, forceRemoveAlpha = false) {
     .map((number, index) => index === 3 ? Math.round(number * 255) : number) // Converts alpha to 255 number
     .map(number => number.toString(16)) // Converts numbers to hex
     .map(string => string.length === 1 ? "0" + string : string) // Adds 0 when length of one number is 1
-    .join("") // Puts the array to togehter to a string
+    .join(""); // Puts the array to togehter to a string
 }
 
 export default function useMonacoUserTheme() {
