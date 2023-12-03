@@ -11,8 +11,6 @@ export default class CreateCollectionCommand {
   }
   
   async handle(reference: unknown) {
-    window.showInformationMessage('Create collection');
-
     window.showInputBox({
       prompt: "Enter a collection name",
       validateInput(value) {

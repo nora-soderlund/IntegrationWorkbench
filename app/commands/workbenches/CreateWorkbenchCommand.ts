@@ -15,8 +15,6 @@ export default class CreateWorkbenchCommand extends Command {
   }
   
   async handle() {
-    window.showInformationMessage('Create workbench');
-
     const name = await window.showInputBox({
       placeHolder: "Enter the name of this workbench:",
   

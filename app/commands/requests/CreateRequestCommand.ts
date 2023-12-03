@@ -15,8 +15,6 @@ export default class CreateRequestCommand {
   }
   
   async handle(reference: unknown) {
-    window.showInformationMessage('Create request');
-
     window.showInputBox({
       prompt: "Enter the request name",
       validateInput(value) {
