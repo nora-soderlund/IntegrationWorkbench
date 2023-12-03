@@ -32,11 +32,11 @@ export default class WorkbenchRequestTreeItem extends TreeItem implements Workbe
       if (this.request.data.method) {
         const iconPath = path.join(__filename, '..', '..', '..', '..', '..', '..', '..', 'resources', 'icons', 'methods', `${this.request.data.method}.png`);
 
-        console.log(iconPath);
-
         if (existsSync(iconPath)) {
           return Uri.file(iconPath);
         }
+
+        return Uri.file(path.join(__filename, '..', '..', '..', '..', '..', '..', '..', 'resources', 'icons', 'HTTP.png'));
       }
     }
 

@@ -49,11 +49,10 @@ export default class WorkbenchResponseTreeItem extends TreeItem {
         const iconPath = path.join(__filename, '..', '..', '..', '..', '..', '..', '..', 'resources', 'icons', 'methods', `${this.response.request.data.method}.png`);
 
         if (existsSync(iconPath)) {
-          return {
-            light: iconPath,
-            dark: iconPath
-          };
+          return iconPath;
         }
+
+        return path.join(__filename, '..', '..', '..', '..', '..', '..', '..', 'resources', 'icons', 'HTTP.png');
       }
       
       return new ThemeIcon("search-show-context");
