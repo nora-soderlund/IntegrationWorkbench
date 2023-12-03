@@ -187,12 +187,12 @@ export default function HttpRequestHeaders({ requestData }: HttpRequestProps) {
               ]
             })
           )}
-          onChange={(item) => {
+          onChange={() => 
             window.vscode.postMessage({
               command: "norasoderlund.integrationworkbench.changeHttpRequestHeaders",
               arguments: [ requestData.data.headers ]
             })
-          }}
+          }
           onDelete={(item) => {
             const index = requestData.data.headers.indexOf(item);
 

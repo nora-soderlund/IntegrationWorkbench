@@ -143,12 +143,12 @@ export default function HttpRequestParameters({ requestData }: HttpRequestProps)
               ]
             })
           )}
-          onChange={(item) => {
+          onChange={() => 
             window.vscode.postMessage({
               command: "norasoderlund.integrationworkbench.changeHttpRequestParameters",
               arguments: [ requestData.data.parameters ]
             })
-          }}
+          }
           onDelete={(item) => {
             const index = requestData.data.parameters.indexOf(item);
 

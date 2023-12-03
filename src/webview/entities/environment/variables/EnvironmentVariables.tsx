@@ -247,12 +247,12 @@ export default function EnvironmentVariables({ environmentData }: EnvironmentPro
               ]
             })
           )}
-          onChange={(item) => {
+          onChange={(item) => 
             window.vscode.postMessage({
               command: "norasoderlund.integrationworkbench.changeEnvironmentVariables",
               arguments: [ environmentData.variables ]
             })
-          }}
+          }
           onDelete={(item) => {
             const index = environmentData.variables.indexOf(item);
 

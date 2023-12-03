@@ -10,7 +10,7 @@ import HttpRequestAuthorization from "./authorization/HttpRequestAuthorization";
 
 export type HttpRequestProps = {
   requestData: WorkbenchHttpRequestData;
-}
+};
 
 export default function HttpRequest({ requestData }: HttpRequestProps) {
   return (
