@@ -31,6 +31,8 @@ export default class WorkbenchesRequestsTreeDataProvider implements TreeDataProv
     }
 
     if (!element) {
+      this.updateDescriptions();
+      
       return Promise.resolve(
         [
           //new WorkbenchResponsesBookmarkTreeItem(),
@@ -47,5 +49,9 @@ export default class WorkbenchesRequestsTreeDataProvider implements TreeDataProv
 
   refresh(): void {
     this._onDidChangeTreeData.fire();
+  }
+
+  updateDescriptions() {
+    this.workbenchResponses.forEach((response) => response.description = response.getDescription());
   }
 }

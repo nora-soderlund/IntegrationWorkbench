@@ -2,11 +2,11 @@ import { ThemeColor, ThemeIcon, TreeItem, TreeItemCollapsibleState } from "vscod
 import path from "path";
 import { existsSync } from "fs";
 import { isHttpRequestData } from "../../../../../src/interfaces/workbenches/requests/utils/WorkbenchRequestDataTypeValidations";
-import WorkbenchResponse from "../../../../entities/responses/WorkbenchHttpResponse";
+import WorkbenchHttpResponse from "../../../../entities/responses/WorkbenchHttpResponse";
 
 export default class WorkbenchResponseTreeItem extends TreeItem {
   constructor(
-    public readonly response: WorkbenchResponse
+    public readonly response: WorkbenchHttpResponse
   ) {
     super(response.request.name, TreeItemCollapsibleState.None);
 
@@ -25,6 +25,8 @@ export default class WorkbenchResponseTreeItem extends TreeItem {
     this.contextValue = "response-" + this.response.status;
     this.description = this.getDescription();
     this.iconPath = this.getIconPath();
+
+    console.log({ iconPath: this.iconPath });
   }
 
   getDescription() {
@@ -45,17 +47,13 @@ export default class WorkbenchResponseTreeItem extends TreeItem {
 
   getIconPath() {
     if(this.response.status === "done") {
-      if (isHttpRequestData(this.response.request.data)) {
-        const iconPath = path.join(__filename, '..', '..', '..', '..', '..', '..', '..', 'resources', 'icons', 'methods', `${this.response.request.data.method}.png`);
+      const iconPath = path.join(__filename, '..', '..', '..', '..', '..', '..', '..', 'resources', 'icons', 'methods', `${this.response.request.data.method}.png`);
 
-        if (existsSync(iconPath)) {
-          return iconPath;
-        }
-
-        return path.join(__filename, '..', '..', '..', '..', '..', '..', '..', 'resources', 'icons', 'HTTP.png');
+      if (existsSync(iconPath)) {
+        return iconPath;
       }
-      
-      return new ThemeIcon("search-show-context");
+
+      return path.join(__filename, '..', '..', '..', '..', '..', '..', '..', 'resources', 'icons', 'HTTP.png');
     }
 
     if(this.response.status === "failed") {

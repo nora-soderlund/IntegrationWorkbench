@@ -2,7 +2,7 @@
   "name": "integrationworkbench",
   "displayName": "Integration Workbench",
   "description": "A free and open-source API integration testing extension for VS Code.",
-  "version": "0.9.5",
+  "version": "0.9.6",
   "license": "GPL-3.0",
   "publisher": "norasoderlund",
   "engines": {
