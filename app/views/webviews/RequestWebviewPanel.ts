@@ -182,47 +182,7 @@ export class RequestWebviewPanel {
           }
 
           case "norasoderlund.integrationworkbench.getScriptDeclarations": {
-            type ScriptBuildResult = {
-              script: Script,
-              build: {
-                declaration: string;
-                javascript: string;
-              };
-            };
-
-            const promises = await Promise.allSettled(Scripts.loadedScripts.map<Promise<ScriptBuildResult>>(async (script) => {
-              return {
-                script,
-                build: await script.build()
-              }
-            }));
-
-            const fulfilledPromises = promises.reduce<ScriptBuildResult[]>((newArray, promise) => {
-              if (promise.status === 'fulfilled') {
-                newArray.push(promise.value);
-              }
-
-              return newArray
-            }, []);
-
-            const argument = fulfilledPromises.map(({ script, build }) => {
-              return {
-                name: `ts:${script.getNameWithoutExtension()}.d.ts`,
-                declaration: build.declaration
-              };
-            }).concat([
-              {
-                name: "ts:environment.d.ts",
-                declaration: await Environments.getEnvironmentDeclaration()
-              }
-            ]);
-
-            console.log({ argument });
-
-            this.webviewPanel.webview.postMessage({
-              command: "norasoderlund.integrationworkbench.updateScriptDeclarations",
-              arguments: [ argument ]
-            });
+            await this.updateScriptDeclarations();
 
             return;
           }
@@ -264,6 +224,50 @@ export class RequestWebviewPanel {
       this.previewUrl = new RequestPreviewUrlPanel(this, request);
       this.previewHeaders = new RequestPreviewHeadersPanel(this, request);
     }
+  }
+
+  public async updateScriptDeclarations() {
+    type ScriptBuildResult = {
+      script: Script,
+      build: {
+        declaration: string;
+        javascript: string;
+      };
+    };
+
+    const promises = await Promise.allSettled(Scripts.loadedScripts.map<Promise<ScriptBuildResult>>(async (script) => {
+      return {
+        script,
+        build: await script.build()
+      }
+    }));
+
+    const fulfilledPromises = promises.reduce<ScriptBuildResult[]>((newArray, promise) => {
+      if (promise.status === 'fulfilled') {
+        newArray.push(promise.value);
+      }
+
+      return newArray
+    }, []);
+
+    const argument = fulfilledPromises.map(({ script, build }) => {
+      return {
+        name: `ts:${script.getNameWithoutExtension()}.d.ts`,
+        declaration: build.declaration
+      };
+    }).concat([
+      {
+        name: "ts:environment.d.ts",
+        declaration: await Environments.getEnvironmentDeclaration()
+      }
+    ]);
+
+    console.log({ argument });
+
+    this.webviewPanel.webview.postMessage({
+      command: "norasoderlund.integrationworkbench.updateScriptDeclarations",
+      arguments: [ argument ]
+    });
   }
 
   private updateRequest() {
