@@ -8,7 +8,7 @@ Available features:
  - Use custom scripts in headers, parameters, environment variables.
  - Use environments with variables from .env files or custom scripts
 
-[![Extension preview](https://i.imgur.com/sfKeBBD.gif)](https://i.imgur.com/sfKeBBD.mp4)
+![Extension preview](https://i.imgur.com/Ky2sBU2.gif)
 
 In-scope to be implemented:
  - Creating requests from OpenAPI schemas
