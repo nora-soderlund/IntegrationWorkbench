@@ -4,9 +4,13 @@ import { WorkbenchHttpResponseData } from "../../../../interfaces/workbenches/re
 import HttpResponseBodySwitch from "./HttpResponseBodySwitch";
 import HttpResponseHeaders from "./HttpResponseHeaders";
 import HttpFailedResponse from "./HttpFailedResponse";
+import { WorkbenchHttpRequestData } from "../../../../interfaces/workbenches/requests/WorkbenchHttpRequestData";
+import { HandlerState } from "../../../../interfaces/entities/handlers/Handler";
+import { HttpHandlerFulfilledState } from "../../../../interfaces/entities/handlers/http/HttpHandlerFulfilledState";
 
 export type HttpResponseProps = {
-  responseData: WorkbenchHttpResponseData;
+  requestData: WorkbenchHttpRequestData;
+  handlerState: HandlerState<HttpHandlerFulfilledState>;
 };
 
 function getHttpResponseColor(status: number) {
@@ -17,10 +21,10 @@ function getHttpResponseColor(status: number) {
   return undefined;
 }
 
-export default function HttpResponse({ responseData }: HttpResponseProps) {
-  if(responseData.status === "failed") {
+export default function HttpResponse({ requestData, handlerState }: HttpResponseProps) {
+  if(handlerState.status === "error") {
     return (
-      <HttpFailedResponse responseData={responseData}/>
+      <HttpFailedResponse requestData={requestData} handlerState={handlerState}/>
     );
   }
 
@@ -33,14 +37,14 @@ export default function HttpResponse({ responseData }: HttpResponseProps) {
         <VSCodePanelTab>BODY</VSCodePanelTab>
         <VSCodePanelTab>HEADERS</VSCodePanelTab>
 
-        {(responseData.result) && (
+        {(handlerState.status === "fulfilled") && (
           <VSCodePanelTab style={{
             justifyTracks: "flex-end",
             pointerEvents: "none",
             textTransform: "none",
-            color: getHttpResponseColor(responseData.result.status)
+            color: getHttpResponseColor(handlerState.data.status)
           }}>
-            Status: {responseData.result.status} {responseData.result.statusText}
+            Status: {handlerState.data.status} {handlerState.data.statusText}
           </VSCodePanelTab>
         )}
 
@@ -50,11 +54,11 @@ export default function HttpResponse({ responseData }: HttpResponseProps) {
           padding: "0 6px",
           border: "none"
         }}>
-          <HttpResponseBodySwitch responseData={responseData}/>
+          <HttpResponseBodySwitch requestData={requestData} handlerState={handlerState}/>
         </VSCodePanelView>
 
         <VSCodePanelView>
-          <HttpResponseHeaders responseData={responseData}/>
+          <HttpResponseHeaders requestData={requestData} handlerState={handlerState}/>
         </VSCodePanelView>
         
         <VSCodePanelView/>

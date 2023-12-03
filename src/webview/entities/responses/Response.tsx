@@ -4,9 +4,12 @@ import { WorkbenchRequestData } from "../../../interfaces/workbenches/requests/W
 import { WorkbenchResponseData } from "../../../interfaces/workbenches/responses/WorkbenchResponseData";
 import { isHttpResponseData } from "../../../interfaces/workbenches/responses/utils/WorkbenchResponseTypeValidations";
 import HttpResponse from "./http/HttpResponse";
+import { HandlerState } from "../../../interfaces/entities/handlers/Handler";
+import { HttpHandlerFulfilledState } from "../../../../src/interfaces/entities/handlers/http/HttpHandlerFulfilledState";
 
 export default function Response() {
-  const [ responseData, setResponseData ] = useState<WorkbenchResponseData | null>(null);
+  const [ requestData, setRequestData ] = useState<WorkbenchRequestData | null>(null);
+  const [ handlerState, setHandlerState ] = useState<HandlerState<unknown> | null>(null);
 
   useEffect(() => {
     window.addEventListener('message', event => {
@@ -14,9 +17,10 @@ export default function Response() {
 
       switch (command) {
         case 'norasoderlund.integrationworkbench.showResponse': {
-          const [ responseData ] = event.data.arguments;
+          const [ requestData, handlerState ] = event.data.arguments;
 
-          setResponseData(responseData);
+          setRequestData(requestData);
+          setHandlerState(handlerState);
   
           break;
         }
@@ -24,10 +28,10 @@ export default function Response() {
     });
   }, []);
 
-  if(responseData) {
-    if(isHttpResponseData(responseData)) {
+  if(requestData && handlerState) {
+    if(isHttpRequestData(requestData)) {
       return (
-        <HttpResponse responseData={responseData}/>
+        <HttpResponse requestData={requestData} handlerState={handlerState as HandlerState<HttpHandlerFulfilledState>}/>
       );
     }
   }

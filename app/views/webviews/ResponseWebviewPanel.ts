@@ -2,10 +2,8 @@ import { Disposable, ExtensionContext, Uri, ViewColumn, WebviewPanel, TextDocume
 import { getWebviewUri } from "../../utils/GetWebviewUri";
 import { readFileSync } from "fs";
 import path from "path";
-import WorkbenchRequest from "../../entities/requests/WorkbenchRequest";
-import WorkbenchHttpRequest from "../../entities/requests/WorkbenchHttpRequest";
-import { WorkbenchResponse } from "../../entities/responses/WorkbenchResponse";
 import { outputChannel } from "../../extension";
+import WorkbenchResponse from "../../entities/responses/WorkbenchResponse";
 
 export class ResponseWebviewPanel {
   private readonly disposables: Disposable[] = [];
@@ -108,7 +106,7 @@ export class ResponseWebviewPanel {
 
     this.webviewView.webview.postMessage({
       command: "norasoderlund.integrationworkbench.showResponse",
-      arguments: [ this.currentResponse.getData() ]
+      arguments: [ this.currentResponse.request.getData(), this.currentResponse.handler.state ]
     });
   }
 

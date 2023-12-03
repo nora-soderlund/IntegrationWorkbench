@@ -6,18 +6,18 @@ import HttpRequestApplicationJsonBody from "../../requests/http/body/HttpRequest
 import HttpResponseApplicationJsonBody from "./HttpResponseEditorBody";
 import HttpResponseEditorBody from "./HttpResponseEditorBody";
 
-export default function HttpResponseBodySwitch({ responseData }: HttpResponseProps) {
-  if(!responseData.result) {
+export default function HttpResponseBodySwitch({ requestData, handlerState }: HttpResponseProps) {
+  if(handlerState.status !== "fulfilled") {
     return (
       <p>No response result available yet.</p>
     );
   }
 
-  if(responseData.result.body) {
-    if(responseData.result.headers["content-type"]?.toLowerCase()?.startsWith("application/json")) {
-      if(responseData.result?.body) {
+  if(handlerState.data.body) {
+    if(handlerState.data.headers["content-type"]?.toLowerCase()?.startsWith("application/json")) {
+      if(handlerState.data?.body) {
         try {
-          const parsedJson = JSON.parse(responseData.result.body);
+          const parsedJson = JSON.parse(handlerState.data.body);
 
           return (
             <React.Fragment>
@@ -27,7 +27,7 @@ export default function HttpResponseBodySwitch({ responseData }: HttpResponsePro
         }
         catch {
           return (
-            <HttpResponseEditorBody body={responseData.result.body} language="json" infoboxes={[
+            <HttpResponseEditorBody body={handlerState.data.body} language="json" infoboxes={[
               {
                 type: "warning",
                 message: (
@@ -43,7 +43,7 @@ export default function HttpResponseBodySwitch({ responseData }: HttpResponsePro
     }
     else {
       return (
-        <HttpResponseEditorBody body={responseData.result.body} language="automatic"/>
+        <HttpResponseEditorBody body={handlerState.data.body} language="automatic"/>
       );
     }
   }

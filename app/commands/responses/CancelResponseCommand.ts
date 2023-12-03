@@ -3,7 +3,7 @@ import { Workbench } from "../../entities/workbenches/Workbench";
 import WorkbenchRequest from "../../entities/requests/WorkbenchRequest";
 import { WorkbenchCollection } from "../../entities/collections/WorkbenchCollection";
 import WorkbenchResponseTreeItem from "../../views/trees/responses/items/WorkbenchResponseTreeItem";
-import { WorkbenchResponse } from "../../entities/responses/WorkbenchResponse";
+import WorkbenchResponse from "../../entities/responses/WorkbenchResponse";
 
 export default class CancelResponseCommand {
   constructor(private readonly context: ExtensionContext) {

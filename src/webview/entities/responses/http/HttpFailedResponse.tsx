@@ -4,8 +4,15 @@ import { WorkbenchHttpResponseData } from "../../../../interfaces/workbenches/re
 import HttpResponseBodySwitch from "./HttpResponseBodySwitch";
 import HttpResponseHeaders from "./HttpResponseHeaders";
 import { HttpResponseProps } from "./HttpResponse";
+import { WorkbenchHttpRequestData } from "../../../../interfaces/workbenches/requests/WorkbenchHttpRequestData";
+import { HandlerErrorState } from "../../../../interfaces/entities/handlers/Handler";
 
-export default function HttpFailedResponse({ responseData }: HttpResponseProps) {
+export type HttpFailedResponseProps = {
+  requestData: WorkbenchHttpRequestData;
+  handlerState: HandlerErrorState;
+}
+
+export default function HttpFailedResponse({ requestData, handlerState }: HttpFailedResponseProps) {
   return (
     <div style={{
       flex: 1,
@@ -16,7 +23,7 @@ export default function HttpFailedResponse({ responseData }: HttpResponseProps) 
           <i className="codicon codicon-error"></i>{" "}<b>An error occured:</b>
           
           <p>
-            {responseData.error}
+            {handlerState.message}
           </p>
         </div>
 

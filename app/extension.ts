@@ -2,46 +2,16 @@
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode';
 import WorkbenchTreeDataProvider from './views/trees/workbenches/WorkbenchTreeDataProvider';
-import { getAllRequestsWithWebviews, scanForWorkbenches, workbenches } from './instances/Workbenches';
-import CreateCollectionCommand from './commands/collections/CreateCollectionCommand';
-import CreateRequestCommand from './commands/requests/CreateRequestCommand';
-import OpenRequestCommand from './commands/requests/OpenRequestCommand';
-import CreateWorkbenchCommand from './commands/workbenches/CreateWorkbenchCommand';
-import OpenResponseCommand from './commands/responses/OpenResponseCommand';
-import { getWebviewUri } from './utils/GetWebviewUri';
-import { readFileSync } from 'fs';
-import path from 'path';
+import { scanForWorkbenches } from './instances/Workbenches';
 import WorkbenchesRequestsTreeDataProvider from './views/trees/responses/WorkbenchesRequestsTreeDataProvider';
-import { WorkbenchResponse } from './entities/responses/WorkbenchResponse';
-import EditCollectionNameCommand from './commands/collections/EditCollectionNameCommand';
-import EditCollectionDescriptionCommand from './commands/collections/EditCollectionDescriptionCommand';
-import EditRequestNameCommand from './commands/requests/EditRequestNameCommand';
-import RunCollectionCommand from './commands/collections/RunCollectionCommand';
-import RunRequestCommand from './commands/requests/RunRequestCommand';
 import WorkbenchResponseTreeItem from './views/trees/responses/items/WorkbenchResponseTreeItem';
-import DeleteRequestCommand from './commands/requests/DeleteRequestCommand';
-import DeleteCollectionCommand from './commands/collections/DeleteCollectionCommand';
-import DeleteWorkbenchCommand from './commands/workbenches/DeleteWorkbenchCommand';
 import { ResponseWebviewPanel } from './views/webviews/ResponseWebviewPanel';
-import RunWorkbenchCommand from './commands/workbenches/RunWorkbenchCommand';
 import ScriptsTreeDataProvider from './views/trees/scripts/ScriptsTreeDataProvider';
 import Scripts from './instances/Scripts';
-import CreateScriptCommand from './commands/scripts/CreateScriptCommand';
-import OpenScriptCommand from './commands/scripts/OpenScriptCommand';
-import EditScriptNameCommand from './commands/scripts/EditScriptNameCommand';
-import EditWorkbenchNameCommand from './commands/workbenches/EditWorkbenchNameCommand';
-import EditWorkbenchDescriptionCommand from './commands/workbenches/EditWorkbenchDescriptionCommand';
-import DeleteScriptCommand from './commands/scripts/DeleteScriptCommand';
-import CancelResponseCommand from './commands/responses/CancelResponseCommand';
 import Environments from './instances/Environments';
-import CreateEnvironmentCommand from './commands/environments/CreateEnvironmentCommand';
 import EnvironmentsTreeDataProvider from './views/trees/environments/EnvironmentsTreeDataProvider';
-import DeleteEnvironmentCommand from './commands/environments/DeleteEnvironmentCommand';
-import EditEnvironmentNameCommand from './commands/environments/EditEnvironmentNameCommand';
-import EditEnvironmentDescriptionCommand from './commands/environments/EditEnvironmentDescriptionCommand';
-import SelectEnvironmentCommand from './commands/environments/SelectEnvironmentCommand';
-import OpenEnvironmentCommand from './commands/environments/OpenEnvironmentCommand';
 import Commands from './instances/Commands';
+import WorkbenchResponse from './entities/responses/WorkbenchResponse';
 
 export const outputChannel = vscode.window.createOutputChannel("Integration Workbench", {
 	log: true
@@ -89,9 +59,15 @@ export function activate(context: vscode.ExtensionContext) {
 	}));
 
 	context.subscriptions.push(vscode.commands.registerCommand('norasoderlund.integrationworkbench.refreshResponses', (workbenchResponse: WorkbenchResponse) => {
+		console.log("Should refresh responses", { workbenchResponse });
+
 		const workbenchResponseTreeItem = workbenchesResponsesTreeDataProvider.workbenchResponses.find((workbenchTreeView) => workbenchTreeView.response.id === workbenchResponse.id);
 
+		console.log("found", { workbenchResponseTreeItem });
+
 		workbenchResponseTreeItem?.update();
+
+		console.log("refreshing");
 
 		workbenchesResponsesTreeDataProvider.refresh();
 

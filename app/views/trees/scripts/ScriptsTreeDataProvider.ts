@@ -1,6 +1,5 @@
 import { TreeDataProvider, TreeItem, Event, EventEmitter, ExtensionContext, commands, ProviderResult } from 'vscode';
 import ScriptTreeItem from './items/ScriptTreeItem';
-import { WorkbenchResponse } from '../../../entities/responses/WorkbenchResponse';
 import Scripts from '../../../instances/Scripts';
 
 

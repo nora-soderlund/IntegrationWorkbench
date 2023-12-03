@@ -374,12 +374,12 @@
         },
         {
           "command": "norasoderlund.integrationworkbench.cancelResponse",
-          "when": "view == requests && viewItem == response-loading",
+          "when": "view == requests && viewItem == response-started",
           "group": "inline"
         },
         {
           "command": "norasoderlund.integrationworkbench.deleteResponse",
-          "when": "view == requests && (viewItem == response-done || viewItem == response-failed)",
+          "when": "view == requests && (viewItem == response-fulfilled || viewItem == response-error)",
           "group": "inline"
         },
         {

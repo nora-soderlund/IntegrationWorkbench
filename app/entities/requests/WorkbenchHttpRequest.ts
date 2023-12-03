@@ -1,16 +1,14 @@
-import { ThemeIcon, Uri, commands } from "vscode";
+import { commands } from "vscode";
 import { WorkbenchHttpAuthorization, WorkbenchHttpRequestBodyData, WorkbenchHttpRequestData, WorkbenchHttpRequestHeaderData } from "~interfaces/workbenches/requests/WorkbenchHttpRequestData";
 import { Workbench } from "../workbenches/Workbench";
 import { WorkbenchCollection } from "../collections/WorkbenchCollection";
 import WorkbenchRequest from "./WorkbenchRequest";
-import path from "path";
-import { existsSync } from "fs";
-import WorkbenchHttpResponse from "../responses/WorkbenchHttpResponse";
 import { randomUUID } from "crypto";
 import Scripts from "../../instances/Scripts";
 import { UserInput } from "~interfaces/UserInput";
-import { WorkbenchHttpRequestPreviewHeadersData } from "~interfaces/workbenches/requests/WorkbenchHttpRequestPreviewHeadersData";
 import Environments from "../../instances/Environments";
+import { isHttpRequestApplicationJsonBodyData } from "~interfaces/workbenches/requests/utils/WorkbenchRequestDataTypeValidations";
+import WorkbenchResponse from "../responses/WorkbenchResponse";
 
 export default class WorkbenchHttpRequest extends WorkbenchRequest {
   constructor(
@@ -46,6 +44,64 @@ export default class WorkbenchHttpRequest extends WorkbenchRequest {
   
   static fromData(parent: Workbench | WorkbenchCollection | null, data: WorkbenchHttpRequestData) {
     return new WorkbenchHttpRequest(parent, data.id, data.name, data.data);
+  }
+
+  async getParsedAuthorization(abortController: AbortController) {
+    return new Promise<{ headers: Record<string, string> }>(async (resolve, reject) => {
+      const headers: Record<string, string> = {};
+
+      const abortListener = () => reject("Aborted.");
+      abortController.signal.addEventListener("abort", abortListener);
+
+      switch(this.data.authorization.type) {
+        case "basic": {
+          const username = await Scripts.evaluateUserInput(this.data.authorization.username);
+          const password = await Scripts.evaluateUserInput(this.data.authorization.password);
+          
+          headers["Authorization"] = `Basic ${btoa(`${username}:${password}`)}`;
+
+          break;
+        }
+
+        case "bearer": {
+          const token = await Scripts.evaluateUserInput(this.data.authorization.token);
+
+          headers["Authorization"] = `Bearer ${token}`;
+
+          break;
+        }
+      }
+
+      abortController.signal.removeEventListener("abort", abortListener);
+
+      resolve({ headers });
+    });
+  }
+
+  async getParsedBody(abortController: AbortController) {
+    return new Promise<{ headers: Record<string, string>, body: string | undefined }>(async (resolve, reject) => {
+      const headers: Record<string, string> = {};
+      let body: string | undefined;
+
+      const abortListener = () => reject("Aborted.");
+      abortController.signal.addEventListener("abort", abortListener);
+
+      if(isHttpRequestApplicationJsonBodyData(this.data.body)) {
+        headers["Content-Type"] = "application/json";
+
+        body = this.data.body.body;
+
+        for(let header of this.data.headers) {
+          const value = await Scripts.evaluateUserInput(header);
+
+          headers[header.key] = value;
+        }
+      }
+
+      abortController.signal.removeEventListener("abort", abortListener);
+
+      resolve({ headers, body });
+    });
   }
 
   async getParsedUrl(abortController: AbortController) {
@@ -103,26 +159,17 @@ export default class WorkbenchHttpRequest extends WorkbenchRequest {
   }
 
   async getParsedHeaders(abortController: AbortController) {
-    return new Promise<{
-      key: string;
-      value: string
-    }[]>(async (resolve, reject) => {
+    return new Promise<{ headers: Record<string, string> }>(async (resolve, reject) => {
       const abortListener = () => reject("Aborted.");
       abortController.signal.addEventListener("abort", abortListener);
 
-      const headers: {
-        key: string;
-        value: string
-      }[] = [];
+      const headers: Record<string, string> = {};
 
       for(let header of this.data.headers) {
         try {
           const value = await Scripts.evaluateUserInput(header);
 
-          headers.push({
-            key: header.key,
-            value
-          });
+          headers[header.key] = value;
         }
         catch(error) {
           reject(error);
@@ -131,12 +178,12 @@ export default class WorkbenchHttpRequest extends WorkbenchRequest {
 
       abortController.signal.removeEventListener("abort", abortListener);
 
-      resolve(headers);
+      resolve({ headers });
     });
   }
 
   send(): void {
-    commands.executeCommand("norasoderlund.integrationworkbench.addResponse", new WorkbenchHttpResponse(
+    commands.executeCommand("norasoderlund.integrationworkbench.addResponse", new WorkbenchResponse(
       randomUUID(),
       this.getData(),
       new Date()

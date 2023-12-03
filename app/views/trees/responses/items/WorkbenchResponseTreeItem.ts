@@ -1,12 +1,11 @@
 import { ThemeColor, ThemeIcon, TreeItem, TreeItemCollapsibleState } from "vscode";
 import path from "path";
 import { existsSync } from "fs";
-import { isHttpRequestData } from "../../../../../src/interfaces/workbenches/requests/utils/WorkbenchRequestDataTypeValidations";
-import WorkbenchHttpResponse from "../../../../entities/responses/WorkbenchHttpResponse";
+import WorkbenchResponse from "../../../../entities/responses/WorkbenchResponse";
 
 export default class WorkbenchResponseTreeItem extends TreeItem {
   constructor(
-    public readonly response: WorkbenchHttpResponse
+    public readonly response: WorkbenchResponse
   ) {
     super(response.request.name, TreeItemCollapsibleState.None);
 
@@ -22,7 +21,7 @@ export default class WorkbenchResponseTreeItem extends TreeItem {
   }
 
   update() {
-    this.contextValue = "response-" + this.response.status;
+    this.contextValue = "response-" + this.response.handler.state.status;
     this.description = this.getDescription();
     this.iconPath = this.getIconPath();
 
@@ -46,7 +45,7 @@ export default class WorkbenchResponseTreeItem extends TreeItem {
   }
 
   getIconPath() {
-    if(this.response.status === "done") {
+    if(this.response.handler.state.status === "fulfilled") {
       const iconPath = path.join(__filename, '..', '..', '..', '..', '..', '..', '..', 'resources', 'icons', 'methods', `${this.response.request.data.method}.png`);
 
       if (existsSync(iconPath)) {
@@ -56,7 +55,7 @@ export default class WorkbenchResponseTreeItem extends TreeItem {
       return path.join(__filename, '..', '..', '..', '..', '..', '..', '..', 'resources', 'icons', 'HTTP.png');
     }
 
-    if(this.response.status === "failed") {
+    if(this.response.handler.state.status === "error") {
       return new ThemeIcon("run-errors", new ThemeColor("terminalCommandDecoration.errorBackground"));
     }
     

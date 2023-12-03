@@ -2,10 +2,7 @@ export type WorkbenchHttpRequestPreviewHeadersData =
   | {
       success: true
       duration: number;
-      headers: {
-        key: string;
-        value: string;
-      }[];
+      headers: Record<string, string>;
     }
   | {
       success: false;

@@ -3,14 +3,14 @@ import { VSCodeButton, VSCodeDataGrid, VSCodeDataGridCell, VSCodeDataGridRow, VS
 import { WorkbenchHttpRequestApplicationJsonBodyData, WorkbenchHttpRequestNoneBodyData, WorkbenchHttpRequestRawBodyData } from "../../../../interfaces/workbenches/requests/WorkbenchHttpRequestData";
 import { HttpResponseProps } from "./HttpResponse";
 
-export default function HttpResponseHeaders({ responseData }: HttpResponseProps) {
-  if(!responseData.result) {
+export default function HttpResponseHeaders({ requestData, handlerState }: HttpResponseProps) {
+  if(handlerState.status !== "fulfilled") {
     return (
       <p>No response result available yet.</p>
     );
   }
 
-  const headers = Object.entries(responseData.result.headers);
+  const headers = Object.entries(handlerState.data.headers);
 
   return (
     <div style={{

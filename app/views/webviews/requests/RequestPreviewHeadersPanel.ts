@@ -52,7 +52,7 @@ export default class RequestPreviewHeadersPanel {
     try {
       console.log("get parsed headers");
 
-      const headers = await this.request.getParsedHeaders(new AbortController());
+      const { headers } = await this.request.getParsedHeaders(new AbortController());
       console.log("succeed");
 
       previewHeadersData = {

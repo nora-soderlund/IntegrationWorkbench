@@ -1,6 +1,5 @@
 import { TreeDataProvider, TreeItem, Event, EventEmitter, ExtensionContext, commands, ProviderResult } from 'vscode';
 import WorkbenchResponseTreeItem from './items/WorkbenchResponseTreeItem';
-import { WorkbenchResponse } from '../../../entities/responses/WorkbenchResponse';
 import WorkbenchResponsesBookmarkTreeItem from './items/WorkbenchResponsesBookmarkTreeItem';
 
 type WorkbenchResponseTreeItems = WorkbenchResponseTreeItem | WorkbenchResponsesBookmarkTreeItem;

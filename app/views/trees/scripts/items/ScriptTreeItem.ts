@@ -1,8 +1,6 @@
 import { ThemeColor, ThemeIcon, TreeItem, TreeItemCollapsibleState, Uri } from "vscode";
 import path from "path";
 import { existsSync } from "fs";
-import { isHttpRequestData } from "../../../../../src/interfaces/workbenches/requests/utils/WorkbenchRequestDataTypeValidations";
-import WorkbenchResponse from "../../../../entities/responses/WorkbenchHttpResponse";
 import Script from "../../../../entities/scripts/TypescriptScript";
 import ScriptsTreeDataProvider from "../ScriptsTreeDataProvider";
 

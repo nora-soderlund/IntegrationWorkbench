@@ -94,7 +94,7 @@ export default function HttpRequestHeaders({ requestData }: HttpRequestProps) {
                     </VSCodeDataGridCell>
                   </VSCodeDataGridRow>
 
-                  {previewHeaderData.headers.map(({ key, value }) => (
+                  {Object.entries(previewHeaderData.headers).map(([ key, value ]) => (
                     <VSCodeDataGridRow key={key} className="data-grid-buttons-hoverable">
                       <VSCodeDataGridCell gridColumn="1">
                         {key}
