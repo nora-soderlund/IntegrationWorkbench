@@ -31,7 +31,7 @@ export default function Response() {
   if(requestData && handlerState) {
     if(isHttpRequestData(requestData)) {
       return (
-        <HttpResponse requestData={requestData} handlerState={handlerState as HandlerState<HttpHandlerFulfilledState>}/>
+        <HttpResponse key={requestData.id} requestData={requestData} handlerState={handlerState as HandlerState<HttpHandlerFulfilledState>}/>
       );
     }
   }
