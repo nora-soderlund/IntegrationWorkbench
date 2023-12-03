@@ -1,6 +1,7 @@
 import { Editor, useMonaco } from "@monaco-editor/react";
 import React, { useEffect, useState } from "react";
 import { ScriptDeclarationData } from "../../../interfaces/scripts/ScriptDeclarationData";
+import useMonacoUserTheme from "../../hooks/useMonacoUserTheme";
 
 export type ScriptInputProps = {
   value: string;
@@ -9,6 +10,7 @@ export type ScriptInputProps = {
 
 export default function ScriptInput({ value, onChange }: ScriptInputProps) {
   const monaco = useMonaco();
+  const { theme } = useMonacoUserTheme();
 
   const [ scriptDeclarations, setScriptDeclarations ] = useState<ScriptDeclarationData[] | null>(null);
 
@@ -71,7 +73,7 @@ export default function ScriptInput({ value, onChange }: ScriptInputProps) {
       boxSizing: "border-box",
       height: "5em"
     }}>
-      <Editor language="typescript" value={value} theme="vs-dark" options={{
+      <Editor language="typescript" value={value} theme={theme} options={{
         scrollBeyondLastLine: false,
         lineNumbers: "off",
         glyphMargin: false,

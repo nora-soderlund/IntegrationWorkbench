@@ -4,19 +4,22 @@ import { VSCodeButton, VSCodeDropdown, VSCodeOption, VSCodeRadio, VSCodeRadioGro
 import HttpRequestBodySwitch from "./HttpRequestBodySwitch";
 import { WorkbenchHttpRequestRawBodyData } from "../../../../../interfaces/workbenches/requests/WorkbenchHttpRequestData";
 import { Editor } from "@monaco-editor/react";
+import useMonacoUserTheme from "../../../../hooks/useMonacoUserTheme";
 
 type HttpRequestRawBodyProps = HttpRequestProps & {
   requestBodyData: WorkbenchHttpRequestRawBodyData;
 };
 
-export default function HttpRequestRawBody({ requestData, requestBodyData }: HttpRequestRawBodyProps) {
+export default function HttpRequestRawBody({ requestData, requestBodyData }: HttpRequestRawBodyProps) { 
+  const { theme } = useMonacoUserTheme();
+
   return (
     <div style={{
       height: "100%",
       border: "1px solid var(--vscode-editorWidget-border)",
       boxSizing: "border-box"
     }}>
-      <Editor value={requestBodyData.body} theme="vs-dark" options={{
+      <Editor value={requestBodyData.body} theme={theme} options={{
         scrollBeyondLastLine: false,
         minimap: {
           enabled: false

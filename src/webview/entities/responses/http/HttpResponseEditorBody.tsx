@@ -2,6 +2,7 @@ import React, { Component, ReactElement, useRef } from "react";
 import { HttpResponseProps } from "./HttpResponse";
 import { VSCodeButton, VSCodeDropdown, VSCodeOption, VSCodeRadio, VSCodeRadioGroup, VSCodeTextField } from '@vscode/webview-ui-toolkit/react';
 import { Editor } from "@monaco-editor/react";
+import useMonacoUserTheme from "../../../hooks/useMonacoUserTheme";
 
 type HttpResponseEditorBodyProps = {
   body: string;
@@ -13,6 +14,8 @@ type HttpResponseEditorBodyProps = {
 };
 
 export default function HttpResponseEditorBody({ body, language, infoboxes }: HttpResponseEditorBodyProps) {
+  const { theme } = useMonacoUserTheme();
+
   return (
     <div style={{
       height: "100%",
@@ -32,7 +35,7 @@ export default function HttpResponseEditorBody({ body, language, infoboxes }: Ht
         flex: 1,
         height: "100%"
       }}>
-        <Editor value={body} language={language} theme="vs-dark" options={{
+        <Editor value={body} language={language} theme={theme} options={{
           scrollBeyondLastLine: false,
           minimap: {
             enabled: false
