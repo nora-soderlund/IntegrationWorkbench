@@ -26,6 +26,7 @@ import EditEnvironmentDescriptionCommand from '../commands/environments/EditEnvi
 import SelectEnvironmentCommand from '../commands/environments/SelectEnvironmentCommand';
 import OpenEnvironmentCommand from '../commands/environments/OpenEnvironmentCommand';
 import { ExtensionContext } from 'vscode';
+import DuplicateRequestCommand from '../commands/requests/DuplicateRequestCommand';
 
 export default class Commands {
   public static register(context: ExtensionContext) {
@@ -39,6 +40,7 @@ export default class Commands {
     new OpenRequestCommand(context);
     new EditRequestNameCommand(context);
     new RunRequestCommand(context);
+    new DuplicateRequestCommand(context);
     new DeleteRequestCommand(context);
 
     new OpenResponseCommand(context);

@@ -133,6 +133,12 @@
         "icon": "$(pencil)"
       },
       {
+        "command": "norasoderlund.integrationworkbench.duplicateRequest",
+        "title": "Duplicate request",
+        "shortTitle": "Duplicate",
+        "icon": "$(files)"
+      },
+      {
         "command": "norasoderlund.integrationworkbench.deleteRequest",
         "title": "Delete request",
         "shortTitle": "Delete",
@@ -368,9 +374,14 @@
           "group": "request@2"
         },
         {
-          "command": "norasoderlund.integrationworkbench.deleteRequest",
+          "command": "norasoderlund.integrationworkbench.duplicateRequest",
           "when": "view == workbenches && (viewItem == request)",
           "group": "request@3"
+        },
+        {
+          "command": "norasoderlund.integrationworkbench.deleteRequest",
+          "when": "view == workbenches && (viewItem == request)",
+          "group": "request@4"
         },
         {
           "command": "norasoderlund.integrationworkbench.cancelResponse",
