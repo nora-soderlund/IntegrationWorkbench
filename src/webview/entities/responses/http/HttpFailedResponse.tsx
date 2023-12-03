@@ -10,7 +10,7 @@ import { HandlerErrorState } from "../../../../interfaces/entities/handlers/Hand
 export type HttpFailedResponseProps = {
   requestData: WorkbenchHttpRequestData;
   handlerState: HandlerErrorState;
-}
+};
 
 export default function HttpFailedResponse({ requestData, handlerState }: HttpFailedResponseProps) {
   return (
