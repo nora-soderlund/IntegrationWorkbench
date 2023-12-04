@@ -1,23 +1,31 @@
 import { commands } from "vscode";
 import { WorkbenchHttpAuthorization, WorkbenchHttpRequestBodyData, WorkbenchHttpRequestData, WorkbenchHttpRequestHeaderData } from "~interfaces/workbenches/requests/WorkbenchHttpRequestData";
-import { Workbench } from "../workbenches/Workbench";
-import { WorkbenchCollection } from "../collections/WorkbenchCollection";
-import WorkbenchRequest from "./WorkbenchRequest";
+import { Workbench } from "../../workbenches/Workbench";
+import { WorkbenchCollection } from "../../collections/WorkbenchCollection";
+import WorkbenchRequest from "../WorkbenchRequest";
 import { randomUUID } from "crypto";
-import Scripts from "../../instances/Scripts";
+import Scripts from "../../../instances/Scripts";
 import { UserInput } from "~interfaces/UserInput";
-import Environments from "../../instances/Environments";
+import Environments from "../../../instances/Environments";
 import { isHttpRequestApplicationJsonBodyData } from "~interfaces/workbenches/requests/utils/WorkbenchRequestDataTypeValidations";
-import WorkbenchResponse from "../responses/WorkbenchResponse";
+import WorkbenchResponse from "../../responses/WorkbenchResponse";
+import RequestWebview from "../RequestWebview";
+import WorkbenchHttpResponse from "../../responses/http/WorkbenchHttpResponse";
 
-export default class WorkbenchHttpRequest extends WorkbenchRequest {
+export default class WorkbenchHttpRequest implements WorkbenchRequest {
+  public readonly id: string;
+  public name: string;
+  public data: WorkbenchHttpRequestData["data"];
+  public webview: RequestWebview;
+
   constructor(
-    parent: Workbench | WorkbenchCollection | null,
-    id: string,
-    name: string,
-    public data: WorkbenchHttpRequestData["data"]
+    public readonly parent: Workbench | WorkbenchCollection | null,
+    data: WorkbenchHttpRequestData
   ) {
-    super(parent, id, name);
+    this.id = data.id;
+    this.name = data.name;
+    this.data = data.data;
+    this.webview = new RequestWebview(this);
   }
 
   getData(): WorkbenchHttpRequestData {
@@ -40,10 +48,6 @@ export default class WorkbenchHttpRequest extends WorkbenchRequest {
         }
       }
     };
-  }
-  
-  static fromData(parent: Workbench | WorkbenchCollection | null, data: WorkbenchHttpRequestData) {
-    return new WorkbenchHttpRequest(parent, data.id, data.name, data.data);
   }
 
   async getParsedAuthorization(abortController: AbortController) {
@@ -183,17 +187,27 @@ export default class WorkbenchHttpRequest extends WorkbenchRequest {
   }
 
   send(): void {
-    commands.executeCommand("norasoderlund.integrationworkbench.addResponse", new WorkbenchResponse(
+    commands.executeCommand("norasoderlund.integrationworkbench.addResponse", new WorkbenchHttpResponse(
       randomUUID(),
       this.getData(),
       new Date()
     ));
   }
+
+  setName(name: string) {
+    this.name = name;
+    
+    if(this.webview.requestWebviewPanel) {
+      this.webview.requestWebviewPanel.webviewPanel.title = name;
+    }
+    
+    this.parent?.save();
+  }
   
   setMethod(method: string) {
     this.data.method = method;
 
-    this.treeDataViewItem?.setIconPath();
+    this.webview.treeDataViewItem?.setIconPath();
 
     commands.executeCommand("norasoderlund.integrationworkbench.refreshWorkbenches");
 

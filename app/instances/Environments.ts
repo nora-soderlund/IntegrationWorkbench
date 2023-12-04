@@ -61,7 +61,7 @@ export default class Environments {
     this.selectedEnvironment = environment;
 
     getAllRequestsWithWebviews().forEach((request) => {
-      request.requestWebviewPanel?.updateScriptDeclarations();
+      request.webview.requestWebviewPanel?.updateScriptDeclarations();
     });
   }
 

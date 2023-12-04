@@ -3,7 +3,7 @@ import { getWebviewUri } from "../../utils/GetWebviewUri";
 import { readFileSync } from "fs";
 import path from "path";
 import WorkbenchRequest from "../../entities/requests/WorkbenchRequest";
-import WorkbenchHttpRequest from "../../entities/requests/WorkbenchHttpRequest";
+import WorkbenchHttpRequest from "../../entities/requests/http/WorkbenchHttpRequest";
 import Scripts from "../../instances/Scripts";
 import Script from "../../entities/scripts/TypescriptScript";
 import RequestPreviewUrlPanel from "./requests/RequestPreviewUrlPanel";
@@ -293,6 +293,6 @@ export class RequestWebviewPanel {
       }
     }
 
-    this.request.deleteWebviewPanel();
+    this.request.webview.deleteWebviewPanel();
   }
 }

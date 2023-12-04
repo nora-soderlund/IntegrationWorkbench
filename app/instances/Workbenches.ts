@@ -4,6 +4,10 @@ import { existsSync, readFileSync, readdirSync } from "fs";
 import path from "path";
 import getRootPath from "../utils/GetRootPath";
 import WorkbenchRequest from "../entities/requests/WorkbenchRequest";
+import { WorkbenchRequestData } from "~interfaces/workbenches/requests/WorkbenchRequestData";
+import WorkbenchHttpRequest from "../entities/requests/http/WorkbenchHttpRequest";
+import { WorkbenchCollection } from "../entities/collections/WorkbenchCollection";
+import WorkbenchEventBridgeRequest from "../entities/requests/aws/WorkbenchEventBridgeRequest";
 
 export const workbenches: Workbench[] = [];
 
@@ -14,7 +18,7 @@ export function getAllRequestsWithWebviews() {
     const requests = workbench.collections.flatMap((collection) => collection.requests).concat(workbench.requests);
 
     requests.forEach((request) => {
-      if(request.requestWebviewPanel) {
+      if(request.webview.requestWebviewPanel) {
         requestsWithWebviews.push(request);
       }
     });
@@ -52,3 +56,16 @@ export function scanForWorkbenches(context: ExtensionContext, refresh: boolean =
 
   return workbenches;
 };
+
+export function createRequestFromData(parent: Workbench | WorkbenchCollection | null, data: WorkbenchRequestData) {
+  switch(data.type) {
+    case "HTTP":
+      return new WorkbenchHttpRequest(parent, data);
+
+    case "EventBridge":
+      return new WorkbenchEventBridgeRequest(parent, data);
+
+    default:
+      throw new Error("Unknown request type");
+  }
+}

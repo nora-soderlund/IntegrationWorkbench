@@ -1,8 +1,9 @@
 import { commands } from "vscode";
-import WorkbenchHttpRequest from "../../requests/WorkbenchHttpRequest";
+import WorkbenchHttpRequest from "../../requests/http/WorkbenchHttpRequest";
 import Handler, { HandlerState } from "~interfaces/entities/handlers/Handler";
 import { HttpHandlerFulfilledState } from "../../../../src/interfaces/entities/handlers/http/HttpHandlerFulfilledState";
 import WorkbenchResponse from "../../responses/WorkbenchResponse";
+import WorkbenchHttpResponse from "../../responses/http/WorkbenchHttpResponse";
 
 export default class HttpFetchHandler implements Handler<HttpHandlerFulfilledState> {
   public state: HandlerState<HttpHandlerFulfilledState> = {
@@ -10,7 +11,7 @@ export default class HttpFetchHandler implements Handler<HttpHandlerFulfilledSta
   };
   
   constructor(
-    private readonly response: WorkbenchResponse
+    private readonly response: WorkbenchHttpResponse
   ) {
 
   }

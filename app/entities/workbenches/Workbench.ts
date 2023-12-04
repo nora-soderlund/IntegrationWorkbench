@@ -4,6 +4,7 @@ import path from "path";
 import { WorkbenchData } from "../../../src/interfaces/workbenches/WorkbenchData";
 import { WorkbenchCollection } from "../collections/WorkbenchCollection";
 import WorkbenchRequest from "../requests/WorkbenchRequest";
+import { createRequestFromData } from "../../instances/Workbenches";
 
 export class Workbench {
   id: string;
@@ -17,7 +18,7 @@ export class Workbench {
     this.name = data.name;
     this.description = data.description;
 
-    this.requests = data.requests.map((request) => WorkbenchRequest.fromData(this, request));
+    this.requests = data.requests.map((request) => createRequestFromData(this, request));
     this.collections = data.collections.map((collection) => new WorkbenchCollection(this, collection.id, collection.name, collection.description, collection.requests));
   };
 
@@ -83,7 +84,7 @@ export class Workbench {
     const index = this.requests.indexOf(workbenchRequest);
 
     if (index !== -1) {
-      workbenchRequest.disposeWebviewPanel();
+      workbenchRequest.webview.disposeWebviewPanel();
 
       this.requests.splice(index, 1);
       this.save();

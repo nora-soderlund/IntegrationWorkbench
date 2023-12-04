@@ -2,10 +2,11 @@ import { ExtensionContext, commands, window } from "vscode";
 import WorkbenchCollectionTreeItem from "../../views/trees/workbenches/items/WorkbenchCollectionTreeItem";
 import { randomUUID } from "crypto";
 import WorkbenchRequest from "../../entities/requests/WorkbenchRequest";
-import WorkbenchHttpRequest from "../../entities/requests/WorkbenchHttpRequest";
+import WorkbenchHttpRequest from "../../entities/requests/http/WorkbenchHttpRequest";
 import WorkbenchTreeItem from "../../views/trees/workbenches/items/WorkbenchTreeItem";
 import { Workbench } from "../../entities/workbenches/Workbench";
 import { WorkbenchCollection } from "../../entities/collections/WorkbenchCollection";
+import WorkbenchEventBridgeRequest from "../../entities/requests/aws/WorkbenchEventBridgeRequest";
 
 export default class CreateRequestCommand {
   constructor(private readonly context: ExtensionContext) {
@@ -15,6 +16,15 @@ export default class CreateRequestCommand {
   }
   
   async handle(reference: unknown) {
+    const requestType = await window.showQuickPick([ "HTTP request", "AWS EventBridge event", "AWS SNS Topic message" ], {
+      canPickMany: false,
+      title: "Select type of request to create:"
+    });
+
+    if(!requestType) {
+      return;
+    }
+
     window.showInputBox({
       prompt: "Enter the request name",
       validateInput(value) {
@@ -39,22 +49,54 @@ export default class CreateRequestCommand {
       }
 
       if(workbenchItem) {
-        workbenchItem.requests.push(
-          new WorkbenchHttpRequest(workbenchItem, randomUUID(), value, {
-            method: "GET",
-            url: "https://api.integrationbench.com/",
-            parameters: [],
-            parametersAutoRefresh: false,
-            authorization: {
-              type: "none"
-            },
-            headers: [],
-            headersAutoRefresh: false,
-            body: {
-              type: "none"
-            }
-          })
-        );
+        switch(requestType) {
+          case "HTTP request": {
+            workbenchItem.requests.push(
+              new WorkbenchHttpRequest(workbenchItem, {
+                id: randomUUID(),
+                name: value,
+                type: "HTTP",
+                data: {
+                  method: "GET",
+                  url: "https://api.integrationbench.com/",
+                  parameters: [],
+                  parametersAutoRefresh: false,
+                  authorization: {
+                    type: "none"
+                  },
+                  headers: [],
+                  headersAutoRefresh: false,
+                  body: {
+                    type: "none"
+                  }
+                }
+              })
+            );
+
+            break;
+          }
+
+          case "AWS EventBridge event": {
+            workbenchItem.requests.push(
+              new WorkbenchEventBridgeRequest(workbenchItem, {
+                id: randomUUID(),
+                name: value,
+                type: "EventBridge",
+                data: {
+                  eventBridgeArn: "",
+                  parameters: [],
+                  parametersAutoRefresh: false
+                }
+              })
+            );
+
+            break;
+          }
+
+          default: {
+            throw new Error("Unknown request type selected.");
+          }
+        }
 
         workbenchItem.save();
 

@@ -5,7 +5,8 @@ import path from "path";
 import { existsSync } from "fs";
 import WorkbenchRequest from "../../../../entities/requests/WorkbenchRequest";
 import { WorkbenchCollection } from "../../../../entities/collections/WorkbenchCollection";
-import WorkbenchHttpRequest from "../../../../entities/requests/WorkbenchHttpRequest";
+import WorkbenchHttpRequest from "../../../../entities/requests/http/WorkbenchHttpRequest";
+import WorkbenchEventBridgeRequest from "../../../../entities/requests/aws/WorkbenchEventBridgeRequest";
 
 export default class WorkbenchRequestTreeItem extends TreeItem implements WorkbenchTreeItem {
   constructor(
@@ -29,15 +30,16 @@ export default class WorkbenchRequestTreeItem extends TreeItem implements Workbe
 
   getIconPath() {
     if (this.request instanceof WorkbenchHttpRequest) {
-      if (this.request.data.method) {
-        const iconPath = path.join(__filename, '..', '..', '..', '..', '..', '..', '..', 'resources', 'icons', 'methods', `${this.request.data.method}.png`);
+      const iconPath = path.join(__filename, '..', '..', '..', '..', '..', '..', '..', 'resources', 'icons', 'methods', `${this.request.data.method}.png`);
 
-        if (existsSync(iconPath)) {
-          return Uri.file(iconPath);
-        }
-
-        return Uri.file(path.join(__filename, '..', '..', '..', '..', '..', '..', '..', 'resources', 'icons', 'HTTP.png'));
+      if (existsSync(iconPath)) {
+        return Uri.file(iconPath);
       }
+
+      return Uri.file(path.join(__filename, '..', '..', '..', '..', '..', '..', '..', 'resources', 'icons', 'HTTP.png'));
+    }
+    else if (this.request instanceof WorkbenchEventBridgeRequest) {
+      return Uri.file(path.join(__filename, '..', '..', '..', '..', '..', '..', '..', 'resources', 'icons', 'aws', 'EventBridge.svg'));
     }
 
     return new ThemeIcon("search-show-context");
@@ -47,7 +49,7 @@ export default class WorkbenchRequestTreeItem extends TreeItem implements Workbe
     this.iconPath = this.getIconPath();
 
     if(this.iconPath instanceof Uri) {
-      this.request.setWebviewPanelIcon(this.iconPath);
+      this.request.webview.setWebviewPanelIcon(this.iconPath);
     }
   }
 }

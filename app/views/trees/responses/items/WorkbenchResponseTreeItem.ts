@@ -2,6 +2,7 @@ import { ThemeColor, ThemeIcon, TreeItem, TreeItemCollapsibleState } from "vscod
 import path from "path";
 import { existsSync } from "fs";
 import WorkbenchResponse from "../../../../entities/responses/WorkbenchResponse";
+import WorkbenchHttpResponse from "../../../../entities/responses/http/WorkbenchHttpResponse";
 
 export default class WorkbenchResponseTreeItem extends TreeItem {
   constructor(
@@ -46,13 +47,17 @@ export default class WorkbenchResponseTreeItem extends TreeItem {
 
   getIconPath() {
     if(this.response.handler.state.status === "fulfilled") {
-      const iconPath = path.join(__filename, '..', '..', '..', '..', '..', '..', '..', 'resources', 'icons', 'methods', `${this.response.request.data.method}.png`);
+      if(this.response instanceof WorkbenchHttpResponse) {
+        const iconPath = path.join(__filename, '..', '..', '..', '..', '..', '..', '..', 'resources', 'icons', 'methods', `${this.response.request.data.method}.png`);
 
-      if (existsSync(iconPath)) {
-        return iconPath;
+        if (existsSync(iconPath)) {
+          return iconPath;
+        }
+  
+        return path.join(__filename, '..', '..', '..', '..', '..', '..', '..', 'resources', 'icons', 'HTTP.png');
       }
 
-      return path.join(__filename, '..', '..', '..', '..', '..', '..', '..', 'resources', 'icons', 'HTTP.png');
+      return new ThemeIcon("search-show-context");
     }
 
     if(this.response.handler.state.status === "error") {

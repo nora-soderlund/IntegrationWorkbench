@@ -1,7 +1,12 @@
 import { WorkbenchHttpAuthorization, WorkbenchHttpBasicAuthorization, WorkbenchHttpNoneAuthorization, WorkbenchHttpRequestApplicationJsonBodyData, WorkbenchHttpRequestBodyData, WorkbenchHttpRequestData, WorkbenchHttpRequestNoneBodyData, WorkbenchHttpRequestRawBodyData } from "../WorkbenchHttpRequestData";
+import { WorkbenchEventBridgeRequestData } from "../aws/WorkbenchEventBridgeRequestData";
 
 export function isHttpRequestData(requestData: Record<string, unknown>): requestData is WorkbenchHttpRequestData {
   return requestData.type === "HTTP";
+}
+
+export function isEventBridgeRequestData(requestData: Record<string, unknown>): requestData is WorkbenchEventBridgeRequestData {
+  return requestData.type === "EventBridge";
 }
 
 export function isHttpRequestNoneBodyData(bodyData: WorkbenchHttpRequestBodyData): bodyData is WorkbenchHttpRequestNoneBodyData {

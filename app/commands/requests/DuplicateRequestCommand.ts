@@ -3,7 +3,8 @@ import WorkbenchTreeItem from "../../views/trees/workbenches/items/WorkbenchTree
 import { randomUUID } from "crypto";
 import WorkbenchRequestTreeItem from "../../views/trees/workbenches/items/WorkbenchRequestTreeItem";
 import WorkbenchRequest from "../../entities/requests/WorkbenchRequest";
-import WorkbenchHttpRequest from "../../entities/requests/WorkbenchHttpRequest";
+import WorkbenchHttpRequest from "../../entities/requests/http/WorkbenchHttpRequest";
+import WorkbenchEventBridgeRequest from "../../entities/requests/aws/WorkbenchEventBridgeRequest";
 
 export default class DuplicateRequestCommand {
   constructor(private readonly context: ExtensionContext) {
@@ -41,9 +42,26 @@ export default class DuplicateRequestCommand {
         return;
       }
 
-      request.parent.requests.push(
-        new WorkbenchHttpRequest(request.parent, randomUUID(), value, request.getData().data)
-      );
+      if(request instanceof WorkbenchHttpRequest) {
+        request.parent.requests.push(
+          new WorkbenchHttpRequest(request.parent, {
+            id: randomUUID(),
+            name: value,
+            type: "HTTP",
+            data: request.getData().data
+          })
+        );
+      }
+      else if(request instanceof WorkbenchEventBridgeRequest) {
+        request.parent.requests.push(
+          new WorkbenchEventBridgeRequest(request.parent, {
+            id: randomUUID(),
+            name: value,
+            type: "EventBridge",
+            data: request.getData().data
+          })
+        );
+      }
 
       request.parent.save();
 

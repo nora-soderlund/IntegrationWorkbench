@@ -3,6 +3,7 @@ import { WorkbenchCollectionData } from "~interfaces/workbenches/collections/Wor
 import { WorkbenchRequestData } from "~interfaces/workbenches/requests/WorkbenchRequestData";
 import { Workbench } from "../workbenches/Workbench";
 import WorkbenchRequest from "../requests/WorkbenchRequest";
+import { createRequestFromData } from "../../instances/Workbenches";
 
 export class WorkbenchCollection {
   parent: Workbench;
@@ -22,7 +23,7 @@ export class WorkbenchCollection {
     this.id = id;
     this.name = name;
     this.description = description;
-    this.requests = requests.map((request) => WorkbenchRequest.fromData(this, request));
+    this.requests = requests.map((request) => createRequestFromData(this, request));
   }
 
   getData(): WorkbenchCollectionData {
@@ -42,7 +43,7 @@ export class WorkbenchCollection {
     const index = this.requests.indexOf(workbenchRequest);
 
     if(index !== -1) {
-      workbenchRequest.disposeWebviewPanel();
+      workbenchRequest.webview.disposeWebviewPanel();
       
       this.requests.splice(index, 1);
       this.save();

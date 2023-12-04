@@ -29,7 +29,7 @@ export default class WorkbenchTreeDataProvider implements TreeDataProvider<Workb
           element.collection.requests.map((request) => {
             const requestTreeItem = new WorkbenchRequestTreeItem(element.workbench, request, element.collection);
 
-            request.treeDataViewItem = requestTreeItem;
+            request.webview.treeDataViewItem = requestTreeItem;
           
             return requestTreeItem;
           })
@@ -43,7 +43,7 @@ export default class WorkbenchTreeDataProvider implements TreeDataProvider<Workb
           ...element.workbench.requests.map((request) => {
             const requestTreeItem = new WorkbenchRequestTreeItem(element.workbench, request, element.workbench);
 
-            request.treeDataViewItem = requestTreeItem;
+            request.webview.treeDataViewItem = requestTreeItem;
           
             return requestTreeItem;
           })

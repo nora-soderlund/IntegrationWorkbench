@@ -16,6 +16,6 @@ export default class OpenRequestCommand {
     request: WorkbenchRequest,
     collection?: WorkbenchCollection
   ) {
-    request.showWebviewPanel(this.context);
+    request.webview.showWebviewPanel(this.context);
   };
 }
