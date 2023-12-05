@@ -1,14 +1,15 @@
 import { Editor, useMonaco } from "@monaco-editor/react";
-import React, { useEffect, useState } from "react";
+import React, { CSSProperties, useEffect, useState } from "react";
 import { ScriptDeclarationData } from "../../../interfaces/scripts/ScriptDeclarationData";
 import useMonacoUserTheme from "../../hooks/useMonacoUserTheme";
 
 export type ScriptInputProps = {
   value: string;
   onChange: (value: string) => void;
+  style?: CSSProperties;
 };
 
-export default function ScriptInput({ value, onChange }: ScriptInputProps) {
+export default function ScriptInput({ value, onChange, style }: ScriptInputProps) {
   const monaco = useMonaco();
   const { theme } = useMonacoUserTheme();
 
@@ -71,7 +72,8 @@ export default function ScriptInput({ value, onChange }: ScriptInputProps) {
     <div style={{
       border: "1px solid var(--vscode-editorWidget-border)",
       boxSizing: "border-box",
-      height: "5em"
+      height: "100%",
+      ...style
     }}>
       <Editor language="typescript" value={value} theme={theme} options={{
         scrollBeyondLastLine: false,

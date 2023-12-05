@@ -27,6 +27,23 @@ export default class WorkbenchEventBridgeRequest implements WorkbenchRequest {
       type: "EventBridge",
       data: {
         eventBridgeArn: this.data.eventBridgeArn,
+        body: {
+          ...this.data.body
+        },
+        eventSource: {
+          ...this.data.eventSource
+        },
+        detailType: {
+          ...this.data.detailType
+        },
+        time: {
+          ...this.data.time
+        },
+        resources: this.data.resources.map((resource) => {
+          return {
+            ...resource
+          }
+        }),
         parameters: this.data.parameters,
         parametersAutoRefresh: this.data.parametersAutoRefresh
       }

@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
-import { isHttpRequestData } from "../../../interfaces/workbenches/requests/utils/WorkbenchRequestDataTypeValidations";
+import { isEventBridgeRequestData, isHttpRequestData } from "../../../interfaces/workbenches/requests/utils/WorkbenchRequestDataTypeValidations";
 import { WorkbenchRequestData } from "../../../interfaces/workbenches/requests/WorkbenchRequestData";
 import HttpRequest from "./http/HttpRequest";
+import EventBridgeRequest from "./aws/EventBridgeRequest";
 
 export default function Request() {
   const [ requestData, setRequestData ] = useState<WorkbenchRequestData | null>(null);
@@ -31,6 +32,11 @@ export default function Request() {
     if(isHttpRequestData(requestData)) {
       return (
         <HttpRequest requestData={requestData}/>
+      );
+    }
+    else if(isEventBridgeRequestData(requestData)) {
+      return (
+        <EventBridgeRequest requestData={requestData}/>
       );
     }
   }

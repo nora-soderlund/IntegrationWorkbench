@@ -10,6 +10,7 @@ import RequestPreviewUrlPanel from "./requests/RequestPreviewUrlPanel";
 import { outputChannel } from "../../extension";
 import RequestPreviewHeadersPanel from "./requests/RequestPreviewHeadersPanel";
 import Environments from "../../instances/Environments";
+import WorkbenchEventBridgeRequest from "../../entities/requests/aws/WorkbenchEventBridgeRequest";
 
 export class RequestWebviewPanel {
   public readonly webviewPanel: WebviewPanel;
@@ -206,6 +207,26 @@ export class RequestWebviewPanel {
               const [ enabled ] = message.arguments;
 
               this.request.data.headersAutoRefresh = enabled;
+
+              this.request.parent?.save();
+
+              this.updateRequest();
+            }
+
+            return;
+          }
+
+          case "norasoderlund.integrationworkbench.changeEventBridgeBody": {
+            if(this.request instanceof WorkbenchEventBridgeRequest) {
+              const [ body ] = message.arguments;
+
+              console.log("update", { body });
+
+              this.request.data.body = body;
+
+              console.log("new", { data: this.request.data });
+
+              console.log("parent", { parent: this.request.parent });
 
               this.request.parent?.save();
 

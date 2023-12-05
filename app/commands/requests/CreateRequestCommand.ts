@@ -84,6 +84,27 @@ export default class CreateRequestCommand {
                 type: "EventBridge",
                 data: {
                   eventBridgeArn: "",
+                  body: {
+                    type: "raw",
+                    key: "body",
+                    value: ""
+                  },
+                  eventSource: {
+                    type: "raw",
+                    key: "eventSource",
+                    value: ""
+                  },
+                  detailType: {
+                    type: "raw",
+                    key: "detailType",
+                    value: ""
+                  },
+                  time: {
+                    date: "",
+                    time: "",
+                    timezone: "local"
+                  },
+                  resources: [],
                   parameters: [],
                   parametersAutoRefresh: false
                 }

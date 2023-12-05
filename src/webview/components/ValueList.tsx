@@ -3,7 +3,7 @@ import Input from "./inputs/Input";
 import { UserInput } from "../../interfaces/UserInput";
 import { UserInputType } from "../../interfaces/UserInputType";
 
-export type KeyValueTableProps = {
+export type ValueListProps = {
   items: UserInput[];
 
   onAdd: () => void;
@@ -11,21 +11,17 @@ export type KeyValueTableProps = {
   onDelete: (item: UserInput) => void;
 };
 
-export default function KeyValueTable({ items, onAdd, onChange, onDelete }: KeyValueTableProps) {
+export default function ValueList({ items, onAdd, onChange, onDelete }: ValueListProps) {
   return (
     <VSCodeDataGrid className="data-grid-unfocusable data-grid-unhoverable">
       <VSCodeDataGridRow rowType="header" className="data-grid-variables-row" style={{
         alignItems: "center"
       }}>
         <VSCodeDataGridCell cellType="columnheader" gridColumn="1">
-          Key
-        </VSCodeDataGridCell>
-
-        <VSCodeDataGridCell cellType="columnheader" gridColumn="2">
           Value
         </VSCodeDataGridCell>
 
-        <VSCodeDataGridCell cellType="columnheader" gridColumn="3">
+        <VSCodeDataGridCell cellType="columnheader" gridColumn="2">
           <VSCodeButton appearance="icon" aria-label="Add" onClick={() => onAdd()}>
             <span className="codicon codicon-add"/>
           </VSCodeButton>
@@ -35,14 +31,6 @@ export default function KeyValueTable({ items, onAdd, onChange, onDelete }: KeyV
       {items.map((item, index) => (
         <VSCodeDataGridRow key={index} className="data-grid-buttons-hoverable data-grid-variables-row">
           <VSCodeDataGridCell gridColumn="1">
-            <VSCodeTextField type="text" placeholder="Enter a header..." value={item.key} onChange={(event) => {
-              item.key = (event.target as HTMLInputElement).value;
-
-              onChange(item);
-            }}/>
-          </VSCodeDataGridCell>
-
-          <VSCodeDataGridCell gridColumn="2">
             <Input type={item.type} value={item.value} onChange={(value) => {
               item.value = value;
               
@@ -57,7 +45,7 @@ export default function KeyValueTable({ items, onAdd, onChange, onDelete }: KeyV
             }}/>
           </VSCodeDataGridCell>
 
-          <VSCodeDataGridCell gridColumn="3">
+          <VSCodeDataGridCell gridColumn="2">
             <VSCodeButton appearance="icon" aria-label="Delete" onClick={() => onDelete(item)}>
               <span className="codicon codicon-trashcan"/>
             </VSCodeButton>
