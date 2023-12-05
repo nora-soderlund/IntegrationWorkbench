@@ -30,10 +30,8 @@ export default function ValueList({ items, onAdd, onChange, onDelete }: ValueLis
 
       {items.map((item, index) => (
         <VSCodeDataGridRow key={index} className="data-grid-buttons-hoverable data-grid-variables-row">
-          <VSCodeDataGridCell gridColumn="1" style={{
-            height: "8em"
-          }}>
-            <Input type={item.type} value={item.value} onChange={(value) => {
+          <VSCodeDataGridCell gridColumn="1">
+            <Input maxHeight="8em" type={item.type} value={item.value} onChange={(value) => {
               item.value = value;
               
               onChange(item);

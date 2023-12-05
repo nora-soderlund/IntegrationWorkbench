@@ -12,9 +12,11 @@ export type InputProps = {
 
   onChange: (value: string) => void;
   onChangeType: (type: "raw" | "typescript") => void;
+
+  maxHeight?: string;
 };
 
-export default function Input({ rawType = "raw", type, value, onChange, onChangeType, secret }: InputProps) {
+export default function Input({ rawType = "raw", type, value, onChange, onChangeType, secret, maxHeight = "100%" }: InputProps) {
   const { theme } = useMonacoUserTheme();
 
   return (
@@ -38,7 +40,8 @@ export default function Input({ rawType = "raw", type, value, onChange, onChange
           <div style={{
             border: "1px solid var(--vscode-editorWidget-border)",
             boxSizing: "border-box",
-            flex: 1
+            flex: 1,
+            height: maxHeight
           }}>
             <Editor value={value} theme={theme} options={{
               scrollBeyondLastLine: false,
@@ -49,9 +52,13 @@ export default function Input({ rawType = "raw", type, value, onChange, onChange
           </div>
         )
       ):(
-        <ScriptInput value={value} onChange={(value) =>
-          onChange(value)
-        }/>
+        <div style={{
+          height: maxHeight
+        }}>
+          <ScriptInput value={value} onChange={(value) =>
+            onChange(value)
+          }/>
+        </div>
       )}
 
       <VSCodeLink onClick={() => {

@@ -151,107 +151,98 @@ export default function EnvironmentIntegrations({ environmentData, environmentUs
                       }}>
                         <div>
                           <p><b>AWS_ACCESS_KEY_ID</b></p>
+                            
+                          <Input
+                            maxHeight="8em"
+                            type={environmentUserData.integrations.aws.environmentVariables.accessKeyId.type}
+                            value={environmentUserData.integrations.aws.environmentVariables.accessKeyId.value}
+                            onChange={(value) => {
+                              if(environmentUserData.integrations.aws?.configuration !== "environmentVariables") {
+                                return;
+                              }
 
-                          <div style={{
-                            height: "8em"
-                          }}>
-                            <Input
-                              type={environmentUserData.integrations.aws.environmentVariables.accessKeyId.type}
-                              value={environmentUserData.integrations.aws.environmentVariables.accessKeyId.value}
-                              onChange={(value) => {
-                                if(environmentUserData.integrations.aws?.configuration !== "environmentVariables") {
-                                  return;
-                                }
+                              environmentUserData.integrations.aws.environmentVariables.accessKeyId.value = value;
 
-                                environmentUserData.integrations.aws.environmentVariables.accessKeyId.value = value;
+                              window.vscode.postMessage({
+                                command: "norasoderlund.integrationworkbench.updateEnvironmentUserData",
+                                arguments: [ environmentUserData ]
+                              });
+                            }} onChangeType={(type) => {
+                              if(environmentUserData.integrations.aws?.configuration !== "environmentVariables") {
+                                return;
+                              }
 
-                                window.vscode.postMessage({
-                                  command: "norasoderlund.integrationworkbench.updateEnvironmentUserData",
-                                  arguments: [ environmentUserData ]
-                                });
-                              }} onChangeType={(type) => {
-                                if(environmentUserData.integrations.aws?.configuration !== "environmentVariables") {
-                                  return;
-                                }
+                              environmentUserData.integrations.aws.environmentVariables.accessKeyId.type = type;
 
-                                environmentUserData.integrations.aws.environmentVariables.accessKeyId.type = type;
-
-                                window.vscode.postMessage({
-                                  command: "norasoderlund.integrationworkbench.updateEnvironmentUserData",
-                                  arguments: [ environmentUserData ]
-                                });
-                              }}/>
-                          </div>
+                              window.vscode.postMessage({
+                                command: "norasoderlund.integrationworkbench.updateEnvironmentUserData",
+                                arguments: [ environmentUserData ]
+                              });
+                            }}/>
                         </div>
 
                         <div>
                           <p><b>AWS_SECRET_ACCESS_KEY</b></p>
 
-                          <div style={{
-                            height: "8em"
-                          }}>
-                            <Input
-                              type={environmentUserData.integrations.aws.environmentVariables.secretAccessKey.type}
-                              value={environmentUserData.integrations.aws.environmentVariables.secretAccessKey.value}
-                              onChange={(value) => {
-                                if(environmentUserData.integrations.aws?.configuration !== "environmentVariables") {
-                                  return;
-                                }
+                          <Input
+                            maxHeight="8em"
+                            type={environmentUserData.integrations.aws.environmentVariables.secretAccessKey.type}
+                            value={environmentUserData.integrations.aws.environmentVariables.secretAccessKey.value}
+                            onChange={(value) => {
+                              if(environmentUserData.integrations.aws?.configuration !== "environmentVariables") {
+                                return;
+                              }
 
-                                environmentUserData.integrations.aws.environmentVariables.secretAccessKey.value = value;
+                              environmentUserData.integrations.aws.environmentVariables.secretAccessKey.value = value;
 
-                                window.vscode.postMessage({
-                                  command: "norasoderlund.integrationworkbench.updateEnvironmentUserData",
-                                  arguments: [ environmentUserData ]
-                                });
-                              }} onChangeType={(type) => {
-                                if(environmentUserData.integrations.aws?.configuration !== "environmentVariables") {
-                                  return;
-                                }
+                              window.vscode.postMessage({
+                                command: "norasoderlund.integrationworkbench.updateEnvironmentUserData",
+                                arguments: [ environmentUserData ]
+                              });
+                            }} onChangeType={(type) => {
+                              if(environmentUserData.integrations.aws?.configuration !== "environmentVariables") {
+                                return;
+                              }
 
-                                environmentUserData.integrations.aws.environmentVariables.secretAccessKey.type = type;
+                              environmentUserData.integrations.aws.environmentVariables.secretAccessKey.type = type;
 
-                                window.vscode.postMessage({
-                                  command: "norasoderlund.integrationworkbench.updateEnvironmentUserData",
-                                  arguments: [ environmentUserData ]
-                                });
-                              }}/>
-                          </div>
+                              window.vscode.postMessage({
+                                command: "norasoderlund.integrationworkbench.updateEnvironmentUserData",
+                                arguments: [ environmentUserData ]
+                              });
+                            }}/>
                         </div>
 
                         <div>
                           <p><b>AWS_SESSION_TOKEN</b></p>
 
-                          <div style={{
-                            height: "8em"
-                          }}>
-                            <Input
-                              type={environmentUserData.integrations.aws.environmentVariables.sessionToken.type}
-                              value={environmentUserData.integrations.aws.environmentVariables.sessionToken.value}
-                              onChange={(value) => {
+                          <Input
+                            maxHeight="8em"
+                            type={environmentUserData.integrations.aws.environmentVariables.sessionToken.type}
+                            value={environmentUserData.integrations.aws.environmentVariables.sessionToken.value}
+                            onChange={(value) => {
+                              if(environmentUserData.integrations.aws?.configuration !== "environmentVariables") {
+                                return;
+                              }
+
+                              environmentUserData.integrations.aws.environmentVariables.sessionToken.value = value;
+
+                              window.vscode.postMessage({
+                                command: "norasoderlund.integrationworkbench.updateEnvironmentUserData",
+                                arguments: [ environmentUserData ]
+                              });
+                            }} onChangeType={(type) => {
                                 if(environmentUserData.integrations.aws?.configuration !== "environmentVariables") {
                                   return;
                                 }
 
-                                environmentUserData.integrations.aws.environmentVariables.sessionToken.value = value;
+                              environmentUserData.integrations.aws.environmentVariables.sessionToken.type = type;
 
-                                window.vscode.postMessage({
-                                  command: "norasoderlund.integrationworkbench.updateEnvironmentUserData",
-                                  arguments: [ environmentUserData ]
-                                });
-                              }} onChangeType={(type) => {
-                                  if(environmentUserData.integrations.aws?.configuration !== "environmentVariables") {
-                                    return;
-                                  }
-
-                                environmentUserData.integrations.aws.environmentVariables.sessionToken.type = type;
-
-                                window.vscode.postMessage({
-                                  command: "norasoderlund.integrationworkbench.updateEnvironmentUserData",
-                                  arguments: [ environmentUserData ]
-                                });
-                              }}/>
-                          </div>
+                              window.vscode.postMessage({
+                                command: "norasoderlund.integrationworkbench.updateEnvironmentUserData",
+                                arguments: [ environmentUserData ]
+                              });
+                            }}/>
                         </div>
                       </div>
                     );

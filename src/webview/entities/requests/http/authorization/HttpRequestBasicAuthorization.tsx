@@ -24,10 +24,8 @@ export default function HttpRequesBasicAuthorization({ requestData, authorizatio
         </VSCodeDataGridRow>
 
         <VSCodeDataGridRow>
-          <VSCodeDataGridCell gridColumn="1" style={{
-            height: "8em"
-          }}>
-            <Input type={authorizationData.username.type} value={authorizationData.username.value} onChange={(value) => {
+          <VSCodeDataGridCell gridColumn="1">
+            <Input maxHeight="8em" type={authorizationData.username.type} value={authorizationData.username.value} onChange={(value) => {
               authorizationData.username.value = value;
 
               window.vscode.postMessage({
@@ -44,10 +42,8 @@ export default function HttpRequesBasicAuthorization({ requestData, authorizatio
             }}/>
           </VSCodeDataGridCell>
 
-          <VSCodeDataGridCell gridColumn="2" style={{
-            height: "8em"
-          }}>
-            <Input secret={true} type={authorizationData.password.type} value={authorizationData.password.value} onChange={(value) => {
+          <VSCodeDataGridCell gridColumn="2">
+            <Input maxHeight="8em" secret={true} type={authorizationData.password.type} value={authorizationData.password.value} onChange={(value) => {
               authorizationData.password.value = value;
 
               window.vscode.postMessage({

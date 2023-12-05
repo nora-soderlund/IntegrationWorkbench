@@ -42,10 +42,8 @@ export default function KeyValueTable({ items, onAdd, onChange, onDelete }: KeyV
             }}/>
           </VSCodeDataGridCell>
 
-          <VSCodeDataGridCell gridColumn="2" style={{
-            height: "8em"
-          }}>
-            <Input type={item.type} value={item.value} onChange={(value) => {
+          <VSCodeDataGridCell gridColumn="2">
+            <Input maxHeight="8em" type={item.type} value={item.value} onChange={(value) => {
               item.value = value;
               
               onChange(item);
