@@ -79,6 +79,10 @@ export default function Environment() {
 
         <VSCodePanelTab>
           INTEGRATIONS
+
+          {(Object.keys(environmentUserData.integrations).length > 0) && (
+            <VSCodeBadge>{Object.keys(environmentUserData.integrations).length}</VSCodeBadge>
+          )}
         </VSCodePanelTab>
 
         <VSCodePanelView style={{
