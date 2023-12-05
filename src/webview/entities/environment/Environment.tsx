@@ -4,13 +4,17 @@ import { WorkbenchRequestData } from "../../../interfaces/workbenches/requests/W
 import { EnvironmentData } from "../../../interfaces/entities/EnvironmentData";
 import { VSCodeBadge, VSCodePanelTab, VSCodePanelView, VSCodePanels } from "@vscode/webview-ui-toolkit/react";
 import EnvironmentVariables from "./variables/EnvironmentVariables";
+import EnvironmentIntegrations from "./EnvironmentIntegrations";
+import { EnvironmentUserData } from "../../../interfaces/entities/EnvironmentUserData";
 
 export type EnvironmentProps = {
   environmentData: EnvironmentData;
+  environmentUserData: EnvironmentUserData;
 };
 
 export default function Environment() {
   const [ environmentData, setEnvironmentData ] = useState<EnvironmentData | null>(null);
+  const [ environmentUserData, setEnvironmentUserData ] = useState<EnvironmentUserData | null>(null);
 
   useEffect(() => {
     window.addEventListener('message', event => {
@@ -26,6 +30,14 @@ export default function Environment() {
   
           break;
         }
+
+        case 'norasoderlund.integrationworkbench.updateEnvironmentUserData': {
+          const [ environmentUserData ] = event.data.arguments;
+
+          setEnvironmentUserData(environmentUserData);
+  
+          break;
+        }
       }
     });
 
@@ -33,11 +45,16 @@ export default function Environment() {
       command: "norasoderlund.integrationworkbench.getEnvironment",
       arguments: []
     });
+
+    window.vscode.postMessage({
+      command: "norasoderlund.integrationworkbench.getEnvironmentUserData",
+      arguments: []
+    });
   }, []);
 
-  if(!environmentData) {
+  if(!environmentData || !environmentUserData) {
     return (
-      <h1>TBD</h1>
+      <p style={{ padding: "0 20px" }}>Loading environment...</p>
     );
   }
 
@@ -60,10 +77,20 @@ export default function Environment() {
           )}
         </VSCodePanelTab>
 
+        <VSCodePanelTab>
+          INTEGRATIONS
+        </VSCodePanelTab>
+
         <VSCodePanelView style={{
           flexDirection: "column"
         }}>
-          <EnvironmentVariables environmentData={environmentData}/>
+          <EnvironmentVariables environmentData={environmentData} environmentUserData={environmentUserData}/>
+        </VSCodePanelView>
+
+        <VSCodePanelView style={{
+          flexDirection: "column"
+        }}>
+          <EnvironmentIntegrations environmentData={environmentData} environmentUserData={environmentUserData}/>
         </VSCodePanelView>
       </VSCodePanels>
     </div>

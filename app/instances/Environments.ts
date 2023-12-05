@@ -65,7 +65,7 @@ export default class Environments {
     });
   }
 
-  public static scan(sendRefreshCommand: boolean = true) {
+  public static scan(context: ExtensionContext, sendRefreshCommand: boolean = true) {
     this.loadedEnvironments = [];
     
     const rootPath = getRootPath();
@@ -84,7 +84,7 @@ export default class Environments {
           const filePath = path.join(folderPath, file);
 
           this.loadedEnvironments.push(
-            new Environment(filePath)
+            new Environment(context, filePath)
           );
         }
       }

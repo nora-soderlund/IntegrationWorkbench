@@ -1,6 +1,7 @@
 import { UserInput } from "../UserInput";
 
 export type EnvironmentData = {
+  id: string;
   name: string;
   description?: string;
 

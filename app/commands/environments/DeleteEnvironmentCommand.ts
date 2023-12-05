@@ -22,6 +22,6 @@ export default class DeleteEnvironmentCommand {
 
     environment.delete();
 
-    Environments.scan();
+    Environments.scan(this.context);
   }
 }

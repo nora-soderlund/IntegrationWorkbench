@@ -56,6 +56,7 @@ export default class CreateEnvironmentCommand {
     }
 
     const environmentData: EnvironmentData = {
+      id: randomUUID(),
       name,
       variables: [],
       variablesAutoRefresh: false
@@ -63,7 +64,7 @@ export default class CreateEnvironmentCommand {
 
     writeFileSync(uniqueEnvironmentPath, JSON.stringify(environmentData, undefined, 2));
   
-    const environment = new Environment(uniqueEnvironmentPath);
+    const environment = new Environment(this.context, uniqueEnvironmentPath);
   
     Environments.loadedEnvironments.push(environment);
   

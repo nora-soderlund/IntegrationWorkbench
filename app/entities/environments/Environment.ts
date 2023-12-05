@@ -5,19 +5,33 @@ import { ExtensionContext, commands } from "vscode";
 import { EnvironmentWebviewPanel } from "../../views/webviews/environments/EnvironmentWebviewPanel";
 import Scripts from "../../instances/Scripts";
 import { parse } from "dotenv";
+import { EnvironmentUserData } from "~interfaces/entities/EnvironmentUserData";
+import { randomUUID } from "crypto";
 
 export default class Environment {
   public data: EnvironmentData;
+  public userData: EnvironmentUserData;
 
   public requestWebviewPanel?: EnvironmentWebviewPanel;
   public treeDataViewItem?: EnvironmentTreeItem;
 
-  constructor(public filePath: string) {
+  constructor(public context: ExtensionContext, public filePath: string) {
     this.data = JSON.parse(
       readFileSync(this.filePath, {
         encoding: "utf-8"
       })
     );
+
+    // Prior to 0.9.8, environments did not have an unique identifier.
+    if(!this.data.id) {
+      this.data.id = randomUUID();
+
+      this.save();
+    }
+
+    this.userData = context.workspaceState.get(`environment-${this.data.id}`, {
+      integrations: {}
+    });
   }
 
   save() {
@@ -32,6 +46,12 @@ export default class Environment {
         encoding: "utf-8"
       }
     );
+  }
+
+  saveUserData(userData: EnvironmentUserData) {
+    this.context.workspaceState.update(`environment-${this.data.id}`, userData);
+
+    this.userData = userData;
   }
 
   getVariables() {

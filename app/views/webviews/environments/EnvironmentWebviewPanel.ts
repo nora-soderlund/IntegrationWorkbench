@@ -94,6 +94,22 @@ export class EnvironmentWebviewPanel {
             return;
           }
 
+          case "norasoderlund.integrationworkbench.getEnvironmentUserData": {
+            this.updateEnvironmentUserData();
+
+            return;
+          }
+
+          case "norasoderlund.integrationworkbench.updateEnvironmentUserData": {
+            const [ environmentUserData ] = message.arguments;
+
+            this.environment.saveUserData(environmentUserData);
+
+            this.updateEnvironmentUserData();
+
+            return;
+          }
+
           case "norasoderlund.integrationworkbench.changeEnvironmentVariables": {
             const [ variables ] = message.arguments;
 
@@ -213,6 +229,13 @@ export class EnvironmentWebviewPanel {
     this.webviewPanel.webview.postMessage({
       command: "norasoderlund.integrationworkbench.updateEnvironment",
       arguments: [ this.environment.data ]
+    });
+  }
+
+  private updateEnvironmentUserData() {
+    this.webviewPanel.webview.postMessage({
+      command: "norasoderlund.integrationworkbench.updateEnvironmentUserData",
+      arguments: [ this.environment.userData ]
     });
   }
 
