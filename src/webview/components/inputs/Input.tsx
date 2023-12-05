@@ -27,10 +27,7 @@ export default function Input({ rawType = "raw", type, value, onChange, onChange
     }}>
       {(type === "raw")?(
         (rawType === "raw")?(
-          <div style={{
-            flex: 1,
-            height: "max-content"
-          }}>
+          <div>
             <VSCodeTextField type={(secret)?("password"):("text")} placeholder="Enter a value..." value={value} onChange={(event) =>
               onChange((event.target as HTMLInputElement).value)
             } style={{
