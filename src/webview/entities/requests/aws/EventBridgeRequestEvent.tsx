@@ -145,8 +145,15 @@ export default function EventBridgeRequestEvent({ requestData }: EventBridgeRequ
             flexDirection: "column",
             gap: "0.5em"
           }}>
-            <VSCodeTextField type={"date" as TextFieldType} placeholder="Select a date..." style={{
+            <VSCodeTextField type={"date" as TextFieldType} value={requestData.data.time.date} placeholder="Select a date..." style={{
               width: "100%"
+            }} onChange={(event) => {
+              requestData.data.time.date = (event.target as HTMLInputElement).value;
+
+              window.vscode.postMessage({
+                command: "norasoderlund.integrationworkbench.changeRequestData",
+                arguments: [ requestData ]
+              });
             }}/>
 
             <small>YYYY/MM/DD</small>
@@ -159,8 +166,15 @@ export default function EventBridgeRequestEvent({ requestData }: EventBridgeRequ
             flexDirection: "column",
             gap: "0.5em"
           }}>
-            <VSCodeTextField type={"text"} placeholder="Enter a time..." style={{
+            <VSCodeTextField type={"text"} value={requestData.data.time.time} placeholder="Enter a time..." style={{
               width: "100%"
+            }} onChange={(event) => {
+              requestData.data.time.time = (event.target as HTMLInputElement).value;
+
+              window.vscode.postMessage({
+                command: "norasoderlund.integrationworkbench.changeRequestData",
+                arguments: [ requestData ]
+              });
             }}/>
 
             <small>Use 24-hour time format (hh:mm:ss)</small>
@@ -175,7 +189,14 @@ export default function EventBridgeRequestEvent({ requestData }: EventBridgeRequ
           }}>
             <VSCodeDropdown style={{
               width: "100%"
-            }} value={requestData.data.time.timezone}>
+            }} value={requestData.data.time.timezone} onChange={(event) => {
+              requestData.data.time.timezone = (event.target as HTMLInputElement).value as ("local" | "utc");
+
+              window.vscode.postMessage({
+                command: "norasoderlund.integrationworkbench.changeRequestData",
+                arguments: [ requestData ]
+              });
+            }}>
               <VSCodeOption value="local">Local time zone</VSCodeOption>
               <VSCodeOption value="utc">UTC</VSCodeOption>
             </VSCodeDropdown>
@@ -185,7 +206,16 @@ export default function EventBridgeRequestEvent({ requestData }: EventBridgeRequ
 
           <div>
             <VSCodeButton appearance="icon" aria-label="Delete" onClick={() => {
-              
+              requestData.data.time = {
+                date: "",
+                time: "",
+                timezone: "local"
+              };
+
+              window.vscode.postMessage({
+                command: "norasoderlund.integrationworkbench.changeRequestData",
+                arguments: [ requestData ]
+              });
             }}>
               <span className="codicon codicon-trashcan"/>
             </VSCodeButton>

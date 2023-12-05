@@ -17,7 +17,7 @@ export default function EventBridgeRequestHeader({ requestData }: EventBridgeReq
         flexDirection: "row",
         gap: "1em"
       }}>
-        <VSCodeTextField type="url" placeholder="Enter the URL of this request..." value={requestData.data.eventBridgeArn} style={{
+        <VSCodeTextField type="url" placeholder="Enter the ARN for this request..." value={requestData.data.eventBridgeArn} style={{
           flex: 1
         }} onChange={(event) => (
           window.vscode.postMessage({
@@ -33,7 +33,7 @@ export default function EventBridgeRequestHeader({ requestData }: EventBridgeReq
           arguments: []
         })
       )}>
-        Send Event
+        Send EventBus Event
       </VSCodeButton>
     </header>
   );
