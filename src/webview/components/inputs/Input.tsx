@@ -12,11 +12,9 @@ export type InputProps = {
 
   onChange: (value: string) => void;
   onChangeType: (type: "raw" | "typescript") => void;
-
-  style?: CSSProperties;
 };
 
-export default function Input({ rawType = "raw", type, value, onChange, onChangeType, secret, style }: InputProps) {
+export default function Input({ rawType = "raw", type, value, onChange, onChangeType, secret }: InputProps) {
   const { theme } = useMonacoUserTheme();
 
   return (
@@ -24,18 +22,26 @@ export default function Input({ rawType = "raw", type, value, onChange, onChange
       display: "flex",
       flexDirection: "column",
       gap: "0.5em",
-      ...style
+      height: "100%",
+      width: "100%"
     }}>
       {(type === "raw")?(
         (rawType === "raw")?(
-          <VSCodeTextField type={(secret)?("password"):("text")} placeholder="Enter a value..." value={value} onChange={(event) =>
-            onChange((event.target as HTMLInputElement).value)
-          }/>
+          <div style={{
+            flex: 1,
+            height: "max-content"
+          }}>
+            <VSCodeTextField type={(secret)?("password"):("text")} placeholder="Enter a value..." value={value} onChange={(event) =>
+              onChange((event.target as HTMLInputElement).value)
+            } style={{
+              width: "100%"
+            }}/>
+          </div>
         ):(
           <div style={{
             border: "1px solid var(--vscode-editorWidget-border)",
             boxSizing: "border-box",
-            height: "100%"
+            flex: 1
           }}>
             <Editor value={value} theme={theme} options={{
               scrollBeyondLastLine: false,
@@ -48,11 +54,7 @@ export default function Input({ rawType = "raw", type, value, onChange, onChange
       ):(
         <ScriptInput value={value} onChange={(value) =>
           onChange(value)
-        } style={{
-          flex: 1,
-          height: "100%",
-          minHeight: "5em"
-        }}/>
+        }/>
       )}
 
       <VSCodeLink onClick={() => {

@@ -14,7 +14,8 @@ export default function EventBridgeRequestEvent({ requestData }: EventBridgeRequ
         display: "flex",
         flexDirection: "row",
         flexWrap: "wrap",
-        gap: "2em"
+        gap: "2em",
+        height: "8em"
       }}>
         <div style={{
           flex: "1 1 0"

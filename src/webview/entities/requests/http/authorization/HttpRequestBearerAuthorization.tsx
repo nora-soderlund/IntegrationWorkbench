@@ -19,7 +19,9 @@ export default function HttpRequesBearerAuthorization({ requestData, authorizati
         </VSCodeDataGridRow>
 
         <VSCodeDataGridRow>
-          <VSCodeDataGridCell gridColumn="1">
+          <VSCodeDataGridCell gridColumn="1" style={{
+            height: "8em"
+          }}>
             <Input secret={true} type={authorizationData.token.type} value={authorizationData.token.value} onChange={(value) => {
               authorizationData.token.value = value;
 

@@ -6,10 +6,9 @@ import useMonacoUserTheme from "../../hooks/useMonacoUserTheme";
 export type ScriptInputProps = {
   value: string;
   onChange: (value: string) => void;
-  style?: CSSProperties;
 };
 
-export default function ScriptInput({ value, onChange, style }: ScriptInputProps) {
+export default function ScriptInput({ value, onChange }: ScriptInputProps) {
   const monaco = useMonaco();
   const { theme } = useMonacoUserTheme();
 
@@ -73,7 +72,7 @@ export default function ScriptInput({ value, onChange, style }: ScriptInputProps
       border: "1px solid var(--vscode-editorWidget-border)",
       boxSizing: "border-box",
       height: "100%",
-      ...style
+      width: "100%"
     }}>
       <Editor language="typescript" value={value} theme={theme} options={{
         scrollBeyondLastLine: false,

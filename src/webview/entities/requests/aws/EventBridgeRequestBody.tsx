@@ -21,8 +21,6 @@ export default function EventBridgeRequestBody({ requestData }: EventBridgeReque
           command: "norasoderlund.integrationworkbench.changeEventBridgeBody",
           arguments: [ requestData.data.body ]
         });
-      }} style={{
-        height: "100%"
       }}/>
     </div>
   );

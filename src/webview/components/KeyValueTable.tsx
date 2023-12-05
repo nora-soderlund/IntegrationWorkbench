@@ -42,7 +42,9 @@ export default function KeyValueTable({ items, onAdd, onChange, onDelete }: KeyV
             }}/>
           </VSCodeDataGridCell>
 
-          <VSCodeDataGridCell gridColumn="2">
+          <VSCodeDataGridCell gridColumn="2" style={{
+            height: "8em"
+          }}>
             <Input type={item.type} value={item.value} onChange={(value) => {
               item.value = value;
               
@@ -52,8 +54,6 @@ export default function KeyValueTable({ items, onAdd, onChange, onDelete }: KeyV
               item.type = type;
 
               onChange(item);
-            }} style={{
-              height: "5em"
             }}/>
           </VSCodeDataGridCell>
 
