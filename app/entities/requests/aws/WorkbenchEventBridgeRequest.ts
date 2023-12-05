@@ -3,6 +3,9 @@ import WorkbenchRequest from "../WorkbenchRequest";
 import { Workbench } from "../../workbenches/Workbench";
 import { WorkbenchCollection } from "../../collections/WorkbenchCollection";
 import RequestWebview from "../RequestWebview";
+import { commands } from "vscode";
+import WorkbenchEventBridgeResponse from "../../responses/aws/WorkbenchEventBridgeResponse";
+import { randomUUID } from "crypto";
 
 export default class WorkbenchEventBridgeRequest implements WorkbenchRequest {
   public readonly id: string;
@@ -61,6 +64,10 @@ export default class WorkbenchEventBridgeRequest implements WorkbenchRequest {
   }
 
   send(): void {
-    
+    commands.executeCommand("norasoderlund.integrationworkbench.addResponse", new WorkbenchEventBridgeResponse(
+      randomUUID(),
+      this.getData(),
+      new Date()
+    ));
   }
 }

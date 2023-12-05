@@ -19,17 +19,21 @@ export default function EventBridgeRequestHeader({ requestData }: EventBridgeReq
       }}>
         <VSCodeTextField type="url" placeholder="Enter the ARN for this request..." value={requestData.data.eventBridgeArn} style={{
           flex: 1
-        }} onChange={(event) => (
+        }} onChange={(event) => {
+          const value = (event.target as HTMLInputElement).value;
+
+          requestData.data.eventBridgeArn = value;
+
           window.vscode.postMessage({
-            command: "norasoderlund.integrationworkbench.changeHttpRequestUrl",
-            arguments: [ (event.target as HTMLInputElement).value ]
+            command: "norasoderlund.integrationworkbench.changeRequestData",
+            arguments: [ requestData ]
           })
-        )}/>
+        }}/>
       </div>
 
       <VSCodeButton className="header-send" onClick={() => (
         window.vscode.postMessage({
-          command: "norasoderlund.integrationworkbench.sendHttpRequest",
+          command: "norasoderlund.integrationworkbench.sendRequest",
           arguments: []
         })
       )}>

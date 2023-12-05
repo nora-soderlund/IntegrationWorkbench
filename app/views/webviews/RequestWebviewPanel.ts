@@ -170,7 +170,7 @@ export class RequestWebviewPanel {
             return;
           }
 
-          case "norasoderlund.integrationworkbench.sendHttpRequest": {
+          case "norasoderlund.integrationworkbench.sendRequest": {
             this.request.send();
 
             return;

@@ -29,7 +29,9 @@
     "url": "https://github.com/nora-soderlund/IntegrationWorkbench"
   },
   "icon": "media/icon.png",
-  "activationEvents": ["onStartupFinished"],
+  "activationEvents": [
+    "onStartupFinished"
+  ],
   "main": "./build/app/extension.js",
   "contributes": {
     "configuration": {
@@ -500,6 +502,7 @@
     "tsc-alias": "^1.8.8"
   },
   "dependencies": {
+    "@aws-sdk/client-eventbridge": "^3.465.0",
     "@monaco-editor/react": "^4.6.0",
     "@vscode/codicons": "^0.0.35",
     "@vscode/webview-ui-toolkit": "^1.2.2",

@@ -71,7 +71,7 @@ export default function HttpRequestHeader({ requestData }: HttpRequestProps) {
 
       <VSCodeButton className="header-send" onClick={() => (
         window.vscode.postMessage({
-          command: "norasoderlund.integrationworkbench.sendHttpRequest",
+          command: "norasoderlund.integrationworkbench.sendRequest",
           arguments: []
         })
       )}>
