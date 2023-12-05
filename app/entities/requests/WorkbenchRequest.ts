@@ -7,6 +7,7 @@ export default interface WorkbenchRequest {
   id: string;
   name: string;
   webview: RequestWebview;
+  data: unknown;
   parent: Workbench | WorkbenchCollection | null;
 
   getData(): WorkbenchRequestData;

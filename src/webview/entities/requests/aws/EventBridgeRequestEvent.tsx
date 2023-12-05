@@ -1,7 +1,7 @@
 import React from "react";
 import { EventBridgeRequestProps } from "./EventBridgeRequest";
 import Input from "../../../components/inputs/Input";
-import { VSCodeDivider, VSCodeDropdown, VSCodeLink, VSCodeOption, VSCodeTextField } from "@vscode/webview-ui-toolkit/react";
+import { VSCodeButton, VSCodeDivider, VSCodeDropdown, VSCodeLink, VSCodeOption, VSCodeTextField } from "@vscode/webview-ui-toolkit/react";
 import ValueList from "../../../components/ValueList";
 import { TextFieldType } from "@vscode/webview-ui-toolkit";
 
@@ -30,14 +30,14 @@ export default function EventBridgeRequestEvent({ requestData }: EventBridgeRequ
 
               window.vscode.postMessage({
                 command: "norasoderlund.integrationworkbench.changeRequestData",
-                arguments: [ requestData.data ]
+                arguments: [ requestData ]
               });
             }} onChangeType={(type) => {
               requestData.data.detailType.type = type;
 
               window.vscode.postMessage({
                 command: "norasoderlund.integrationworkbench.changeRequestData",
-                arguments: [ requestData.data ]
+                arguments: [ requestData ]
               });
             }}/>
         </div>
@@ -56,14 +56,14 @@ export default function EventBridgeRequestEvent({ requestData }: EventBridgeRequ
 
               window.vscode.postMessage({
                 command: "norasoderlund.integrationworkbench.changeRequestData",
-                arguments: [ requestData.data ]
+                arguments: [ requestData ]
               });
             }} onChangeType={(type) => {
               requestData.data.eventSource.type = type;
 
               window.vscode.postMessage({
                 command: "norasoderlund.integrationworkbench.changeRequestData",
-                arguments: [ requestData.data ]
+                arguments: [ requestData ]
               });
             }}/>
         </div>
@@ -78,53 +78,47 @@ export default function EventBridgeRequestEvent({ requestData }: EventBridgeRequ
         <p>Enter the ARNs to resources associated with the event.</p>
 
         {(!requestData.data.resources.length)?(
-          <p>This request has no resources, <VSCodeLink onClick={() => (
+          <p>This request has no resources, <VSCodeLink onClick={() => {
+            requestData.data.resources.push({
+              key: "",
+              value: "",
+              type: "raw"
+            });
+
             window.vscode.postMessage({
-              command: "norasoderlund.integrationworkbench.changeEventBridgeRequestResources",
-              arguments: [
-                [
-                  ...requestData.data.resources,
-                  {
-                    key: "",
-                    value: "",
-                    type: "raw"
-                  }
-                ]
-              ]
-            })
-          )}>click here</VSCodeLink> to add one.</p>
+              command: "norasoderlund.integrationworkbench.changeRequestData",
+              arguments: [ requestData ]
+            });
+          }}>click here</VSCodeLink> to add one.</p>
         ):(
           <ValueList
             items={requestData.data.resources} 
-            onAdd={() => (
+            onAdd={() => {
+              requestData.data.resources.push({
+                key: "",
+                value: "",
+                type: "raw"
+              });
+
               window.vscode.postMessage({
-                command: "norasoderlund.integrationworkbench.changeEventBridgeRequestResources",
-                arguments: [
-                  [
-                    ...requestData.data.resources,
-                    {
-                      key: "",
-                      value: "",
-                      type: "raw"
-                    }
-                  ]
-                ]
+                command: "norasoderlund.integrationworkbench.changeRequestData",
+                arguments: [ requestData ]
+              });
+            }}
+            onChange={() => (
+              window.vscode.postMessage({
+                command: "norasoderlund.integrationworkbench.changeRequestData",
+                arguments: [ requestData ]
               })
             )}
-            onChange={() => 
-              window.vscode.postMessage({
-                command: "norasoderlund.integrationworkbench.changeEventBridgeRequestResources",
-                arguments: [ requestData.data.resources ]
-              })
-            }
             onDelete={(item) => {
               const index = requestData.data.resources.indexOf(item);
   
               requestData.data.resources.splice(index, 1);
   
               window.vscode.postMessage({
-                command: "norasoderlund.integrationworkbench.changeEventBridgeRequestResources",
-                arguments: [ requestData.data.resources ]
+                command: "norasoderlund.integrationworkbench.changeRequestData",
+                arguments: [ requestData ]
               });
             }}/>
         )}
@@ -187,6 +181,14 @@ export default function EventBridgeRequestEvent({ requestData }: EventBridgeRequ
             </VSCodeDropdown>
 
             <small>Time zone</small>
+          </div>
+
+          <div>
+            <VSCodeButton appearance="icon" aria-label="Delete" onClick={() => {
+              
+            }}>
+              <span className="codicon codicon-trashcan"/>
+            </VSCodeButton>
           </div>
         </div>
       </div>

@@ -83,7 +83,7 @@ export class RequestWebviewPanel {
       async (message: any) => {
         const command = message.command;
 
-        console.debug("Received event from request webview:", command);
+        console.debug("Received event from request webview:", command, message.arguments);
 
         switch (command) {
           case "norasoderlund.integrationworkbench.showOutputLogs": {
@@ -232,6 +232,18 @@ export class RequestWebviewPanel {
 
               this.updateRequest();
             }
+
+            return;
+          }
+
+          case "norasoderlund.integrationworkbench.changeRequestData": {
+            const [ requestData ] = message.arguments;
+
+            this.request.data = requestData.data;
+
+            this.request.parent?.save();
+
+            this.updateRequest();
 
             return;
           }
