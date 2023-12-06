@@ -39,7 +39,7 @@ export default class WorkbenchRequestTreeItem extends TreeItem implements Workbe
       return Uri.file(path.join(__filename, '..', '..', '..', '..', '..', '..', '..', 'resources', 'icons', 'HTTP.png'));
     }
     else if (this.request instanceof WorkbenchEventBridgeRequest) {
-      return Uri.file(path.join(__filename, '..', '..', '..', '..', '..', '..', '..', 'resources', 'icons', 'aws', 'EventBridge.svg'));
+      return Uri.file(path.join(__filename, '..', '..', '..', '..', '..', '..', '..', 'resources', 'icons', 'aws', 'EventBridge.png'));
     }
 
     return new ThemeIcon("search-show-context");
