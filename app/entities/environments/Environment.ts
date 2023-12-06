@@ -8,6 +8,7 @@ import { parse } from "dotenv";
 import { EnvironmentUserData } from "~interfaces/entities/EnvironmentUserData";
 import { randomUUID } from "crypto";
 import Environments from "../../instances/Environments";
+import { EventBridgeClient } from "@aws-sdk/client-eventbridge";
 
 export default class Environment {
   public data: EnvironmentData;
@@ -165,7 +166,7 @@ export default class Environment {
       }
 
       default: {
-        throw new Error("Invalid")
+        throw new Error("Unsupported AWS configuration.");
       }
     }
   }

@@ -106,9 +106,9 @@ export default function EnvironmentIntegrations({ environmentData, environmentUs
                   arguments: [ environmentUserData ]
                 });
               }}>
-                <VSCodeOption value="sharedCredentialsFile">Credentials from the Shared Credentials File</VSCodeOption>
+                <VSCodeOption value="sharedCredentialsFile" disabled>Credentials from the Shared Credentials File</VSCodeOption>
                 <VSCodeOption value="environmentVariables">Credentials from Environment Variables</VSCodeOption>
-                <VSCodeOption value="jsonFile">Credentials from a JSON File</VSCodeOption>
+                <VSCodeOption value="jsonFile" disabled>Credentials from a JSON File</VSCodeOption>
               </VSCodeDropdown>
             </div>
 
@@ -301,9 +301,25 @@ export default function EnvironmentIntegrations({ environmentData, environmentUs
           </div>
         ):(
           <VSCodeButton appearance="primary" onClick={() => {
+            const emptyUserInput: UserInput = {
+              key: "",
+              value: "",
+              type: "typescript"
+            };
+
             environmentUserData.integrations.aws = {
-              configuration: "sharedCredentialsFile",
-              profile: "default"
+              configuration: "environmentVariables",
+              environmentVariables: {
+                accessKeyId: {
+                  ...emptyUserInput
+                },
+                secretAccessKey: {
+                  ...emptyUserInput
+                },
+                sessionToken: {
+                  ...emptyUserInput
+                }
+              }
             };
 
             window.vscode.postMessage({
