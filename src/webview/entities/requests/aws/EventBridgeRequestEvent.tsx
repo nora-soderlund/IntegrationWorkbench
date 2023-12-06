@@ -158,7 +158,7 @@ export default function EventBridgeRequestEvent({ requestData }: EventBridgeRequ
               });
             }}/>
 
-            <small>YYYY/MM/DD</small>
+            <small>Date</small>
           </div>
 
           <div style={{

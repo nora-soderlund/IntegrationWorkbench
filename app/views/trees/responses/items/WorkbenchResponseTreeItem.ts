@@ -3,6 +3,8 @@ import path from "path";
 import { existsSync } from "fs";
 import WorkbenchResponse from "../../../../entities/responses/WorkbenchResponse";
 import WorkbenchHttpResponse from "../../../../entities/responses/http/WorkbenchHttpResponse";
+import WorkbenchEventBridgeRequest from "../../../../entities/requests/aws/WorkbenchEventBridgeRequest";
+import WorkbenchEventBridgeResponse from "../../../../entities/responses/aws/WorkbenchEventBridgeResponse";
 
 export default class WorkbenchResponseTreeItem extends TreeItem {
   constructor(
@@ -55,6 +57,9 @@ export default class WorkbenchResponseTreeItem extends TreeItem {
         }
   
         return path.join(__filename, '..', '..', '..', '..', '..', '..', '..', 'resources', 'icons', 'HTTP.png');
+      }
+      else if(this.response instanceof WorkbenchEventBridgeResponse) {
+        return path.join(__filename, '..', '..', '..', '..', '..', '..', '..', 'resources', 'icons', 'aws', 'EventBridge.png');
       }
 
       return new ThemeIcon("search-show-context");

@@ -23,7 +23,11 @@ export default class EventBridgeHandler implements Handler<EventBridgeHandlerFul
       if(!Environments.selectedEnvironment) {
         throw new Error("You must select an environment to use the AWS integrations.");
       }
-      
+
+      if(!this.response.request.data.eventBridgeArn.length) {
+        throw new Error("You must enter an EventBus ARN or name.");
+      }
+
       const client = new EventBridgeClient({
         region: "eu-north-1",
         credentials: await Environments.selectedEnvironment.getAwsCredentials()
@@ -32,7 +36,7 @@ export default class EventBridgeHandler implements Handler<EventBridgeHandlerFul
       const response = await client.send(new PutEventsCommand({
         Entries: [
           {
-            Detail: "{}",
+            Detail: await Scripts.evaluateUserInput(this.response.request.data.body),
             DetailType: await Scripts.evaluateUserInput(this.response.request.data.detailType),
             Source: await Scripts.evaluateUserInput(this.response.request.data.eventSource),
             EventBusName: this.response.request.data.eventBridgeArn,

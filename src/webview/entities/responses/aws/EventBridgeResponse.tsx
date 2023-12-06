@@ -31,10 +31,10 @@ export default function EventBridgeResponse({ requestData, handlerState }: Event
         }}>
           <div className="infobox infobox-info">
             <div>
-              <i className="codicon codicon-info"></i>{" "}<b>EventBridge event was sent:</b>
+              <i className="codicon codicon-info"></i>{" "}<b>Event was sent:</b>
               
               <p>
-                Event Id: {handlerState.data.eventId}
+                {handlerState.data.eventId}
               </p>
             </div>
           </div>

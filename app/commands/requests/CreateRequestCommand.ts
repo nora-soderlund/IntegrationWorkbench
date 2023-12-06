@@ -88,7 +88,7 @@ export default class CreateRequestCommand {
                   body: {
                     type: "raw",
                     key: "body",
-                    value: ""
+                    value: "{}"
                   },
                   eventSource: {
                     type: "raw",
