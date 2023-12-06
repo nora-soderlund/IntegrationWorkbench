@@ -12,6 +12,7 @@ import EnvironmentsTreeDataProvider from './views/trees/environments/Environment
 import Commands from './instances/Commands';
 import WorkbenchResponse from './entities/responses/WorkbenchResponse';
 import Workbenches from './instances/Workbenches';
+import Watcher from './instances/Watcher';
 
 export const outputChannel = vscode.window.createOutputChannel("Integration Workbench", {
 	log: true
@@ -123,13 +124,15 @@ export function activate(context: vscode.ExtensionContext) {
 
 	Commands.register(context);
 
-	Workbenches.scanForWorkbenches(context);
+	Workbenches.register(context);
 
 	Scripts.scanForScripts();
 	Scripts.buildScript("");
 
 	Environments.scan(context);
 	Environments.register(context);
+
+	Watcher.register(context);
 
 	//vscode.window.registerTreeDataProvider('workbenches', new WorkbenchTreeDataProvider(rootPath));
 }

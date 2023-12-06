@@ -1,6 +1,6 @@
 import { ExtensionContext, commands } from "vscode";
 import { Workbench } from "../entities/workbenches/Workbench";
-import { existsSync, readFileSync, readdirSync } from "fs";
+import { existsSync, readFileSync, readdirSync, watch } from "fs";
 import path from "path";
 import getRootPath from "../utils/GetRootPath";
 import WorkbenchRequest from "../entities/requests/WorkbenchRequest";
@@ -11,6 +11,10 @@ import WorkbenchEventBridgeRequest from "../entities/requests/aws/WorkbenchEvent
 
 export default class Workbenches {
   public static workbenches: Workbench[] = [];
+
+  public static register(context: ExtensionContext) {
+    this.scanForWorkbenches(context);
+  }
 
   public static getAllRequestsWithWebviews() {
     const requestsWithWebviews: WorkbenchRequest[] = [];

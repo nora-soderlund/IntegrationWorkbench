@@ -72,19 +72,17 @@ export default class Environments {
     if(rootPath) {
       const folderPath = this.getPath(rootPath);
   
-      if(!existsSync(folderPath)) {
-        return;
-      }
-  
-      const files = readdirSync(folderPath);
-  
-      for(let file of files) {
-        if(file.endsWith(".json")) {
-          const filePath = path.join(folderPath, file);
+      if(existsSync(folderPath)) {
+        const files = readdirSync(folderPath);
+    
+        for(let file of files) {
+          if(file.endsWith(".json")) {
+            const filePath = path.join(folderPath, file);
 
-          this.loadedEnvironments.push(
-            new Environment(context, filePath)
-          );
+            this.loadedEnvironments.push(
+              new Environment(context, filePath)
+            );
+          }
         }
       }
     }

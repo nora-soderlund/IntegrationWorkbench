@@ -39,23 +39,21 @@ export default class Scripts {
     if(rootPath) {
       const folderPath = path.join(rootPath, ".workbench", "scripts");
   
-      if(!existsSync(folderPath)) {
-        return;
-      }
-  
-      const files = readdirSync(folderPath);
-  
-      for(let file of files) {
-        if(file.startsWith("index.")) {
-          continue;
-        }
+      if(existsSync(folderPath)) {
+        const files = readdirSync(folderPath);
+    
+        for(let file of files) {
+          if(file.startsWith("index.")) {
+            continue;
+          }
 
-        if(file.endsWith(".ts")) {
-          const filePath = path.join(folderPath, file);
+          if(file.endsWith(".ts")) {
+            const filePath = path.join(folderPath, file);
 
-          const script = new TypescriptScript(filePath);
+            const script = new TypescriptScript(filePath);
 
-          this.loadedScripts.push(script);
+            this.loadedScripts.push(script);
+          }
         }
       }
     }
