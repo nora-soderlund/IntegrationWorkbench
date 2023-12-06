@@ -1,5 +1,6 @@
 import { VSCodeButton, VSCodeDropdown, VSCodeOption, VSCodeTextField } from '@vscode/webview-ui-toolkit/react';
 import { EventBridgeRequestProps } from "./EventBridgeRequest";
+import useDynamicChangeHandler from '../../../hooks/useDynamicChangeHandler';
 
 const eventBridgeRegions = [
   "af-south-1",    // Africa (Cape Town) Region
@@ -61,16 +62,14 @@ export default function EventBridgeRequestHeader({ requestData }: EventBridgeReq
 
         <VSCodeTextField type="url" placeholder="Enter the ARN for this request..." value={requestData.data.eventBridgeArn} style={{
           flex: 1
-        }} onChange={(event) => {
-          const value = (event.target as HTMLInputElement).value;
-
+        }} onChange={useDynamicChangeHandler((value) => {
           requestData.data.eventBridgeArn = value;
 
           window.vscode.postMessage({
             command: "norasoderlund.integrationworkbench.changeRequestData",
             arguments: [ requestData ]
           })
-        }}/>
+        })}/>
 
         {/*<VSCodeButton appearance="icon" onClick={() => 
           window.vscode.postMessage({

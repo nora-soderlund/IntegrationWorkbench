@@ -4,6 +4,7 @@ import React from "react";
 import Input from "../../components/inputs/Input";
 import { EnvironmentUserData } from "../../../interfaces/entities/EnvironmentUserData";
 import { UserInput } from "../../../interfaces/UserInput";
+import useDynamicChangeHandler from "../../hooks/useDynamicChangeHandler";
 
 export default function EnvironmentIntegrations({ environmentData, environmentUserData }: EnvironmentProps) {
   return (
@@ -122,18 +123,18 @@ export default function EnvironmentIntegrations({ environmentData, environmentUs
                         gap: "0.5em"
                       }}>
                         <div>
-                          <VSCodeTextField type="text" placeholder="Enter a profile name..." value={environmentUserData.integrations.aws.profile} onChange={(event) => {
+                          <VSCodeTextField type="text" placeholder="Enter a profile name..." value={environmentUserData.integrations.aws.profile} onChange={useDynamicChangeHandler((value) => {
                             if(environmentUserData.integrations.aws?.configuration !== "sharedCredentialsFile") {
                               return;
                             }
 
-                            environmentUserData.integrations.aws.profile = (event.target as HTMLInputElement).value;
+                            environmentUserData.integrations.aws.profile = value;
 
                             window.vscode.postMessage({
                               command: "norasoderlund.integrationworkbench.updateEnvironmentUserData",
                               arguments: [ environmentUserData ]
                             });
-                          }}/>
+                          })}/>
                         </div>
 
                         <small>Name of the profile in the shared credentials file</small>
@@ -156,7 +157,7 @@ export default function EnvironmentIntegrations({ environmentData, environmentUs
                             maxHeight="8em"
                             type={environmentUserData.integrations.aws.environmentVariables.accessKeyId.type}
                             value={environmentUserData.integrations.aws.environmentVariables.accessKeyId.value}
-                            onChange={(value) => {
+                            onChange={useDynamicChangeHandler((value) => {
                               if(environmentUserData.integrations.aws?.configuration !== "environmentVariables") {
                                 return;
                               }
@@ -167,7 +168,7 @@ export default function EnvironmentIntegrations({ environmentData, environmentUs
                                 command: "norasoderlund.integrationworkbench.updateEnvironmentUserData",
                                 arguments: [ environmentUserData ]
                               });
-                            }} onChangeType={(type) => {
+                            })} onChangeType={(type) => {
                               if(environmentUserData.integrations.aws?.configuration !== "environmentVariables") {
                                 return;
                               }
@@ -188,7 +189,7 @@ export default function EnvironmentIntegrations({ environmentData, environmentUs
                             maxHeight="8em"
                             type={environmentUserData.integrations.aws.environmentVariables.secretAccessKey.type}
                             value={environmentUserData.integrations.aws.environmentVariables.secretAccessKey.value}
-                            onChange={(value) => {
+                            onChange={useDynamicChangeHandler((value) => {
                               if(environmentUserData.integrations.aws?.configuration !== "environmentVariables") {
                                 return;
                               }
@@ -199,7 +200,7 @@ export default function EnvironmentIntegrations({ environmentData, environmentUs
                                 command: "norasoderlund.integrationworkbench.updateEnvironmentUserData",
                                 arguments: [ environmentUserData ]
                               });
-                            }} onChangeType={(type) => {
+                            })} onChangeType={(type) => {
                               if(environmentUserData.integrations.aws?.configuration !== "environmentVariables") {
                                 return;
                               }
@@ -220,7 +221,7 @@ export default function EnvironmentIntegrations({ environmentData, environmentUs
                             maxHeight="8em"
                             type={environmentUserData.integrations.aws.environmentVariables.sessionToken.type}
                             value={environmentUserData.integrations.aws.environmentVariables.sessionToken.value}
-                            onChange={(value) => {
+                            onChange={useDynamicChangeHandler((value) => {
                               if(environmentUserData.integrations.aws?.configuration !== "environmentVariables") {
                                 return;
                               }
@@ -231,7 +232,7 @@ export default function EnvironmentIntegrations({ environmentData, environmentUs
                                 command: "norasoderlund.integrationworkbench.updateEnvironmentUserData",
                                 arguments: [ environmentUserData ]
                               });
-                            }} onChangeType={(type) => {
+                            })} onChangeType={(type) => {
                                 if(environmentUserData.integrations.aws?.configuration !== "environmentVariables") {
                                   return;
                                 }

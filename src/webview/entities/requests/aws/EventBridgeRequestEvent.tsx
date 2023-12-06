@@ -4,6 +4,7 @@ import Input from "../../../components/inputs/Input";
 import { VSCodeButton, VSCodeDivider, VSCodeDropdown, VSCodeLink, VSCodeOption, VSCodeTextField } from "@vscode/webview-ui-toolkit/react";
 import ValueList from "../../../components/ValueList";
 import { TextFieldType } from "@vscode/webview-ui-toolkit";
+import useDynamicChangeHandler from "../../../hooks/useDynamicChangeHandler";
 
 export default function EventBridgeRequestEvent({ requestData }: EventBridgeRequestProps) {
   return (
@@ -26,14 +27,14 @@ export default function EventBridgeRequestEvent({ requestData }: EventBridgeRequ
             type={requestData.data.detailType.type}
             value={requestData.data.detailType.value}
             maxHeight={"8em"}
-            onChange={(value) => {
+            onChange={useDynamicChangeHandler((value) => {
               requestData.data.detailType.value = value;
 
               window.vscode.postMessage({
                 command: "norasoderlund.integrationworkbench.changeRequestData",
                 arguments: [ requestData ]
               });
-            }} onChangeType={(type) => {
+            })} onChangeType={(type) => {
               requestData.data.detailType.type = type;
 
               window.vscode.postMessage({
@@ -53,14 +54,14 @@ export default function EventBridgeRequestEvent({ requestData }: EventBridgeRequ
             type={requestData.data.eventSource.type}
             value={requestData.data.eventSource.value}
             maxHeight={"8em"}
-            onChange={(value) => {
+            onChange={useDynamicChangeHandler((value) => {
               requestData.data.eventSource.value = value;
 
               window.vscode.postMessage({
                 command: "norasoderlund.integrationworkbench.changeRequestData",
                 arguments: [ requestData ]
               });
-            }} onChangeType={(type) => {
+            })} onChangeType={(type) => {
               requestData.data.eventSource.type = type;
 
               window.vscode.postMessage({
@@ -149,14 +150,14 @@ export default function EventBridgeRequestEvent({ requestData }: EventBridgeRequ
           }}>
             <VSCodeTextField type={"date" as TextFieldType} value={requestData.data.time.date} placeholder="Select a date..." style={{
               width: "100%"
-            }} onChange={(event) => {
-              requestData.data.time.date = (event.target as HTMLInputElement).value;
+            }} onChange={useDynamicChangeHandler((value) => {
+              requestData.data.time.date = value;
 
               window.vscode.postMessage({
                 command: "norasoderlund.integrationworkbench.changeRequestData",
                 arguments: [ requestData ]
               });
-            }}/>
+            })}/>
 
             <small>Date</small>
           </div>
@@ -170,14 +171,14 @@ export default function EventBridgeRequestEvent({ requestData }: EventBridgeRequ
           }}>
             <VSCodeTextField type={"text"} value={requestData.data.time.time} placeholder="Enter a time..." style={{
               width: "100%"
-            }} onChange={(event) => {
-              requestData.data.time.time = (event.target as HTMLInputElement).value;
+            }} onChange={useDynamicChangeHandler((value) => {
+              requestData.data.time.time = value;
 
               window.vscode.postMessage({
                 command: "norasoderlund.integrationworkbench.changeRequestData",
                 arguments: [ requestData ]
               });
-            }}/>
+            })}/>
 
             <small>Use 24-hour time format (hh:mm:ss)</small>
           </div>

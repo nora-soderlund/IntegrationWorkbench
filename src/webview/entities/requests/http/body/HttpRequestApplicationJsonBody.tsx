@@ -3,6 +3,7 @@ import { HttpRequestProps } from "../HttpRequest";
 import { WorkbenchHttpRequestApplicationJsonBodyData } from "../../../../../interfaces/workbenches/requests/WorkbenchHttpRequestData";
 import { Editor } from "@monaco-editor/react";
 import useMonacoTheme from "../../../../hooks/useMonacoUserTheme";
+import useDynamicChangeHandler from "../../../../hooks/useDynamicChangeHandler";
 
 type HttpRequestApplicationJsonBodyProps = HttpRequestProps & {
   requestBodyData: WorkbenchHttpRequestApplicationJsonBodyData;
@@ -22,17 +23,19 @@ export default function HttpRequestApplicationJsonBody({ requestData, requestBod
         minimap: {
           enabled: false
         }
-      }} onChange={(value) => (
-        window.vscode.postMessage({
-          command: "norasoderlund.integrationworkbench.changeHttpRequestBody",
-          arguments: [
-            {
-              type: "application/json",
-              body: value
-            }
-          ]
-        })
-      )}/>
+      }} onChange={(value) => {
+        useDynamicChangeHandler((value) => (
+          window.vscode.postMessage({
+            command: "norasoderlund.integrationworkbench.changeHttpRequestBody",
+            arguments: [
+              {
+                type: "application/json",
+                body: value
+              }
+            ]
+          })
+        ))(value ?? "");
+      }}/>
     </div>
   );
 };

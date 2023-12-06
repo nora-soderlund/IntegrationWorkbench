@@ -2,6 +2,7 @@ import { VSCodeButton, VSCodeDataGrid, VSCodeDataGridCell, VSCodeDataGridRow, VS
 import Input from "./inputs/Input";
 import { UserInput } from "../../interfaces/UserInput";
 import { UserInputType } from "../../interfaces/UserInputType";
+import useDynamicChangeHandler from "../hooks/useDynamicChangeHandler";
 
 export type KeyValueTableProps = {
   items: UserInput[];
@@ -35,19 +36,19 @@ export default function KeyValueTable({ items, onAdd, onChange, onDelete }: KeyV
       {items.map((item, index) => (
         <VSCodeDataGridRow key={index} className="data-grid-buttons-hoverable data-grid-variables-row">
           <VSCodeDataGridCell gridColumn="1">
-            <VSCodeTextField type="text" placeholder="Enter a header..." value={item.key} onChange={(event) => {
-              item.key = (event.target as HTMLInputElement).value;
+            <VSCodeTextField type="text" placeholder="Enter a header..." value={item.key} onChange={useDynamicChangeHandler((value) => {
+              item.key = value;
 
               onChange(item);
-            }}/>
+            })}/>
           </VSCodeDataGridCell>
 
           <VSCodeDataGridCell gridColumn="2">
-            <Input maxHeight="8em" type={item.type} value={item.value} onChange={(value) => {
+            <Input maxHeight="8em" type={item.type} value={item.value} onChange={useDynamicChangeHandler((value) => {
               item.value = value;
               
               onChange(item);
-            }}
+            })}
             onChangeType={(type) => {
               item.type = type;
 

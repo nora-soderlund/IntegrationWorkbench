@@ -5,6 +5,7 @@ import HttpRequestBodySwitch from "./HttpRequestBodySwitch";
 import { WorkbenchHttpRequestRawBodyData } from "../../../../../interfaces/workbenches/requests/WorkbenchHttpRequestData";
 import { Editor } from "@monaco-editor/react";
 import useMonacoUserTheme from "../../../../hooks/useMonacoUserTheme";
+import useDynamicChangeHandler from "../../../../hooks/useDynamicChangeHandler";
 
 type HttpRequestRawBodyProps = HttpRequestProps & {
   requestBodyData: WorkbenchHttpRequestRawBodyData;
@@ -24,17 +25,19 @@ export default function HttpRequestRawBody({ requestData, requestBodyData }: Htt
         minimap: {
           enabled: false
         }
-      }} onChange={(value) => (
-        window.vscode.postMessage({
-          command: "norasoderlund.integrationworkbench.changeHttpRequestBody",
-          arguments: [
-            {
-              type: "raw",
-              body: value
-            }
-          ]
-        })
-      )}/>
+      }} onChange={(value) => {
+        useDynamicChangeHandler((value) => (
+          window.vscode.postMessage({
+            command: "norasoderlund.integrationworkbench.changeHttpRequestBody",
+            arguments: [
+              {
+                type: "raw",
+                body: value
+              }
+            ]
+          })
+        ))(value ?? "");
+      }}/>
     </div>
   );
 };

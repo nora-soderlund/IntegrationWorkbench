@@ -1,6 +1,7 @@
 import { Component, useRef } from "react";
 import { HttpRequestProps } from "./HttpRequest";
 import { VSCodeButton, VSCodeDropdown, VSCodeOption, VSCodeTextField } from '@vscode/webview-ui-toolkit/react';
+import useDynamicChangeHandler from "../../../hooks/useDynamicChangeHandler";
 
 const defaultHttpRequestMethods = [ 'GET', 'DELETE', 'PATCH', 'PUT', 'POST' ];
 
@@ -41,12 +42,12 @@ export default function HttpRequestHeader({ requestData }: HttpRequestProps) {
             flexDirection: "row",
             gap: "0.5em"
           }}>
-            <VSCodeTextField type="text" placeholder="Custom method..." value={requestData.data.method} onChange={(event) => 
+            <VSCodeTextField type="text" placeholder="Custom method..." value={requestData.data.method} onChange={useDynamicChangeHandler((value) => 
               window.vscode.postMessage({
                 command: "norasoderlund.integrationworkbench.changeHttpRequestMethod",
-                arguments: [ (event.target as HTMLInputElement).value ]
+                arguments: [ value ]
               })
-            }/>
+            )}/>
 
             <VSCodeButton appearance="icon" onClick={() => 
               window.vscode.postMessage({
@@ -61,12 +62,12 @@ export default function HttpRequestHeader({ requestData }: HttpRequestProps) {
 
         <VSCodeTextField type="url" placeholder="Enter the URL of this request..." value={requestData.data.url} style={{
           flex: 1
-        }} onChange={(event) => (
+        }} onChange={useDynamicChangeHandler((value) => (
           window.vscode.postMessage({
             command: "norasoderlund.integrationworkbench.changeHttpRequestUrl",
-            arguments: [ (event.target as HTMLInputElement).value ]
+            arguments: [ value ]
           })
-        )}/>
+        ))}/>
       </div>
 
       <VSCodeButton className="header-send" onClick={() => (

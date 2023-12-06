@@ -2,6 +2,7 @@ import { VSCodeButton, VSCodeDataGrid, VSCodeDataGridCell, VSCodeDataGridRow, VS
 import Input from "./inputs/Input";
 import { UserInput } from "../../interfaces/UserInput";
 import { UserInputType } from "../../interfaces/UserInputType";
+import useDynamicChangeHandler from "../hooks/useDynamicChangeHandler";
 
 export type ValueListProps = {
   items: UserInput[];
@@ -31,11 +32,11 @@ export default function ValueList({ items, onAdd, onChange, onDelete }: ValueLis
       {items.map((item, index) => (
         <VSCodeDataGridRow key={index} className="data-grid-buttons-hoverable data-grid-variables-row">
           <VSCodeDataGridCell gridColumn="1">
-            <Input maxHeight="8em" type={item.type} value={item.value} onChange={(value) => {
+            <Input maxHeight="8em" type={item.type} value={item.value} onChange={useDynamicChangeHandler((value) => {
               item.value = value;
               
               onChange(item);
-            }}
+            })}
             onChangeType={(type) => {
               item.type = type;
 

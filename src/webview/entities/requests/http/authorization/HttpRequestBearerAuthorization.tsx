@@ -3,6 +3,7 @@ import { HttpRequestProps } from "../HttpRequest";
 import { VSCodeDataGrid, VSCodeDataGridCell, VSCodeDataGridRow } from '@vscode/webview-ui-toolkit/react';
 import { WorkbenchHttpBearerAuthorization } from "../../../../../interfaces/workbenches/requests/WorkbenchHttpRequestData";
 import Input from "../../../../components/inputs/Input";
+import useDynamicChangeHandler from "../../../../hooks/useDynamicChangeHandler";
 
 type HttpRequesBearerAuthorizationProps = HttpRequestProps & {
   authorizationData: WorkbenchHttpBearerAuthorization;
@@ -20,14 +21,14 @@ export default function HttpRequesBearerAuthorization({ requestData, authorizati
 
         <VSCodeDataGridRow>
           <VSCodeDataGridCell gridColumn="1">
-            <Input maxHeight="8em" secret={true} type={authorizationData.token.type} value={authorizationData.token.value} onChange={(value) => {
+            <Input maxHeight="8em" secret={true} type={authorizationData.token.type} value={authorizationData.token.value} onChange={useDynamicChangeHandler((value) => {
               authorizationData.token.value = value;
 
               window.vscode.postMessage({
                 command: "norasoderlund.integrationworkbench.changeHttpRequestAuthorization",
                 arguments: [ authorizationData ]
               });
-            }} onChangeType={(type) => {
+            })} onChangeType={(type) => {
               authorizationData.token.type = type;
 
               window.vscode.postMessage({

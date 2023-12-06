@@ -4,6 +4,7 @@ import { VSCodeButton, VSCodeDataGrid, VSCodeDataGridCell, VSCodeDataGridRow, VS
 import HttpRequestBodySwitch from "../body/HttpRequestBodySwitch";
 import { WorkbenchHttpBasicAuthorization, WorkbenchHttpRequestApplicationJsonBodyData, WorkbenchHttpRequestNoneBodyData, WorkbenchHttpRequestRawBodyData } from "../../../../../interfaces/workbenches/requests/WorkbenchHttpRequestData";
 import Input from "../../../../components/inputs/Input";
+import useDynamicChangeHandler from "../../../../hooks/useDynamicChangeHandler";
 
 type HttpRequesBasicAuthorizationProps = HttpRequestProps & {
   authorizationData: WorkbenchHttpBasicAuthorization;
@@ -25,14 +26,14 @@ export default function HttpRequesBasicAuthorization({ requestData, authorizatio
 
         <VSCodeDataGridRow>
           <VSCodeDataGridCell gridColumn="1">
-            <Input maxHeight="8em" type={authorizationData.username.type} value={authorizationData.username.value} onChange={(value) => {
+            <Input maxHeight="8em" type={authorizationData.username.type} value={authorizationData.username.value} onChange={useDynamicChangeHandler((value) => {
               authorizationData.username.value = value;
 
               window.vscode.postMessage({
                 command: "norasoderlund.integrationworkbench.changeHttpRequestAuthorization",
                 arguments: [ authorizationData ]
               });
-            }} onChangeType={(type) => {
+            })} onChangeType={(type) => {
               authorizationData.username.type = type;
 
               window.vscode.postMessage({
@@ -43,14 +44,14 @@ export default function HttpRequesBasicAuthorization({ requestData, authorizatio
           </VSCodeDataGridCell>
 
           <VSCodeDataGridCell gridColumn="2">
-            <Input maxHeight="8em" secret={true} type={authorizationData.password.type} value={authorizationData.password.value} onChange={(value) => {
+            <Input maxHeight="8em" secret={true} type={authorizationData.password.type} value={authorizationData.password.value} onChange={useDynamicChangeHandler((value) => {
               authorizationData.password.value = value;
 
               window.vscode.postMessage({
                 command: "norasoderlund.integrationworkbench.changeHttpRequestAuthorization",
                 arguments: [ authorizationData ]
               });
-            }} onChangeType={(type) => {
+            })} onChangeType={(type) => {
               authorizationData.password.type = type;
 
               window.vscode.postMessage({
