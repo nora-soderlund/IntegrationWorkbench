@@ -16,7 +16,11 @@ export default class CreateRequestCommand {
   }
   
   async handle(reference: unknown) {
-    const requestType = await window.showQuickPick([ "HTTP request", "AWS EventBridge event", "AWS SNS Topic message" ], {
+    const requestType = await window.showQuickPick([
+      "HTTP request",
+      "AWS EventBridge event",
+      //"AWS SNS Topic message"
+    ], {
       canPickMany: false,
       title: "Select type of request to create:"
     });
