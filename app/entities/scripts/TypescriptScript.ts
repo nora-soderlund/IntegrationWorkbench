@@ -5,8 +5,16 @@ import ts from "typescript";
 import { ScriptDeclarationData } from "~interfaces/scripts/ScriptDeclarationData";
 import ScriptTreeItem from "../../views/trees/scripts/items/ScriptTreeItem";
 
+export type TypescriptScriptCache = {
+  script: string;
+  javascript: string;
+  declaration: string;
+};
+
 export default class TypescriptScript {
   public treeDataViewItem?: ScriptTreeItem;
+
+  public cache?: TypescriptScriptCache;
 
   constructor(public filePath: string) {
   }
@@ -58,7 +66,16 @@ export default class TypescriptScript {
     }
   }
 
-  build() {
+  async build() {
+    const script = this.getScript();
+
+    if(this.cache?.script === script) {
+      return {
+        declaration: this.cache.declaration,
+        javascript: this.cache.javascript
+      };
+    }
+
     const compilerOptions: ts.CompilerOptions = {
       declaration: true,
       allowJs: true,
@@ -68,7 +85,7 @@ export default class TypescriptScript {
 
     ts.createSourceFile(
       this.filePath,
-      this.getScript(),
+      script,
       ts.ScriptTarget.Latest,
       true,
       ts.ScriptKind.TS
@@ -79,7 +96,7 @@ export default class TypescriptScript {
       options: compilerOptions,
     });
 
-    return new Promise<{
+    const result = await new Promise<{
       declaration: string;
       javascript: string;
     }>((resolve, reject) => {
@@ -120,6 +137,14 @@ export default class TypescriptScript {
         console.log('Build files generated successfully.');
       }
     });
+
+    this.cache = {
+      script,
+      javascript: result.javascript,
+      declaration: result.declaration
+    };
+
+    return result;
   }
 
   async getDeclarationData(): Promise<ScriptDeclarationData> {
