@@ -3,8 +3,7 @@ import Environment from "../entities/environments/Environment";
 import { existsSync, mkdirSync, readdirSync } from "fs";
 import getRootPath from "../utils/GetRootPath";
 import { ExtensionContext, StatusBarAlignment, StatusBarItem, commands, window, workspace } from "vscode";
-import Scripts from "./Scripts";
-import { getAllRequestsWithWebviews } from "./Workbenches";
+import Workbenches from "./Workbenches";
 
 export default class Environments {
   public static loadedEnvironments: Environment[] = [];
@@ -60,7 +59,7 @@ export default class Environments {
 
     this.selectedEnvironment = environment;
 
-    getAllRequestsWithWebviews().forEach((request) => {
+    Workbenches.getAllRequestsWithWebviews().forEach((request) => {
       request.webview.requestWebviewPanel?.updateScriptDeclarations();
     });
   }

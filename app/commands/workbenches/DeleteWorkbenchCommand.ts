@@ -1,7 +1,7 @@
 import { ExtensionContext, commands, window } from "vscode";
 import { Workbench } from "../../entities/workbenches/Workbench";
 import WorkbenchTreeItem from "../../views/trees/workbenches/items/WorkbenchTreeItem";
-import { scanForWorkbenches } from "../../instances/Workbenches";
+import Workbenches from "../../instances/Workbenches";
 import Command from "../Command";
 
 export default class DeleteWorkbenchCommand extends Command {
@@ -24,6 +24,6 @@ export default class DeleteWorkbenchCommand extends Command {
 
     workbench.delete();
 
-    scanForWorkbenches(this.context, true);
+    Workbenches.scanForWorkbenches(this.context, true);
   }
 }

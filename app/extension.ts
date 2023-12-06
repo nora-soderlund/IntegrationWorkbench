@@ -2,7 +2,6 @@
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode';
 import WorkbenchTreeDataProvider from './views/trees/workbenches/WorkbenchTreeDataProvider';
-import { scanForWorkbenches } from './instances/Workbenches';
 import WorkbenchesRequestsTreeDataProvider from './views/trees/responses/WorkbenchesRequestsTreeDataProvider';
 import WorkbenchResponseTreeItem from './views/trees/responses/items/WorkbenchResponseTreeItem';
 import { ResponseWebviewPanel } from './views/webviews/ResponseWebviewPanel';
@@ -12,6 +11,7 @@ import Environments from './instances/Environments';
 import EnvironmentsTreeDataProvider from './views/trees/environments/EnvironmentsTreeDataProvider';
 import Commands from './instances/Commands';
 import WorkbenchResponse from './entities/responses/WorkbenchResponse';
+import Workbenches from './instances/Workbenches';
 
 export const outputChannel = vscode.window.createOutputChannel("Integration Workbench", {
 	log: true
@@ -123,7 +123,7 @@ export function activate(context: vscode.ExtensionContext) {
 
 	Commands.register(context);
 
-	scanForWorkbenches(context);
+	Workbenches.scanForWorkbenches(context);
 
 	Scripts.scanForScripts();
 	Scripts.buildScript("");

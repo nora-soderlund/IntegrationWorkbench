@@ -9,63 +9,65 @@ import WorkbenchHttpRequest from "../entities/requests/http/WorkbenchHttpRequest
 import { WorkbenchCollection } from "../entities/collections/WorkbenchCollection";
 import WorkbenchEventBridgeRequest from "../entities/requests/aws/WorkbenchEventBridgeRequest";
 
-export const workbenches: Workbench[] = [];
+export default class Workbenches {
+  public static workbenches: Workbench[] = [];
 
-export function getAllRequestsWithWebviews() {
-  const requestsWithWebviews: WorkbenchRequest[] = [];
-
-  workbenches.forEach((workbench) => {
-    const requests = workbench.collections.flatMap((collection) => collection.requests).concat(workbench.requests);
-
-    requests.forEach((request) => {
-      if(request.webview.requestWebviewPanel) {
-        requestsWithWebviews.push(request);
-      }
+  public static getAllRequestsWithWebviews() {
+    const requestsWithWebviews: WorkbenchRequest[] = [];
+  
+    this.workbenches.forEach((workbench) => {
+      const requests = workbench.collections.flatMap((collection) => collection.requests).concat(workbench.requests);
+  
+      requests.forEach((request) => {
+        if(request.webview.requestWebviewPanel) {
+          requestsWithWebviews.push(request);
+        }
+      });
     });
-  });
+  
+    return requestsWithWebviews;
+  }
 
-  return requestsWithWebviews;
-}
-
-export function scanForWorkbenches(context: ExtensionContext, refresh: boolean = true) {
-  workbenches.length = 0;
-
-  const rootPath = getRootPath();
-
-  if(rootPath && existsSync(path.join(rootPath, ".workbench", "workbenches"))) {
-    const files = readdirSync(path.join(rootPath, ".workbench", "workbenches"));
-
-    for(let file of files) {
-      if(existsSync(path.join(rootPath, ".workbench", "workbenches", file, "workbench.json"))) {
-        const folder = path.join(rootPath, ".workbench", "workbenches", file);
-
-        const content = readFileSync(path.join(folder, "workbench.json"), {
-          encoding: "utf-8"
-        });
-
-        const input = JSON.parse(content);
-
-        workbenches.push(new Workbench(input, folder));
+  public static scanForWorkbenches(context: ExtensionContext, refresh: boolean = true) {
+    this.workbenches.length = 0;
+  
+    const rootPath = getRootPath();
+  
+    if(rootPath && existsSync(path.join(rootPath, ".workbench", "workbenches"))) {
+      const files = readdirSync(path.join(rootPath, ".workbench", "workbenches"));
+  
+      for(let file of files) {
+        if(existsSync(path.join(rootPath, ".workbench", "workbenches", file, "workbench.json"))) {
+          const folder = path.join(rootPath, ".workbench", "workbenches", file);
+  
+          const content = readFileSync(path.join(folder, "workbench.json"), {
+            encoding: "utf-8"
+          });
+  
+          const input = JSON.parse(content);
+  
+          this.workbenches.push(new Workbench(input, folder));
+        }
       }
     }
-  }
+  
+    if(refresh) {
+      commands.executeCommand(`norasoderlund.integrationworkbench.refreshWorkbenches`);
+    }
+  
+    return this.workbenches;
+  };
 
-  if(refresh) {
-    commands.executeCommand(`norasoderlund.integrationworkbench.refreshWorkbenches`);
-  }
+  public static createRequestFromData(parent: Workbench | WorkbenchCollection | null, data: WorkbenchRequestData) {
+    switch(data.type) {
+      case "HTTP":
+        return new WorkbenchHttpRequest(parent, data);
 
-  return workbenches;
-};
+      case "EventBridge":
+        return new WorkbenchEventBridgeRequest(parent, data);
 
-export function createRequestFromData(parent: Workbench | WorkbenchCollection | null, data: WorkbenchRequestData) {
-  switch(data.type) {
-    case "HTTP":
-      return new WorkbenchHttpRequest(parent, data);
-
-    case "EventBridge":
-      return new WorkbenchEventBridgeRequest(parent, data);
-
-    default:
-      throw new Error("Unknown request type");
+      default:
+        throw new Error("Unknown request type");
+    }
   }
 }

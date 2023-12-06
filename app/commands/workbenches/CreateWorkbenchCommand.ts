@@ -4,7 +4,7 @@ import getCamelizedString from "../../utils/GetCamelizedString";
 import getRootPath from "../../utils/GetRootPath";
 import { Workbench } from "../../entities/workbenches/Workbench";
 import path from "path";
-import { workbenches } from "../../instances/Workbenches";
+import Workbenches from "../../instances/Workbenches";
 import { randomUUID } from "crypto";
 import { existsSync, mkdirSync } from "fs";
 import Command from "../Command";
@@ -72,7 +72,7 @@ export default class CreateWorkbenchCommand extends Command {
   
     workbench.save();
   
-    workbenches.push(workbench);
+    Workbenches.workbenches.push(workbench);
   
     commands.executeCommand("norasoderlund.integrationworkbench.refreshWorkbenches");
   };
