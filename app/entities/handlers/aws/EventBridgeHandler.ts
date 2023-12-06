@@ -6,9 +6,10 @@ import Environments from "../../../instances/Environments";
 import { EventBridgeClient, PutEventsCommand } from "@aws-sdk/client-eventbridge";
 import Scripts from "../../../instances/Scripts";
 import { outputChannel } from "../../../extension";
+import { EventBridgeHandlerState } from "~interfaces/entities/handlers/aws/EventBridgeHandlerState";
 
 export default class EventBridgeHandler implements Handler<EventBridgeHandlerFulfilledState> {
-  public state: HandlerState<EventBridgeHandlerFulfilledState> = {
+  public state: EventBridgeHandlerState = {
     status: "idle"
   };
   
@@ -29,16 +30,36 @@ export default class EventBridgeHandler implements Handler<EventBridgeHandlerFul
       }
 
       const client = new EventBridgeClient({
-        region: "eu-north-1",
+        region: this.response.request.data.region,
         credentials: await Environments.selectedEnvironment.getAwsCredentials()
       });
+
+      const detail = await Scripts.evaluateUserInput(this.response.request.data.body);
+      const detailType = await Scripts.evaluateUserInput(this.response.request.data.detailType);
+      const source = await Scripts.evaluateUserInput(this.response.request.data.eventSource);
+
+      const resources = await Promise.all(this.response.request.data.resources.map(async (resource) => {
+        return await Scripts.evaluateUserInput(resource);
+      }));
+
+      this.state = {
+        status: "started",
+        request: {
+          region: this.response.request.data.region,
+          arn: this.response.request.data.eventBridgeArn,
+          body: detail,
+          detailType: detailType,
+          eventSource: source,
+          resources
+        }
+      };
 
       const response = await client.send(new PutEventsCommand({
         Entries: [
           {
-            Detail: await Scripts.evaluateUserInput(this.response.request.data.body),
-            DetailType: await Scripts.evaluateUserInput(this.response.request.data.detailType),
-            Source: await Scripts.evaluateUserInput(this.response.request.data.eventSource),
+            Detail: detail,
+            DetailType: detailType,
+            Source: source,
             EventBusName: this.response.request.data.eventBridgeArn,
             Resources: []
           }
@@ -57,6 +78,7 @@ export default class EventBridgeHandler implements Handler<EventBridgeHandlerFul
 
       this.state = {
         status: "fulfilled",
+        request: this.state.request,
         data: {
           eventId: entry.EventId ?? "Unknown"
         }
@@ -73,18 +95,21 @@ export default class EventBridgeHandler implements Handler<EventBridgeHandlerFul
     if(error instanceof Error) {
       this.state = {
         status: "error",
+        request: this.state.request,
         message: error.message
       };
     }
     else if(typeof error === "string") {
       this.state = {
         status: "error",
+        request: this.state.request,
         message: error
       };
     }
     else {
       this.state = {
         status: "error",
+        request: this.state.request,
         message: String(error)
       };
     }

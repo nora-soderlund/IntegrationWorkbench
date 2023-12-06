@@ -1,75 +1,40 @@
 import React from "react";
-import { VSCodeButton } from "@vscode/webview-ui-toolkit/react";
+import { VSCodeButton, VSCodePanelTab, VSCodePanelView, VSCodePanels } from "@vscode/webview-ui-toolkit/react";
 import { HandlerErrorState, HandlerState } from "../../../../interfaces/entities/handlers/Handler";
 import { WorkbenchEventBridgeRequestData } from "../../../../interfaces/workbenches/requests/aws/WorkbenchEventBridgeRequestData";
 import { EventBridgeHandlerFulfilledState } from "../../../../interfaces/entities/handlers/aws/EventBridgeHandlerFulfilledState";
+import { EventBridgeHandlerState } from "../../../../interfaces/entities/handlers/aws/EventBridgeHandlerState";
+import EventBridgeResponseResult from "./EventBridgeResponseResult";
+import EventBridgeResponseRequest from "./EventBridgeResponseRequest";
 
 export type EventBridgeResponseProps = {
   requestData: WorkbenchEventBridgeRequestData;
-  handlerState: HandlerState<EventBridgeHandlerFulfilledState>;
+  handlerState: EventBridgeHandlerState;
 };
 
 export default function EventBridgeResponse({ requestData, handlerState }: EventBridgeResponseProps) {
-  switch(handlerState.status) {
-    case "idle":
-    case "started": {
-      return (
-        <div style={{
-          flex: 1,
-          padding: "10px 20px"
-        }}>
-          Loading...
-        </div>
-      );
-    }
+  return (
+    <React.Fragment>
+      <VSCodePanels style={{
+        flex: 1,
+        padding: "0 20px"
+      }}>
+        <VSCodePanelTab>RESULT</VSCodePanelTab>
+        <VSCodePanelTab>REQUEST</VSCodePanelTab>
 
-    case "fulfilled": {
-      return (
-        <div style={{
-          flex: 1,
-          padding: "10px 20px"
+        <VSCodePanelView style={{
+          height: "100%",
+          flexDirection: "column",
+          padding: "0 6px",
+          border: "none"
         }}>
-          <div className="infobox infobox-info">
-            <div>
-              <i className="codicon codicon-info"></i>{" "}<b>Event was sent:</b>
-              
-              <p>
-                {handlerState.data.eventId}
-              </p>
-            </div>
-          </div>
-        </div>
-      );
-    }
+          <EventBridgeResponseResult requestData={requestData} handlerState={handlerState}/>
+        </VSCodePanelView>
 
-    case "error": {
-      return (
-        <div style={{
-          flex: 1,
-          padding: "10px 20px"
-        }}>
-          <div className="infobox infobox-error">
-            <div>
-              <i className="codicon codicon-error"></i>{" "}<b>An error occured:</b>
-              
-              <p>
-                {handlerState.message}
-              </p>
-            </div>
-    
-            <VSCodeButton onClick={(() => 
-              window.vscode.postMessage({
-                command: "norasoderlund.integrationworkbench.showOutputLogs",
-                arguments: []
-              })
-            )} style={{
-              width: "max-content"
-            }}>
-              Show output logs
-            </VSCodeButton>
-          </div>
-        </div>
-      );
-    }
-  }
+        <VSCodePanelView>
+          <EventBridgeResponseRequest requestData={requestData} handlerState={handlerState}/>
+        </VSCodePanelView>
+      </VSCodePanels>
+    </React.Fragment>
+  );
 }
