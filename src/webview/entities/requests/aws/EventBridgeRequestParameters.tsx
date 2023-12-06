@@ -106,7 +106,7 @@ export default function EventBridgeRequestParameters({ requestData }: EventBridg
       </div>
 
       <VSCodeDivider style={{
-        margin: "1em 0"
+        margin: "1.5em 0"
       }}/>
 
       {(!requestData.data.parameters.length)?(

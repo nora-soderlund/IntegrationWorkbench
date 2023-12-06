@@ -150,7 +150,7 @@ export default function HttpRequestHeaders({ requestData }: HttpRequestProps) {
       </div>
 
       <VSCodeDivider style={{
-        margin: "1em 0"
+        margin: "1.5em 0"
       }}/>
 
       {(!requestData.data.headers.length)?(

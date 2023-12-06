@@ -72,7 +72,7 @@ export default function EventBridgeRequestEvent({ requestData }: EventBridgeRequ
       </div>
 
       <VSCodeDivider style={{
-        margin: "1em 0"
+        margin: "1.5em 0"
       }}/>
 
       <div>
@@ -127,7 +127,7 @@ export default function EventBridgeRequestEvent({ requestData }: EventBridgeRequ
       </div>
 
       <VSCodeDivider style={{
-        margin: "1em 0"
+        margin: "1.5em 0"
       }}/>
 
       <div>

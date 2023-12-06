@@ -11,7 +11,7 @@ export default function EnvironmentIntegrations({ environmentData, environmentUs
       <p>External integrations for this environment. These settings are only kept locally and connected to this environment, but is not saved to the workspace itself.</p>
 
       <VSCodeDivider style={{
-        margin: "1em 0"
+        margin: "1.5em 0"
       }}/>
 
       <div>

@@ -149,7 +149,7 @@ export default function EnvironmentVariables({ environmentData }: EnvironmentPro
       </div>
 
       <VSCodeDivider style={{
-        margin: "1em 0"
+        margin: "1.5em 0"
       }}/>
 
       <div style={{
@@ -210,7 +210,7 @@ export default function EnvironmentVariables({ environmentData }: EnvironmentPro
       </div>
 
       <VSCodeDivider style={{
-        margin: "1em 0"
+        margin: "1.5em 0"
       }}/>
 
       {(!environmentData.variables.length)?(
