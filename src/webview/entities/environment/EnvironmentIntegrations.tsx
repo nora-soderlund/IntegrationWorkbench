@@ -294,7 +294,7 @@ export default function EnvironmentIntegrations({ environmentData, environmentUs
                         No file selected
                       </div>
                     );
-                  }
+                  };
                 }
               })()
             }

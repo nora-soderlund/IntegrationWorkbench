@@ -53,7 +53,7 @@ export default function EventBridgeRequestHeader({ requestData }: EventBridgeReq
           window.vscode.postMessage({
             command: "norasoderlund.integrationworkbench.changeRequestData",
             arguments: [ requestData ]
-          })
+          });
         }}>
           {eventBridgeRegions.map((region) => (
             <VSCodeOption key={region} value={region}>{region}</VSCodeOption>
@@ -68,7 +68,7 @@ export default function EventBridgeRequestHeader({ requestData }: EventBridgeReq
           window.vscode.postMessage({
             command: "norasoderlund.integrationworkbench.changeRequestData",
             arguments: [ requestData ]
-          })
+          });
         })}/>
 
         {/*<VSCodeButton appearance="icon" onClick={() => 
