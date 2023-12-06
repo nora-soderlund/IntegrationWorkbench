@@ -83,6 +83,7 @@ export default class CreateRequestCommand {
                 name: value,
                 type: "EventBridge",
                 data: {
+                  region: "eu-north-1",
                   eventBridgeArn: "",
                   body: {
                     type: "raw",

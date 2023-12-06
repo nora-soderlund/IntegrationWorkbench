@@ -29,6 +29,7 @@ export default class WorkbenchEventBridgeRequest implements WorkbenchRequest {
       name: this.name,
       type: "EventBridge",
       data: {
+        region: this.data.region,
         eventBridgeArn: this.data.eventBridgeArn,
         body: {
           ...this.data.body

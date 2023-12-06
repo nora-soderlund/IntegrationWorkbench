@@ -7,6 +7,7 @@ export type WorkbenchEventBridgeRequestData = {
   type: "EventBridge";
   
   data: {
+    region: string;
     eventBridgeArn: string;
 
     detailType: UserInput;

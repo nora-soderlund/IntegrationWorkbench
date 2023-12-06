@@ -23,22 +23,10 @@ export default class EventBridgeHandler implements Handler<EventBridgeHandlerFul
       if(!Environments.selectedEnvironment) {
         throw new Error("You must select an environment to use the AWS integrations.");
       }
-
-      if(!Environments.selectedEnvironment.userData.integrations.aws) {
-        throw new Error("The selected environment must have the AWS integration enabled and configured.");
-      }
-
-      if(Environments.selectedEnvironment.userData.integrations.aws.configuration !== "environmentVariables") {
-        throw new Error("dev error");
-      }
-
+      
       const client = new EventBridgeClient({
         region: "eu-north-1",
-        credentials: {
-          accessKeyId: await Scripts.evaluateUserInput(Environments.selectedEnvironment.userData.integrations.aws.environmentVariables.accessKeyId),
-          secretAccessKey: await Scripts.evaluateUserInput(Environments.selectedEnvironment.userData.integrations.aws.environmentVariables.secretAccessKey),
-          sessionToken: await Scripts.evaluateUserInput(Environments.selectedEnvironment.userData.integrations.aws.environmentVariables.sessionToken)
-        }
+        credentials: await Environments.selectedEnvironment.getAwsCredentials()
       });
 
       const response = await client.send(new PutEventsCommand({
@@ -65,7 +53,9 @@ export default class EventBridgeHandler implements Handler<EventBridgeHandlerFul
 
       this.state = {
         status: "fulfilled",
-        data: {}
+        data: {
+          eventId: entry.EventId ?? "Unknown"
+        }
       };
 
       commands.executeCommand("norasoderlund.integrationworkbench.refreshResponses", this.response);

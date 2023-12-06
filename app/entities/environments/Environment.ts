@@ -7,6 +7,7 @@ import Scripts from "../../instances/Scripts";
 import { parse } from "dotenv";
 import { EnvironmentUserData } from "~interfaces/entities/EnvironmentUserData";
 import { randomUUID } from "crypto";
+import Environments from "../../instances/Environments";
 
 export default class Environment {
   public data: EnvironmentData;
@@ -147,5 +148,25 @@ export default class Environment {
 
   disposeWebviewPanel() {
     this.requestWebviewPanel?.dispose();
+  }
+
+  async getAwsCredentials() {
+    if(!this.userData.integrations.aws) {
+      throw new Error("The selected environment must have the AWS integration enabled and configured.");
+    }
+
+    switch(this.userData.integrations.aws.configuration) {
+      case "environmentVariables": {
+        return {
+          accessKeyId: await Scripts.evaluateUserInput(this.userData.integrations.aws.environmentVariables.accessKeyId),
+          secretAccessKey: await Scripts.evaluateUserInput(this.userData.integrations.aws.environmentVariables.secretAccessKey),
+          sessionToken: await Scripts.evaluateUserInput(this.userData.integrations.aws.environmentVariables.sessionToken)
+        }
+      }
+
+      default: {
+        throw new Error("Invalid")
+      }
+    }
   }
 }

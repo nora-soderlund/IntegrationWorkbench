@@ -181,28 +181,28 @@ export default class Scripts {
 
   static async evaluateUserInput(userInput: UserInput, allowEnvironmentVariableUserInputs: boolean = true) {
     return new Promise<string>(async (resolve, reject) => {
-      switch(userInput.type) {
-        case "raw": {
-          resolve(userInput.value);
+      try {
+        switch(userInput.type) {
+          case "raw": {
+            resolve(userInput.value);
 
-          break;
-        }
+            break;
+          }
 
-        case "typescript": {
-          // TODO: add ability to view the entire script that's being evaluated for debugging purposes?
-          const script = await Scripts.buildScript(userInput.value, allowEnvironmentVariableUserInputs);
+          case "typescript": {
+            // TODO: add ability to view the entire script that's being evaluated for debugging purposes?
+            const script = await Scripts.buildScript(userInput.value, allowEnvironmentVariableUserInputs);
 
-          try {
             const value = await eval(script);
 
             resolve(value);
           }
-          catch(error) {
-            console.error("Failed to evaluate script: " + error);
-
-            reject(error);
-          }
         }
+      }
+      catch(error) {
+        console.error("Failed to evaluate script: " + error);
+
+        reject(error);
       }
     });
   }

@@ -1,11 +1,13 @@
 import { useEffect, useState } from "react";
-import { isHttpRequestData } from "../../../interfaces/workbenches/requests/utils/WorkbenchRequestDataTypeValidations";
+import { isEventBridgeRequestData, isHttpRequestData } from "../../../interfaces/workbenches/requests/utils/WorkbenchRequestDataTypeValidations";
 import { WorkbenchRequestData } from "../../../interfaces/workbenches/requests/WorkbenchRequestData";
 import { WorkbenchResponseData } from "../../../interfaces/workbenches/responses/WorkbenchResponseData";
 import { isHttpResponseData } from "../../../interfaces/workbenches/responses/utils/WorkbenchResponseTypeValidations";
 import HttpResponse from "./http/HttpResponse";
 import { HandlerState } from "../../../interfaces/entities/handlers/Handler";
 import { HttpHandlerFulfilledState } from "../../../../src/interfaces/entities/handlers/http/HttpHandlerFulfilledState";
+import EventBridgeResponse from "./aws/EventBridgeResponse";
+import { EventBridgeHandlerFulfilledState } from "../../../interfaces/entities/handlers/aws/EventBridgeHandlerFulfilledState";
 
 export default function Response() {
   const [ requestData, setRequestData ] = useState<WorkbenchRequestData | null>(null);
@@ -32,6 +34,11 @@ export default function Response() {
     if(isHttpRequestData(requestData)) {
       return (
         <HttpResponse key={requestData.id} requestData={requestData} handlerState={handlerState as HandlerState<HttpHandlerFulfilledState>}/>
+      );
+    }
+    else if(isEventBridgeRequestData(requestData)) {
+      return (
+        <EventBridgeResponse key={requestData.id} requestData={requestData} handlerState={handlerState as HandlerState<EventBridgeHandlerFulfilledState>}/>
       );
     }
   }
