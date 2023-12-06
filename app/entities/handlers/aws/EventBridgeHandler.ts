@@ -34,6 +34,7 @@ export default class EventBridgeHandler implements Handler<EventBridgeHandlerFul
         credentials: await Environments.selectedEnvironment.getAwsCredentials()
       });
 
+      const arn = await this.response.request.getParsedEventBridgeArn(abortController);
       const detail = await Scripts.evaluateUserInput(this.response.request.data.body);
       const detailType = await Scripts.evaluateUserInput(this.response.request.data.detailType);
       const source = await Scripts.evaluateUserInput(this.response.request.data.eventSource);
@@ -46,7 +47,7 @@ export default class EventBridgeHandler implements Handler<EventBridgeHandlerFul
         status: "started",
         request: {
           region: this.response.request.data.region,
-          arn: this.response.request.data.eventBridgeArn,
+          arn,
           body: detail,
           detailType: detailType,
           eventSource: source,
@@ -60,7 +61,7 @@ export default class EventBridgeHandler implements Handler<EventBridgeHandlerFul
             Detail: detail,
             DetailType: detailType,
             Source: source,
-            EventBusName: this.response.request.data.eventBridgeArn,
+            EventBusName: arn,
             Resources: []
           }
         ]

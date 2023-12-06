@@ -24,11 +24,11 @@ export default class HttpFetchHandler implements Handler<HttpHandlerFulfilledSta
       const parsedAuthorization = await this.response.request.getParsedAuthorization(abortController);
       const parsedBody = await this.response.request.getParsedBody(abortController);
 
-      const headers = {
+      const headers = Object. fromEntries(Object.entries({
         ...parsedBody.headers,
         ...parsedAuthorization.headers,
         ...parsedHeaders.headers
-      };
+      }).filter(([ key, value ]) => key.length && value.length));
 
       this.state = {
         status: "started",

@@ -6,6 +6,8 @@ import RequestWebview from "../RequestWebview";
 import { commands } from "vscode";
 import WorkbenchEventBridgeResponse from "../../responses/aws/WorkbenchEventBridgeResponse";
 import { randomUUID } from "crypto";
+import Environments from "../../../instances/Environments";
+import Scripts from "../../../instances/Scripts";
 
 export default class WorkbenchEventBridgeRequest implements WorkbenchRequest {
   public readonly id: string;
@@ -70,5 +72,59 @@ export default class WorkbenchEventBridgeRequest implements WorkbenchRequest {
       this.getData(),
       new Date()
     ));
+  }
+
+  async getParsedEventBridgeArn(abortController: AbortController) {
+    return new Promise<string>(async (resolve, reject) => {
+      if(!this.data.eventBridgeArn) {
+        reject("Request EventBridge aRN is falsey.");
+
+        return;
+      }
+
+      const abortListener = () => reject("Aborted.");
+      abortController.signal.addEventListener("abort", abortListener);
+
+      const keys: string[] = [];
+
+      this.data.eventBridgeArn.replace(/\{(.+?)\}/g, (_match, key) => {
+        keys.push(key);
+
+        return _match;
+      });
+
+      const uniqueKeys = [...new Set(keys)];
+
+      let parsedUrl = this.data.eventBridgeArn;
+
+      const environmentVariables = await Environments.selectedEnvironment?.getParsedVariables(new AbortController());
+
+      for(let key of uniqueKeys) {
+        const parameter = this.data.parameters.find((parameter) => parameter.key === key);
+
+        if(!parameter) {
+          const environmentVariable = environmentVariables?.find((environmentVariable) => environmentVariable.key === key);
+
+          if(environmentVariable) {
+            parsedUrl = parsedUrl?.replace('{' + key + '}', environmentVariable.value);
+          }
+
+          continue;
+        }
+
+        try {
+          const value = await Scripts.evaluateUserInput(parameter);
+
+          parsedUrl = parsedUrl?.replace('{' + key + '}', value);
+        }
+        catch(error) {
+          reject(error);
+        }
+      }
+
+      abortController.signal.removeEventListener("abort", abortListener);
+
+      resolve(parsedUrl);
+    });
   }
 }

@@ -11,12 +11,14 @@ import { outputChannel } from "../../extension";
 import RequestPreviewHeadersPanel from "./requests/RequestPreviewHeadersPanel";
 import Environments from "../../instances/Environments";
 import WorkbenchEventBridgeRequest from "../../entities/requests/aws/WorkbenchEventBridgeRequest";
+import RequestPreviewEventBridgeArnPanel from "./requests/RequestPreviewEventBridgeArnPanel";
 
 export class RequestWebviewPanel {
   public readonly webviewPanel: WebviewPanel;
   public readonly disposables: Disposable[] = [];
 
   private previewUrl?: RequestPreviewUrlPanel;
+  private previewEventBridgeArn?: RequestPreviewEventBridgeArnPanel;
   private previewHeaders?: RequestPreviewHeadersPanel;
 
   constructor(
@@ -256,6 +258,9 @@ export class RequestWebviewPanel {
     if(request instanceof WorkbenchHttpRequest) {
       this.previewUrl = new RequestPreviewUrlPanel(this, request);
       this.previewHeaders = new RequestPreviewHeadersPanel(this, request);
+    }
+    else if(request instanceof WorkbenchEventBridgeRequest) {
+      this.previewEventBridgeArn = new RequestPreviewEventBridgeArnPanel(this, request);
     }
   }
 

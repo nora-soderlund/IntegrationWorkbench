@@ -11,8 +11,10 @@ import { EventBridgeHandlerFulfilledState } from "../../../interfaces/entities/h
 import { HttpHandlerState } from "../../../interfaces/entities/handlers/http/HttpHandlerState";
 
 export default function Response() {
-  const [ requestData, setRequestData ] = useState<WorkbenchRequestData | null>(null);
-  const [ handlerState, setHandlerState ] = useState<HandlerState<unknown> | null>(null);
+  const [ data, setData ] = useState<{
+    requestData: WorkbenchRequestData,
+    handlerState: HandlerState<unknown>
+  } | null>(null);
 
   useEffect(() => {
     window.addEventListener('message', event => {
@@ -22,8 +24,7 @@ export default function Response() {
         case 'norasoderlund.integrationworkbench.showResponse': {
           const [ requestData, handlerState ] = event.data.arguments;
 
-          setRequestData(requestData);
-          setHandlerState(handlerState);
+          setData({ requestData, handlerState });
   
           break;
         }
@@ -31,15 +32,15 @@ export default function Response() {
     });
   }, []);
 
-  if(requestData && handlerState) {
-    if(isHttpRequestData(requestData)) {
+  if(data) {
+    if(isHttpRequestData(data.requestData)) {
       return (
-        <HttpResponse key={requestData.id} requestData={requestData} handlerState={handlerState as HttpHandlerState}/>
+        <HttpResponse key={data.requestData.id} requestData={data.requestData} handlerState={data.handlerState as HttpHandlerState}/>
       );
     }
-    else if(isEventBridgeRequestData(requestData)) {
+    else if(isEventBridgeRequestData(data.requestData)) {
       return (
-        <EventBridgeResponse key={requestData.id} requestData={requestData} handlerState={handlerState as HandlerState<EventBridgeHandlerFulfilledState>}/>
+        <EventBridgeResponse key={data.requestData.id} requestData={data.requestData} handlerState={data.handlerState as HandlerState<EventBridgeHandlerFulfilledState>}/>
       );
     }
   }
