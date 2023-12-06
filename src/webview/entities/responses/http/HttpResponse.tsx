@@ -7,10 +7,12 @@ import HttpFailedResponse from "./HttpFailedResponse";
 import { WorkbenchHttpRequestData } from "../../../../interfaces/workbenches/requests/WorkbenchHttpRequestData";
 import { HandlerState } from "../../../../interfaces/entities/handlers/Handler";
 import { HttpHandlerFulfilledState } from "../../../../interfaces/entities/handlers/http/HttpHandlerFulfilledState";
+import { HttpHandlerState } from "../../../../interfaces/entities/handlers/http/HttpHandlerState";
+import HttpResponseRequest from "./HttpResponseRequest";
 
 export type HttpResponseProps = {
   requestData: WorkbenchHttpRequestData;
-  handlerState: HandlerState<HttpHandlerFulfilledState>;
+  handlerState: HttpHandlerState;
 };
 
 function getHttpResponseColor(status: number) {
@@ -36,6 +38,7 @@ export default function HttpResponse({ requestData, handlerState }: HttpResponse
       }}>
         <VSCodePanelTab>BODY</VSCodePanelTab>
         <VSCodePanelTab>HEADERS</VSCodePanelTab>
+        <VSCodePanelTab>REQUEST</VSCodePanelTab>
 
         {(handlerState.status === "fulfilled") && (
           <VSCodePanelTab style={{
@@ -59,6 +62,10 @@ export default function HttpResponse({ requestData, handlerState }: HttpResponse
 
         <VSCodePanelView>
           <HttpResponseHeaders requestData={requestData} handlerState={handlerState}/>
+        </VSCodePanelView>
+        
+        <VSCodePanelView>
+          <HttpResponseRequest requestData={requestData} handlerState={handlerState}/>
         </VSCodePanelView>
         
         <VSCodePanelView/>

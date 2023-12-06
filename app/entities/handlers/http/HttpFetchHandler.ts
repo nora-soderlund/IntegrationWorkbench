@@ -4,9 +4,10 @@ import Handler, { HandlerState } from "~interfaces/entities/handlers/Handler";
 import { HttpHandlerFulfilledState } from "../../../../src/interfaces/entities/handlers/http/HttpHandlerFulfilledState";
 import WorkbenchResponse from "../../responses/WorkbenchResponse";
 import WorkbenchHttpResponse from "../../responses/http/WorkbenchHttpResponse";
+import { HttpHandlerState } from "~interfaces/entities/handlers/http/HttpHandlerState";
 
 export default class HttpFetchHandler implements Handler<HttpHandlerFulfilledState> {
-  public state: HandlerState<HttpHandlerFulfilledState> = {
+  public state: HttpHandlerState = {
     status: "idle"
   };
   
@@ -22,16 +23,26 @@ export default class HttpFetchHandler implements Handler<HttpHandlerFulfilledSta
       const parsedHeaders = await this.response.request.getParsedHeaders(abortController);
       const parsedAuthorization = await this.response.request.getParsedAuthorization(abortController);
       const parsedBody = await this.response.request.getParsedBody(abortController);
-  
-      parsedAuthorization.headers
+
+      const headers = {
+        ...parsedBody.headers,
+        ...parsedAuthorization.headers,
+        ...parsedHeaders.headers
+      };
+
+      this.state = {
+        status: "started",
+        request: {
+          method: this.response.request.data.method,
+          url: parsedUrl,
+          headers,
+          body: parsedBody.body
+        }
+      };
   
       fetch(parsedUrl, {
         method: this.response.request.data.method,
-        headers: {
-          ...parsedBody.headers,
-          ...parsedAuthorization.headers,
-          ...parsedHeaders.headers
-        },
+        headers,
         body: parsedBody.body,
         signal: abortController.signal
       })
@@ -53,6 +64,7 @@ export default class HttpFetchHandler implements Handler<HttpHandlerFulfilledSta
 
     this.state = {
       status: "fulfilled",
+      request: this.state.request,
       data: {
         body,
         headers,
@@ -69,18 +81,21 @@ export default class HttpFetchHandler implements Handler<HttpHandlerFulfilledSta
     if(error instanceof Error) {
       this.state = {
         status: "error",
+        request: this.state.request,
         message: error.message
       };
     }
     else if(typeof error === "string") {
       this.state = {
         status: "error",
+        request: this.state.request,
         message: error
       };
     }
     else {
       this.state = {
         status: "error",
+        request: this.state.request,
         message: String(error)
       };
     }

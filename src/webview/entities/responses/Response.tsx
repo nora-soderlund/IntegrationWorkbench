@@ -8,6 +8,7 @@ import { HandlerState } from "../../../interfaces/entities/handlers/Handler";
 import { HttpHandlerFulfilledState } from "../../../../src/interfaces/entities/handlers/http/HttpHandlerFulfilledState";
 import EventBridgeResponse from "./aws/EventBridgeResponse";
 import { EventBridgeHandlerFulfilledState } from "../../../interfaces/entities/handlers/aws/EventBridgeHandlerFulfilledState";
+import { HttpHandlerState } from "../../../interfaces/entities/handlers/http/HttpHandlerState";
 
 export default function Response() {
   const [ requestData, setRequestData ] = useState<WorkbenchRequestData | null>(null);
@@ -33,7 +34,7 @@ export default function Response() {
   if(requestData && handlerState) {
     if(isHttpRequestData(requestData)) {
       return (
-        <HttpResponse key={requestData.id} requestData={requestData} handlerState={handlerState as HandlerState<HttpHandlerFulfilledState>}/>
+        <HttpResponse key={requestData.id} requestData={requestData} handlerState={handlerState as HttpHandlerState}/>
       );
     }
     else if(isEventBridgeRequestData(requestData)) {
