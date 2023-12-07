@@ -52,33 +52,38 @@ export default class WorkbenchHttpRequest implements WorkbenchRequest {
 
   async getParsedAuthorization(abortController: AbortController) {
     return new Promise<{ headers: Record<string, string> }>(async (resolve, reject) => {
-      const headers: Record<string, string> = {};
+      try {
+        const headers: Record<string, string> = {};
 
-      const abortListener = () => reject("Aborted.");
-      abortController.signal.addEventListener("abort", abortListener);
+        const abortListener = () => reject("Aborted.");
+        abortController.signal.addEventListener("abort", abortListener);
 
-      switch(this.data.authorization.type) {
-        case "basic": {
-          const username = await Scripts.evaluateUserInput(this.data.authorization.username);
-          const password = await Scripts.evaluateUserInput(this.data.authorization.password);
-          
-          headers["Authorization"] = `Basic ${btoa(`${username}:${password}`)}`;
+        switch(this.data.authorization.type) {
+          case "basic": {
+            const username = await Scripts.evaluateUserInput(this.data.authorization.username);
+            const password = await Scripts.evaluateUserInput(this.data.authorization.password);
+            
+            headers["Authorization"] = `Basic ${btoa(`${username}:${password}`)}`;
 
-          break;
+            break;
+          }
+
+          case "bearer": {
+            const token = await Scripts.evaluateUserInput(this.data.authorization.token);
+
+            headers["Authorization"] = `Bearer ${token}`;
+
+            break;
+          }
         }
 
-        case "bearer": {
-          const token = await Scripts.evaluateUserInput(this.data.authorization.token);
+        abortController.signal.removeEventListener("abort", abortListener);
 
-          headers["Authorization"] = `Bearer ${token}`;
-
-          break;
-        }
+        resolve({ headers });
       }
-
-      abortController.signal.removeEventListener("abort", abortListener);
-
-      resolve({ headers });
+      catch(error) {
+        reject(error);
+      }
     });
   }
 
