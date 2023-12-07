@@ -74,4 +74,34 @@ export default class Workbenches {
         throw new Error("Unknown request type");
     }
   }
+
+  public static getWorkbench(id: string) {
+    return this.workbenches.find((workbench) => workbench.id === id) ?? null;
+  }
+
+  public static getCollection(id: string) {
+    for(let workbench of this.workbenches) {
+      const collection = workbench.collections.find((collection) => collection.id === id);
+
+      if(collection) {
+        return collection;
+      }
+    }
+
+    return null;
+  }
+
+  public static getRequest(id: string) {
+    for(let workbench of this.workbenches) {
+      const requests = workbench.requests.concat(workbench.collections.flatMap((collection) => collection.requests));
+
+      const request = requests.find((request) => request.id === id);
+
+      if(request) {
+        return request;
+      }
+    }
+
+    return null;
+  }
 }

@@ -1,10 +1,10 @@
-import { TreeDataProvider, TreeItem, Event, EventEmitter, ExtensionContext } from 'vscode';
+import { TreeDataProvider, TreeItem, Event, EventEmitter, ExtensionContext, TreeDragAndDropController, CancellationToken, DataTransfer, DataTransferItem } from 'vscode';
 import WorkbenchTreeItem from './items/WorkbenchTreeItem';
 import WorkbenchRequestTreeItem from './items/WorkbenchRequestTreeItem';
 import WorkbenchCollectionTreeItem from './items/WorkbenchCollectionTreeItem';
 import Workbenches from '../../../instances/Workbenches';
 
-export default class WorkbenchTreeDataProvider implements TreeDataProvider<WorkbenchTreeItem> {
+export default class WorkbenchTreeDataProvider implements TreeDataProvider<WorkbenchTreeItem>, TreeDragAndDropController<WorkbenchTreeItem> {
   constructor(
     private readonly context: ExtensionContext
   ) {
@@ -52,6 +52,93 @@ export default class WorkbenchTreeDataProvider implements TreeDataProvider<Workb
     }
 
     return Promise.resolve([]);
+  }
+
+  dropMimeTypes = ['application/vnd.code.tree.workbenches'];
+	dragMimeTypes = ['text/uri-list'];
+
+	public async handleDrag(source: WorkbenchTreeItem[], dataTransfer: DataTransfer, token: CancellationToken): Promise<void> {
+    dataTransfer.set('application/vnd.code.tree.workbenches', new DataTransferItem(source.map((source) => {
+      if(source instanceof WorkbenchRequestTreeItem) {
+        return {
+          id: source.request.id,
+          instance: "request"
+        };
+      }
+      else if(source instanceof WorkbenchCollectionTreeItem) {
+        return {
+          id: source.collection.id,
+          instance: "collection"
+        };
+      }
+      else if(source instanceof WorkbenchTreeItem) {
+        return {
+          id: source.workbench.id,
+          instance: "workbench"
+        };
+      }
+    })));
+
+    console.log("handleDrag", { source, dataTransfer });
+  }
+
+  public async handleDrop(target: WorkbenchTreeItem | undefined, dataTransfer: DataTransfer, token: CancellationToken): Promise<void> {
+    const transferItem = dataTransfer.get('application/vnd.code.tree.workbenches');
+		
+    if (!transferItem) {
+			return;
+		}
+
+    console.log("Drop", { value: transferItem.value });
+
+    if(target instanceof WorkbenchRequestTreeItem) {
+    }
+    else if(target instanceof WorkbenchCollectionTreeItem) {
+      for(let value of transferItem.value) {
+        if(value.instance === "request") {
+          const request = Workbenches.getRequest(value.id);
+
+          if(!request?.parent) {
+            continue;
+          }
+
+          console.log("Move request to collection", { request, target });
+
+          const index = request.parent.requests.indexOf(request);
+          request.parent.requests.splice(index, 1);
+          request.parent.save();
+
+          request.parent = target.collection;
+          request.parent.requests.push(request);
+        }
+      }
+
+      target.collection.save();
+    }
+    else if(target instanceof WorkbenchTreeItem) {
+      for(let value of transferItem.value) {
+        if(value.instance === "request") {
+          const request = Workbenches.getRequest(value.id);
+
+          if(!request?.parent) {
+            continue;
+          }
+
+          console.log("Move request to collection", { request, target });
+
+          const index = request.parent.requests.indexOf(request);
+          request.parent.requests.splice(index, 1);
+          request.parent.save();
+
+          request.parent = target.workbench;
+          request.parent.requests.push(request);
+        }
+      }
+
+      target.workbench.save();
+    }
+
+    this.refresh();
   }
 
   private _onDidChangeTreeData: EventEmitter<WorkbenchTreeItem | undefined | null | void> = new EventEmitter<WorkbenchTreeItem | undefined | null | void>();

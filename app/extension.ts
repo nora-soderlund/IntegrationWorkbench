@@ -28,7 +28,9 @@ export function activate(context: vscode.ExtensionContext) {
 	const workbenchesTreeDataProvider = new WorkbenchTreeDataProvider(context);
 	
 	const workbenchTreeView = vscode.window.createTreeView('workbenches', {
-		treeDataProvider: workbenchesTreeDataProvider
+		treeDataProvider: workbenchesTreeDataProvider,
+		dragAndDropController: workbenchesTreeDataProvider,
+		canSelectMany: true
 	});
 
 	const workbenchesResponsesTreeDataProvider = new WorkbenchesRequestsTreeDataProvider(context);
