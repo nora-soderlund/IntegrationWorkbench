@@ -1,4 +1,7 @@
 # Changelog
+## 0.9.12
+ - Added drag-and-drop functionality to requests across collections and requests
+
 ## 0.9.8
  - Optimization throughout all scripts, declarations, user inputs, etc.
  - Added "Duplicate request" command to context menu
