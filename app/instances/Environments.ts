@@ -65,6 +65,8 @@ export default class Environments {
   }
 
   public static scan(context: ExtensionContext, sendRefreshCommand: boolean = true) {
+    this.loadedEnvironments.forEach((environment) => environment.disposeWebviewPanel());
+    
     this.loadedEnvironments = [];
     
     const rootPath = getRootPath();
