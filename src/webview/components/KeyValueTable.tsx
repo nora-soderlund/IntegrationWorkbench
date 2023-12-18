@@ -36,11 +36,11 @@ export default function KeyValueTable({ items, onAdd, onChange, onDelete }: KeyV
       {items.map((item, index) => (
         <VSCodeDataGridRow key={index} className="data-grid-buttons-hoverable data-grid-variables-row">
           <VSCodeDataGridCell gridColumn="1">
-            <VSCodeTextField type="text" placeholder="Enter a header..." value={item.key} onChange={useDynamicChangeHandler((value) => {
-              item.key = value;
+            <VSCodeTextField type="text" placeholder="Enter a header..." value={item.key} onChange={(event) => {
+              item.key = (event.target as HTMLInputElement).value;
 
               onChange(item);
-            })}/>
+            }}/>
           </VSCodeDataGridCell>
 
           <VSCodeDataGridCell gridColumn="2">

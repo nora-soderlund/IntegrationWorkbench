@@ -150,14 +150,14 @@ export default function EventBridgeRequestEvent({ requestData }: EventBridgeRequ
           }}>
             <VSCodeTextField type={"date" as TextFieldType} value={requestData.data.time.date} placeholder="Select a date..." style={{
               width: "100%"
-            }} onChange={useDynamicChangeHandler((value) => {
-              requestData.data.time.date = value;
+            }} onChange={(event) => {
+              requestData.data.time.date = (event.target as HTMLInputElement).value;
 
               window.vscode.postMessage({
                 command: "norasoderlund.integrationworkbench.changeRequestData",
                 arguments: [ requestData ]
               });
-            })}/>
+            }}/>
 
             <small>Date</small>
           </div>
@@ -171,14 +171,14 @@ export default function EventBridgeRequestEvent({ requestData }: EventBridgeRequ
           }}>
             <VSCodeTextField type={"text"} value={requestData.data.time.time} placeholder="Enter a time..." style={{
               width: "100%"
-            }} onChange={useDynamicChangeHandler((value) => {
-              requestData.data.time.time = value;
+            }} onChange={(event) => {
+              requestData.data.time.time = (event.target as HTMLInputElement).value;
 
               window.vscode.postMessage({
                 command: "norasoderlund.integrationworkbench.changeRequestData",
                 arguments: [ requestData ]
               });
-            })}/>
+            }}/>
 
             <small>Use 24-hour time format (hh:mm:ss)</small>
           </div>

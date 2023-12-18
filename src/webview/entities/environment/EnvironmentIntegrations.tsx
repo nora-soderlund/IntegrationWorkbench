@@ -123,18 +123,18 @@ export default function EnvironmentIntegrations({ environmentData, environmentUs
                         gap: "0.5em"
                       }}>
                         <div>
-                          <VSCodeTextField type="text" placeholder="Enter a profile name..." value={environmentUserData.integrations.aws.profile} onChange={useDynamicChangeHandler((value) => {
+                          <VSCodeTextField type="text" placeholder="Enter a profile name..." value={environmentUserData.integrations.aws.profile} onChange={(event) => {
                             if(environmentUserData.integrations.aws?.configuration !== "sharedCredentialsFile") {
                               return;
                             }
 
-                            environmentUserData.integrations.aws.profile = value;
+                            environmentUserData.integrations.aws.profile = (event.target as HTMLInputElement).value;
 
                             window.vscode.postMessage({
                               command: "norasoderlund.integrationworkbench.updateEnvironmentUserData",
                               arguments: [ environmentUserData ]
                             });
-                          })}/>
+                          }}/>
                         </div>
 
                         <small>Name of the profile in the shared credentials file</small>
