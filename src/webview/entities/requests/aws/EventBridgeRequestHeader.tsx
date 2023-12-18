@@ -62,14 +62,14 @@ export default function EventBridgeRequestHeader({ requestData }: EventBridgeReq
 
         <VSCodeTextField type="url" placeholder="Enter the ARN for this request..." value={requestData.data.eventBridgeArn} style={{
           flex: 1
-        }} onChange={useDynamicChangeHandler((value) => {
-          requestData.data.eventBridgeArn = value;
+        }} onChange={(event) => {
+          requestData.data.eventBridgeArn = (event.target as HTMLInputElement).value;
 
           window.vscode.postMessage({
             command: "norasoderlund.integrationworkbench.changeRequestData",
             arguments: [ requestData ]
           });
-        })}/>
+        }}/>
 
         {/*<VSCodeButton appearance="icon" onClick={() => 
           window.vscode.postMessage({

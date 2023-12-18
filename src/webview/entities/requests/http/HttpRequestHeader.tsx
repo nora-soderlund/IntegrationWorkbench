@@ -42,12 +42,12 @@ export default function HttpRequestHeader({ requestData }: HttpRequestProps) {
             flexDirection: "row",
             gap: "0.5em"
           }}>
-            <VSCodeTextField type="text" placeholder="Custom method..." value={requestData.data.method} onChange={useDynamicChangeHandler((value) => 
+            <VSCodeTextField type="text" placeholder="Custom method..." value={requestData.data.method} onChange={(event) => 
               window.vscode.postMessage({
                 command: "norasoderlund.integrationworkbench.changeHttpRequestMethod",
-                arguments: [ value ]
+                arguments: [ (event.target as HTMLInputElement).value ]
               })
-            )}/>
+            }/>
 
             <VSCodeButton appearance="icon" onClick={() => 
               window.vscode.postMessage({
@@ -62,12 +62,12 @@ export default function HttpRequestHeader({ requestData }: HttpRequestProps) {
 
         <VSCodeTextField type="url" placeholder="Enter the URL of this request..." value={requestData.data.url} style={{
           flex: 1
-        }} onChange={useDynamicChangeHandler((value) => (
+        }} onChange={(event) => (
           window.vscode.postMessage({
             command: "norasoderlund.integrationworkbench.changeHttpRequestUrl",
-            arguments: [ value ]
+            arguments: [ (event.target as HTMLInputElement).value ]
           })
-        ))}/>
+        )}/>
       </div>
 
       <VSCodeButton className="header-send" onClick={() => (
