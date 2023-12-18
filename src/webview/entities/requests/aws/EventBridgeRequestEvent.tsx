@@ -27,14 +27,14 @@ export default function EventBridgeRequestEvent({ requestData }: EventBridgeRequ
             type={requestData.data.detailType.type}
             value={requestData.data.detailType.value}
             maxHeight={"8em"}
-            onChange={useDynamicChangeHandler((value) => {
+            onChange={(value) => {
               requestData.data.detailType.value = value;
 
               window.vscode.postMessage({
                 command: "norasoderlund.integrationworkbench.changeRequestData",
                 arguments: [ requestData ]
               });
-            })} onChangeType={(type) => {
+            }} onChangeType={(type) => {
               requestData.data.detailType.type = type;
 
               window.vscode.postMessage({
@@ -54,14 +54,14 @@ export default function EventBridgeRequestEvent({ requestData }: EventBridgeRequ
             type={requestData.data.eventSource.type}
             value={requestData.data.eventSource.value}
             maxHeight={"8em"}
-            onChange={useDynamicChangeHandler((value) => {
+            onChange={(value) => {
               requestData.data.eventSource.value = value;
 
               window.vscode.postMessage({
                 command: "norasoderlund.integrationworkbench.changeRequestData",
                 arguments: [ requestData ]
               });
-            })} onChangeType={(type) => {
+            }} onChangeType={(type) => {
               requestData.data.eventSource.type = type;
 
               window.vscode.postMessage({
